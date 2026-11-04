@@ -22,37 +22,28 @@ implementing `docs/architecture/contracts/ir-schema.md` §6.
   Coverage is 100% of `src/lib/**` (threshold 85%).
 - Package `README.md`.
 
-Generated files were produced from WP-1.1's **real** schema
-(`origin/wp/1.1-core-ir-py:packages/core-ir/schema/system_ir.schema.json`, git blob
-`ad7b44ee6c3f03a246a9b33c0dac3ca3ca799263`), so they match what lands upstream.
+Generated files were produced from the **canonical** schema
+(`packages/core-ir/schema/system_ir.schema.json`, git blob
+`ad7b44ee6c3f03a246a9b33c0dac3ca3ca799263`), which is now merged into this branch (main merge
+`0d3fbd4`). Regenerating at the default path is byte-identical to the committed output.
 
 ## How to verify
 
-Standalone on this branch (canonical schema not yet merged, generator falls back to the stub):
+On the merged branch (canonical schema + fixtures present):
 
 ```bash
-pnpm install
-pnpm --filter @atomc/core-ir gen          # uses stub fallback here
-pnpm --filter @atomc/core-ir test
+pnpm install --frozen-lockfile
+pnpm --filter @atomc/core-ir gen:check    # byte-identical to committed generated output
+pnpm --filter @atomc/core-ir test         # 34 tests: local + WP-1.1 fixtures + drift
+pnpm --filter @atomc/core-ir test:coverage
 pnpm --filter @atomc/core-ir typecheck
 pnpm --filter @atomc/core-ir build        # ESM + CJS + .d.ts
 pnpm --filter @atomc/core-ir lint
 ```
 
-Against WP-1.1's real schema (what I ran; equivalent once both branches merge):
-
-```bash
-SCHEMA=../wp-1-1-core-ir-py/packages/core-ir/schema/system_ir.schema.json
-pnpm --filter @atomc/core-ir exec tsx scripts/gen.ts --schema "$SCHEMA"
-pnpm --filter @atomc/core-ir exec tsx scripts/gen.ts --check --schema "$SCHEMA"
-pnpm --filter @atomc/core-ir test        # 33 tests pass when WP-1.1 fixtures are linked in
-pnpm --filter @atomc/core-ir typecheck
-pnpm --filter @atomc/core-ir build
-```
-
-After both branches merge, `packages/core-ir/schema/system_ir.schema.json` exists at the default
-path and `pnpm --filter @atomc/core-ir gen` / `gen:check` / `test` (drift test un-skips) run against it
-with no flags.
+`packages/core-ir/fixtures/*.json` (atomc-pad, minimal) all parse; the six
+`fixtures/invalid/*.json` are rejected by zod or by a documented Python-only semantic check. The
+drift test compares against the canonical schema with no flags.
 
 ## Design decisions
 
@@ -75,8 +66,9 @@ None from `ir-schema.md` §6 — all five required exports exist and validate th
 
 ## Open issues
 
-- The drift test is **skipped** when `packages/core-ir/schema/system_ir.schema.json` is absent (the
-  standalone-branch case). It un-skips automatically once WP-1.1's schema lands on the branch.
+- The drift test still guards against the canonical schema being absent
+  (`it.skipIf(!existsSync(REAL_SCHEMA))`) so the package can be developed standalone; on the merged
+  branch it runs and passes.
 - The invalid-fixture semantic classifier is intentionally minimal and lives in the test only. If
   WP-1.1 finalizes additional Python-only semantic checks, extend `classifyPythonOnly()`.
 - `format: "date-time"` values are validated as plain strings by zod (shape-only); numeric/string
@@ -85,8 +77,13 @@ None from `ir-schema.md` §6 — all five required exports exist and validate th
 ## Root changes needed
 
 - **`pnpm-lock.yaml` was updated** (new `packages/core-ir/ts` importer + catalog resolutions:
-  zod, vitest, @vitest/coverage-v8, tsup, tsx, json-schema-to-typescript, @types/node, typescript 5.9).
-  This is committed on this branch; the orchestrator owns the root lockfile, so flagging it here.
+  zod, vitest, @vitest/coverage-v8, tsup, tsx, json-schema-to-typescript, @types/node, vite,
+  typescript 5.9). This is committed on this branch; the orchestrator owns the root lockfile, so
+  flagging it here.
+- **Package-local `vite: "catalog:"` devDependency added.** After merging main, the VitePress docs
+  package pulled `vite@5.4.21` into the shared store, which broke vitest 5 (`./module-runner` not
+  exported). Pinning `vite` to the catalog (`^8.3.5`) for this package restores a working resolution.
+  This is inside `packages/core-ir/ts/package.json` (owned path), but changes the root lockfile.
 - No edits to `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `biome.json`, or `tsconfig.base.json`
   were needed.
 - Per PLAN §11, `packages/core-ir/ts` pins a package-local `typescript@^5.9.0` because `tsup`'s d.ts
