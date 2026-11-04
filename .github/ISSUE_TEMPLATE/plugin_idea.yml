@@ -1,0 +1,64 @@
+name: Plugin idea
+description: Suggest a new atomc plugin (tool, gate, or integration).
+title: "[plugin]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Plugins implement the `atomc-plugin.json` manifest contract
+        (`docs/architecture/contracts/plugin-manifest.md`) and can be written in
+        TypeScript, Python, or both. Built-in plugins live in `plugins/`; third-party
+        plugins are published as `@atomc/plugin-*` / `atomc-plugin-*`.
+  - type: input
+    id: name
+    attributes:
+      label: Proposed plugin name
+      placeholder: "plugin-neuromorphic"
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: What does it do?
+    validations:
+      required: true
+  - type: textarea
+    id: nodes
+    attributes:
+      label: IR nodes it reads/writes
+      description: Top-level nodes from `docs/architecture/contracts/ir-schema.md`.
+    validations:
+      required: true
+  - type: textarea
+    id: gates
+    attributes:
+      label: Gates it contributes
+      description: Gate ids and pass criteria (see the gate-result contract).
+  - type: textarea
+    id: tools
+    attributes:
+      label: Tools it exposes
+      description: Names + JSON-schema-ish signatures the swarm agents could call.
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      options:
+        - TypeScript
+        - Python
+        - Both (dual package)
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: External dependencies / services
+      description: Binaries, APIs, or credentials needed (see PLAN §2 for the approved set).
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
