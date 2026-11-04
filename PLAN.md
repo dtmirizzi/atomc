@@ -26,7 +26,7 @@ Override by editing this table and re-briefing affected agents.
 | D6 | KiCad | Pure-Python `.kicad_pcb` parsing (`kiutils`) for IR extraction; KiCad app optional for atopile layout **(default)** | no hard GUI dep for CLI/CI |
 | D7 | Studio | **Phase 3** (with CLI + harness). Vite 8 + React 19 + @react-three/fiber | user |
 | D8 | Example | **`examples/atomc-keeb`** — a real, orderable end-to-end keyboard: 4×12 ortholinear (48 keys), Kailh MX hot-swap sockets, per-key 1N4148W diodes, USB-C (5.1 kΩ CC pull-downs, USBLC6 ESD), **STM32F411CEU6** (QMK ChibiOS-supported, Renode STM32F4 platform), SWD + UART + matrix test pads on the bottom for the pogo jig, build123d plate + case + jig | user wants QMK keyboard |
-| D9 | Example firmware | **QMK** (latest `qmk_firmware` master, ChibiOS, `keyboards/atomc/keeb` generated from IR: `keyboard.json` matrix pins, layout, USB VID/PID) + default keymap; built with `qmk compile`. Renode tests inject matrix GPIO and assert on QMK debug UART output / HID report buffer | user |
+| D9 | Example firmware | **QMK** (latest `qmk_firmware` master, ChibiOS, `keyboards/atomc/keeb` generated from IR: `keyboard.json` matrix pins, layout, USB VID/PID) + default keymap; built with `qmk compile`. QMK compile is the deterministic software gate; Renode coverage is only claimed for proven peripheral paths; USB HID and all-key validation require HIL on a real board | user |
 | D10 | LLM provider | OpenRouter via `@mariozechner/pi-ai`; direct Anthropic/OpenAI also supported through pi-ai. Model routing in `atomc.config.ts` **(default)** | matches harness |
 | D11 | IR ownership | **Daemon-owned IR** with optimistic versioning; agents mutate via RPC `ir.transact(subtree, baseVersion, patch)` **(default)** | real transactional semantics, one writer |
 | D12 | Agent runtime | Swarm agents are **in-process pi-ai agent loops** inside `swarm-harness`, not spawned CLIs | bespoke harness goal |
@@ -101,7 +101,7 @@ Every node carries `_rev` and `_lock` (holder agent id, expiry) to support subtr
 |---------|--------|-------|
 | `erc.no_unconnected`, `erc.assertions` | atopile | `@ee-agent` |
 | `layout.testpads.min_count`, `layout.testpads.nets_covered` | atopile | `@ee-agent` |
-| `fw.qmk_compile`, `fw.tests.pass`, `fw.boot_banner`, `fw.matrix_scan` (every key press injected → correct keycode), `fw.matrix_pins_match_ir` | renode / qmk | `@fw-agent` |
+| `fw.qmk_compile`, `fw.matrix_pins_match_ir` | qmk | `@fw-agent` |\n| `fw.renode_boot`, `fw.matrix_scan` (only if proven for target; otherwise evidence-backed SKIP) | renode | `@fw-agent` |\n| `hil.usb_enumerates`, `hil.all_keys_report`, `hil.bootloader_recovery` | physical hardware / pogo jig | human release checklist; later HIL plugin |
 | `kb.layout_matches_keymap`, `kb.diode_per_switch`, `kb.usb_cc_pulldowns` | atopile | `@ee-agent` |
 | `mech.plate_switch_cutouts_14mm`, `mech.case_usb_cutout_aligned` | cad-jig | `@mech-agent` |
 | `mech.pogo_spacing_ge_2p54`, `mech.jig_no_collision`, `mech.enclosure_clearance` | cad-jig | `@mech-agent` |
@@ -277,10 +277,12 @@ atomc converge                     # swarm until gates PASS
 | **RPC contract** | Spin daemon in-proc, drive with TS client; golden request/response JSON | `tests/contract` | required |
 | **Plugin conformance** | `atomc-plugin-sdk` ships `conformance()` that loads a manifest and checks watches/gates/tools are registered and callable; every built-in plugin runs it | plugin dirs | required |
 | **Golden artifacts** | `.repl`, `.resc`, BOM CSV, jig `.step` bbox/volume/pogo coordinates compared against committed goldens with tolerances | `tests/e2e` | required (Linux) |
-| **Hardware kernel smoke** | atopile compile of example; build123d jig generation; Renode boots example firmware and asserts UART banner + CAN frame | `tests/e2e`, Docker image | required on Linux; macOS runner nightly |
+| **Hardware kernel smoke** | atopile compile of atomc-pad; build123d plate/case/jig generation; QMK compile of pad + keeb; Renode smoke (boot or documented unsupported MCU/peripheral); no claims of USB HID proof in Renode | `tests/e2e`, Docker image | required on Linux; macOS runner nightly |
 | **Swarm harness** | Deterministic fake LLM (scripted pi-ai provider) → verify gate loop convergence, lock contention, rollback; **recorded** real-model sessions replayed in CI; live-model run nightly with budget cap | `packages/swarm-harness` | required (fake), nightly (live) |
 | **Vendor adapters** | httpx + recorded cassettes (`respx`); live calls only with secrets in nightly | `plugins/plugin-sourcing` | required (cassettes) |
 | **Mutation/fuzz** | hypothesis on IR patches + JSON-patch transactions (conflict detection) | core-ir, daemon | required |
+| **Hardware-in-loop (HIL)** | After a physical prototype exists: flash QMK via SWD/OpenOCD; use pogo fixture to short each row/column and verify keycode via USB HID on a host; test bootloader recovery, USB enumeration, and all matrix positions. Store protocol/results under `tests/hil/`; never gates normal PR CI | optional nightly/release; manual before v1.0 |
+| **Simulation boundary** | Renode is a regression aid for CPU/peripheral behavior, not proof of end-user USB HID. Run `fw.qmk_compile` always; only enable `fw.matrix_scan` when the STM32F411 + GPIO + USB/QMK path is demonstrated in the supported Renode model. Otherwise mark SKIP with reason and require HIL before release | CI + hardware release checklist |
 | **Perf budget** | daemon warm-kernel build of example < 10 s; IR transact p99 < 20 ms | nightly | advisory |
 | **Docs** | VitePress build, link check, schema browser renders | `docs.yml` | required |
 
@@ -349,7 +351,7 @@ Each WP maps to one herdr worktree workspace + one `pi` agent, briefed from `doc
 - Hand-written `system_ir.json` for each, validated by WP-1.1 models (golden for Phase 4).
 - Done when: `ato build` succeeds for both, `qmk compile -kb atomc/pad -km default` and `atomc/keeb` succeed, IR fixtures validate.
 
-Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (WP-1.6 needs WP-0.1's QMK setup) (5 agents max; WP-1.2 blocks on 1.1's first schema commit, start it ~1 h later or let it start from the contract doc). WP-1.3 starts when 1.1 and 1.2 land.
+Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5 are active in parallel; WP-1.6 starts once WP-0.1 has installed QMK and the WP-1.1 schema exists (≤5 agents). WP-1.2 can scaffold from the contract doc while WP-1.1 implements, then validates against the committed schema. WP-1.3 starts when 1.1 and 1.2 land.
 
 ### Phase 2 — Plugin SDK & Daemon
 
@@ -372,10 +374,10 @@ Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (WP-1.6 need
 ### Phase 4 — Core hardware plugins (vertical slice on example)
 
 **WP-4.1 `plugin-atopile`** — compile `.ato` through atopile 0.15 Python API; extract components/nets/assertions/test-points; parse `.kicad_pcb` (kiutils) for outline + pad coordinates; ERC gates.
-**WP-4.2 `plugin-renode`** — IR → `.repl` (STM32F411 platform + GPIO matrix mapped to row/col nets + UART) + `.resc`; run pytest suites via pyrenode3: boot without HardFault, QMK debug console banner, inject key presses by driving column GPIO when row is strobed (a Python/C# matrix peripheral model generated from IR), assert keycodes via QMK debug output/HID report buffer; fault injection (stuck key, ghosting, brown-out).
+**WP-4.2 `plugin-renode`** — IR → `.repl` (STM32F411 platform + supported GPIO/UART) + `.resc`; first run compatibility probes for QMK ChibiOS on Renode STM32F411. Test boot/no HardFault and debug UART where feasible. Matrix-injection tests require a proven GPIO model and a QMK-emulation keymap; USB HID is **not** assumed emulated. Unsupported features produce an explicit `SKIP` with evidence, never a false `PASS`. Provide a recorded-HIL checklist and leave full matrix/USB assertions to a connected board + pogo fixture until proven simulatable.
 **WP-4.2b `plugin-qmk`** — IR → `keyboards/atomc/<name>/keyboard.json` (matrix pins, diode direction, layout geometry from switch placements, USB ids) + default keymap; `qmk compile` tool + `fw.qmk_compile` gate; artifact `.bin/.uf2` sha into IR.
 **WP-4.3 `plugin-cad-jig`** — build123d: PCB solid from outline, component bboxes; pogo-pin bed-of-nails jig (P75 receptacles, alignment pins on mounting holes, clamshell lid); **switch plate** (14 mm cutouts at 19.05 mm pitch from IR switch placements), **case** (tray mount, USB-C cutout aligned to connector); collision + spacing gates; export `.step/.stl/.glb` + PNG renders (for multimodal agents).
-**WP-4.4 `example-firmware`** — QMK keymaps for pad + keeb (layers, debug console on UART for emulation builds via `keymaps/renode`), Renode test suite covering every key position.
+**WP-4.4 `example-firmware`** — QMK keymaps for pad + keeb (layers, optional debug console on UART for emulation builds via `keymaps/renode`), QMK compile tests; HIL test script/checklist for every key position, USB HID and bootloader.
 **WP-4.5 `e2e-vertical-slice`** — `atomc build` on `atomc-pad`, then `atomc-keeb`, yields IR + QMK firmware + `.repl` + plate/case/jig `.step`; goldens; docs walkthrough with embedded GLB.
 
 ### Phase 5 — Supply chain & logistics
@@ -435,14 +437,14 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 
 | WP | Owner | Branch | State |
 |----|-------|--------|-------|
-| WP-0.1 bootstrap | — | — | not started |
-| WP-1.0 contracts | orchestrator | main | not started |
-| WP-1.1 core-ir-py | — | — | not started |
-| WP-1.2 core-ir-ts | — | — | not started |
+| WP-0.1 bootstrap | pi / DeepSeek Flash | `wp/0.1-bootstrap` | in progress (brew toolchain downloads) |
+| WP-1.0 contracts | orchestrator | main | done (contracts + workspace skeleton pushed) |
+| WP-1.1 core-ir-py | pi / DeepSeek Flash | `wp/1.1-core-ir-py` | in progress |
+| WP-1.2 core-ir-ts | pi / DeepSeek Flash | `wp/1.2-core-ir-ts` | in progress (depends on schema) |
 | WP-1.3 contract-tests | — | — | not started |
-| WP-1.4 ci-release | — | — | not started |
-| WP-1.5 docs-site | — | — | not started |
-| WP-1.6 example-seed | — | — | not started |
+| WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | in progress |
+| WP-1.5 docs-site | pi / DeepSeek Flash | `wp/1.5-docs-site` | in progress |
+| WP-1.6 example-seed | — | `wp/1.6-example-seed` | queued (awaiting QMK install + IR schema) |
 
 ---
 
