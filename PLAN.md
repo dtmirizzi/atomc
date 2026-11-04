@@ -24,28 +24,26 @@ Override by editing this table and re-briefing affected agents.
 | D4 | Latest libs | Always latest stable at time of scaffold (see §2 version matrix). Renovate keeps them fresh. | user |
 | D5 | Renode on macOS | Native **Renode 1.17.0 osx-arm64 portable**; Docker `antmicro/renode` as fallback + CI | 1.17.0 ships arm64 mac dmg |
 | D6 | KiCad | Pure-Python `.kicad_pcb` parsing (`kiutils`) for IR extraction; KiCad app optional for atopile layout **(default)** | no hard GUI dep for CLI/CI |
-| D7 | Studio | Phase 6, after Phase 5. Vite 8 + React 19 + @react-three/fiber **(default)** | keeps core phases lean |
-| D8 | Example MCU | **STM32G431** (CAN-FD, excellent Renode platform support) + TMP117 I²C temp sensor + TCAN1042 transceiver + TPS62840 buck **(default)** | Renode has mature STM32G4 peripherals |
-| D9 | Example firmware | Bare-metal C, `arm-none-eabi-gcc`, CMake + Ninja, CMSIS headers **(default)** | smallest toolchain for Renode tests |
+| D7 | Studio | **Phase 3** (with CLI + harness). Vite 8 + React 19 + @react-three/fiber | user |
+| D8 | Example | **`examples/atomc-keeb`** — a real, orderable end-to-end keyboard: 4×12 ortholinear (48 keys), Kailh MX hot-swap sockets, per-key 1N4148W diodes, USB-C (5.1 kΩ CC pull-downs, USBLC6 ESD), **STM32F411CEU6** (QMK ChibiOS-supported, Renode STM32F4 platform), SWD + UART + matrix test pads on the bottom for the pogo jig, build123d plate + case + jig | user wants QMK keyboard |
+| D9 | Example firmware | **QMK** (latest `qmk_firmware` master, ChibiOS, `keyboards/atomc/keeb` generated from IR: `keyboard.json` matrix pins, layout, USB VID/PID) + default keymap; built with `qmk compile`. Renode tests inject matrix GPIO and assert on QMK debug UART output / HID report buffer | user |
 | D10 | LLM provider | OpenRouter via `@mariozechner/pi-ai`; direct Anthropic/OpenAI also supported through pi-ai. Model routing in `atomc.config.ts` **(default)** | matches harness |
 | D11 | IR ownership | **Daemon-owned IR** with optimistic versioning; agents mutate via RPC `ir.transact(subtree, baseVersion, patch)` **(default)** | real transactional semantics, one writer |
 | D12 | Agent runtime | Swarm agents are **in-process pi-ai agent loops** inside `swarm-harness`, not spawned CLIs | bespoke harness goal |
-| D13 | Sub-agent dev tool | herdr sub-agents, kind **`pi`** (fallback `claude`), one **git worktree + herdr workspace per work package** | isolation + parallelism |
+| D13 | Sub-agent dev tool | herdr sub-agents, kind **`pi`**, model **`openrouter/deepseek/deepseek-v4.1-flash`** thinking `medium` (cost control), one **git worktree + herdr workspace per work package**. Orchestrator (Opus) reviews/merges | user |
 | D14 | Merge policy | Orchestrator reviews each WP branch (tests + lint + handoff doc), squash-merges to `main` **(default)** | |
-| D15 | License | **Apache-2.0** (patent grant matters for hardware) **(default)** | |
+| D15 | License | **Apache-2.0** | user |
 | D16 | Naming | npm `@atomc/*`; PyPI `atomc`, `atomc-core-ir`, `atomc-daemon`, `atomc-plugin-*` | |
 | D17 | CI | GitHub Actions from day one; Linux runners for Renode/KiCad, macOS runner for OCP smoke | |
 | D18 | Docs site | **VitePress 1.6** → GitHub Pages at `https://dtmirizzi.github.io/atomc/` | TS-heavy repo; MD+Vue components for schema browser and 3D viewer |
 | D19 | Out of scope (v0) | Real order placement/payment, carrier webhooks beyond a mock, thermal FEA, PCBWay | listed as plugin examples only |
 | D20 | Parallelism | ≤4 sub-agents concurrently in Phase 0–2; ≤6 in Phase 4–5 | token cost + review bandwidth |
 
-**Open questions still outstanding for the user** (plan proceeds with the defaults above):
+**Resolved by user 2026-11-04:** keyboard+QMK example, Apache-2.0, no vendor API keys, pi sub-agents on DeepSeek V4.1 Flash, Studio in Phase 3.
 
-1. Vendor API keys for Phase 5 (Mouser, DigiKey, Nexar/Octopart). Without them, adapters ship with recorded-cassette fixtures only.
-2. Confirm STM32G431 / bare-metal C for the example, or request Zephyr / Rust / nRF52 / RP2040.
-3. Confirm Apache-2.0.
-4. Do you want the Studio pulled forward into Phase 3 as a minimal gate/IR viewer?
-5. Preferred sub-agent kind: `pi` (default) vs `claude` vs `codex`.
+**Consequences of “no vendor keys”:** Phase 5 adapters use only keyless sources — the public JLCPCB/LCSC parts catalogue (yaqwsx `jlcparts` mirror + LCSC public product JSON), JLCPCB's public PCB price calculator endpoints, and user-supplied CSV. Mouser/DigiKey/Nexar adapters are built against recorded cassettes and activate when a key appears in env.
+
+**Still open (defaults in effect):** keyboard size (4×12 ortho default; a 3×3 macropad `examples/atomc-pad` is used as the fast dev fixture in Phase 4 before scaling to 48 keys).
 
 ---
 
@@ -84,6 +82,7 @@ Override by editing this table and re-briefing affected agents.
 |------|--------------|----------|
 | `meta` | core | schema version, project id, created/modified, IR revision counter |
 | `electrical` | atopile | modules, components (MPN, footprint, value, tolerance), nets, pins, assertions, ERC results |
+| `keyboard` | atopile/qmk | optional domain node: matrix `{rows, cols, diode_direction, row_pins, col_pins}`, keys `[{id, row, col, x_u, y_u, w_u, h_u, switch_ref, diode_ref, keycode_default}]`, USB `{vid, pid, manufacturer, product}` — source for QMK `keyboard.json`, plate cutouts, and Renode key injection |
 | `layout` | atopile/kiutils | board outline polygon (mm), layer stack, component placements, **test pads** (`id, net, x, y, side, diameter, kind=pogo|edge|tag-connect`) , mounting holes, keepouts |
 | `firmware` | renode | targets (MCU, core, flash/ram map), binaries (`.elf/.bin`, sha256), peripheral map (addr → periph → nets), test suites + last results |
 | `simulation` | renode | generated `.repl`/`.resc` paths, fault-injection scenarios, waveform captures |
@@ -102,7 +101,9 @@ Every node carries `_rev` and `_lock` (holder agent id, expiry) to support subtr
 |---------|--------|-------|
 | `erc.no_unconnected`, `erc.assertions` | atopile | `@ee-agent` |
 | `layout.testpads.min_count`, `layout.testpads.nets_covered` | atopile | `@ee-agent` |
-| `fw.build`, `fw.tests.pass`, `fw.boot_banner`, `fw.can_tx_waveform` | renode | `@fw-agent` |
+| `fw.qmk_compile`, `fw.tests.pass`, `fw.boot_banner`, `fw.matrix_scan` (every key press injected → correct keycode), `fw.matrix_pins_match_ir` | renode / qmk | `@fw-agent` |
+| `kb.layout_matches_keymap`, `kb.diode_per_switch`, `kb.usb_cc_pulldowns` | atopile | `@ee-agent` |
+| `mech.plate_switch_cutouts_14mm`, `mech.case_usb_cutout_aligned` | cad-jig | `@mech-agent` |
 | `mech.pogo_spacing_ge_2p54`, `mech.jig_no_collision`, `mech.enclosure_clearance` | cad-jig | `@mech-agent` |
 | `bom.all_in_stock`, `bom.cost_under_budget`, `bom.lead_time_under_days` | sourcing | `@ops-agent` + `@ee-agent` |
 | `fab.quote_under_budget` | sourcing | `@ops-agent` |
@@ -167,6 +168,7 @@ External binaries:
 | .NET runtime | 8 LTS | `brew install dotnet@8` (pyrenode3 coreclr) |
 | arm-none-eabi-gcc | latest brew | `brew install --cask gcc-arm-embedded` |
 | cmake, ninja | latest | brew |
+| QMK CLI | latest (`uv tool install qmk`) | `qmk setup -H ~/qmk_firmware` (clones qmk_firmware + submodules); toolchain via `brew tap osx-cross/arm` / QMK-recommended arm-none-eabi-gcc |
 | KiCad | 9.x (optional) | `brew install --cask kicad` — only for `ato build` layout + viewing |
 | gh | present | |
 
@@ -195,7 +197,7 @@ atomc/
 │   └── gen-ts-types.ts          (JSON Schema → TS)
 ├── apps/
 │   ├── atomc-cli/               (TS, commander 15)
-│   └── atomc-studio/            (Phase 6)
+│   └── atomc-studio/            (Phase 3)
 ├── packages/
 │   ├── core-ir/                 (Py pydantic + TS generated types; dual package)
 │   ├── daemon/                  (Py: atomcd)
@@ -204,7 +206,8 @@ atomc/
 ├── plugins/
 │   ├── plugin-atopile/  plugin-renode/  plugin-cad-jig/  plugin-sourcing/  plugin-orders/
 ├── examples/
-│   └── can-sensor-node/         (ato, firmware/, atomc.config.ts, budget gate)
+│   ├── atomc-pad/               (3×3 macropad dev fixture: ato, qmk/, atomc.config.ts)
+│   └── atomc-keeb/              (48-key ortho: ato, qmk/, plate/case/jig, budget gate)
 └── tests/
     ├── contract/                (cross-language schema + RPC conformance)
     ├── e2e/                     (atomc build on example; golden artifacts)
@@ -249,7 +252,7 @@ orchestrator (WP-1.0) **before** Phase 1 agents start and may only change via a 
 ### 5.2 Versioning & release
 
 - **Single version line across the monorepo** (`0.x.y`) — simpler for a dual-language repo; `changesets` drives TS changelog, `uv version` sync script mirrors to Python packages.
-- Tag `v0.x.y` → `release-npm.yml` (pnpm publish with provenance) + `release-pypi.yml` (uv build + Trusted Publishing/OIDC) + GHCR image + GitHub Release with CLI bundle and example artifacts (`can-sensor-node.step`, `.glb`, `.repl`).
+- Tag `v0.x.y` → `release-npm.yml` (pnpm publish with provenance) + `release-pypi.yml` (uv build + Trusted Publishing/OIDC) + GHCR image + GitHub Release with CLI bundle and example artifacts (`atomc-keeb.step`, `.glb`, `.repl`).
 - Pre-releases: every merge to `main` publishes `0.x.y-next.<sha>` to npm `next` tag and TestPyPI.
 - `atomc doctor` verifies that CLI, daemon, and plugin versions agree and that Renode/OCP/arm-gcc are present.
 
@@ -288,7 +291,7 @@ Coverage floor: 85 % lines for `core-ir`, `daemon`, `plugin-sdk`, `swarm-harness
 ## 7. Documentation & GitHub Pages
 
 - VitePress site in `docs/`, deployed by `.github/workflows/docs.yml` on push to `main` (actions/deploy-pages).
-- Sections: **Guide** (install, first build, converge), **Architecture** (IR, DAG, gates, swarm, contracts), **Reference** (auto-generated: CLI commands from commander, RPC methods, JSON Schema browser rendered from `public/schema.json`, plugin manifest), **Plugins** (writing a plugin in TS and Py, conformance), **Examples** (can-sensor-node walk-through with embedded `<model-viewer>` of the pogo jig `.glb` and WaveDrom of the CAN frame), **Plan** (this document rendered + status board).
+- Sections: **Guide** (install, first build, converge), **Architecture** (IR, DAG, gates, swarm, contracts), **Reference** (auto-generated: CLI commands from commander, RPC methods, JSON Schema browser rendered from `public/schema.json`, plugin manifest), **Plugins** (writing a plugin in TS and Py, conformance), **Examples** (atomc-keeb walk-through with embedded `<model-viewer>` of the pogo jig `.glb` and WaveDrom of a matrix scan + HID report), **Plan** (this document rendered + status board).
 - Every package `README.md` is symlinked/included into the site via a `docs:sync` script so docs never drift.
 - `typedoc` for TS API, `mkdocstrings`-equivalent via `pydoc-markdown` for Py API (or `griffe` JSON → custom Vue page). Decide in WP-1.6.
 
@@ -314,7 +317,7 @@ Each WP maps to one herdr worktree workspace + one `pi` agent, briefed from `doc
 - Pydantic v2 models for every node in §1.1 with strict mode, `extra="forbid"`, units as `Annotated` types, id validators, `_rev/_lock`.
 - `SystemIR.load/dump` (canonical JSON: sorted keys, 2-space, trailing newline → stable diffs), `SystemIR.schema()` export → `packages/core-ir/schema/system_ir.schema.json` (committed).
 - JSON-Patch transaction helpers: `apply_patch(ir, path, base_rev, patch) -> (ir, new_rev) | ConflictError`.
-- Fixtures: `fixtures/minimal.json`, `fixtures/can-sensor-node.json` (hand-written realistic example).
+- Fixtures: `fixtures/minimal.json`, `fixtures/atomc-keeb.json` (hand-written realistic example).
 - Tests: pytest + hypothesis (round-trip, conflict detection, schema snapshot), ≥90 % coverage.
 - Done when: `uv run pytest` green, `ruff`/`mypy --strict` clean, schema committed, `README.md` + `HANDOFF.md`.
 
@@ -339,13 +342,14 @@ Each WP maps to one herdr worktree workspace + one `pi` agent, briefed from `doc
 - VitePress scaffold, nav per §7, schema browser component reading `public/schema.json` (copied by `docs:sync`), plan status page generated from `PLAN.md`, `<model-viewer>` component placeholder.
 - Done when: `pnpm docs:build` passes, `docs.yml` deploys to Pages, Pages enabled on repo (agent runs `gh api` to enable, or documents the click).
 
-**WP-1.6 `example-seed`** — `examples/can-sensor-node`
-- `ato` project targeting atopile 0.15.9: STM32G431CBU6, TMP117, TCAN1042, TPS62840, 6 bottom-side test pads (VBUS, 3V3, GND, SWDIO, SWCLK, CAN_H/L → 7), `ato.yaml`, `ato build` passes (no layout required yet).
-- `atomc.config.ts` stub with budget gate (`bom.cost_under_budget: 2500` cents, qty 10).
-- Hand-written `system_ir.json` matching WP-1.1 fixture, used as the golden for Phase 4.
-- Done when: `ato build` succeeds, IR fixture validates in both languages.
+**WP-1.6 `example-seed`** — `examples/atomc-pad` + `examples/atomc-keeb`
+- `ato` projects (atopile 0.15.9): STM32F411CEU6 + 8 MHz HSE (or 25 MHz per QMK blackpill defs), USB-C receptacle w/ CC pull-downs, USBLC6-2SC6 ESD, 3.3 V LDO (e.g. AP2112K-3.3 / XC6220), SWD + UART + BOOT0 pads, key matrix (pad 3×3, keeb 4×12) of MX hot-swap sockets + 1N4148W diodes; bottom-side test pads for VBUS, 3V3, GND, SWDIO, SWCLK, NRST, UART TX/RX, BOOT0, and every row/col net.
+- `qmk/` folder: `keyboard.json` + `keymaps/default/keymap.c` matching the matrix (hand-written now; generated from IR in Phase 4). `qmk compile` must pass against the user's `qmk_firmware` checkout via `QMK_HOME` (symlink keyboard into `keyboards/atomc/`).
+- `atomc.config.ts` stub with budget gates (`bom.cost_under_budget`: pad 1500¢, keeb 4500¢ per board at qty 5, excl. switches/keycaps).
+- Hand-written `system_ir.json` for each, validated by WP-1.1 models (golden for Phase 4).
+- Done when: `ato build` succeeds for both, `qmk compile -kb atomc/pad -km default` and `atomc/keeb` succeed, IR fixtures validate.
 
-Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (5 agents max; WP-1.2 blocks on 1.1's first schema commit, start it ~1 h later or let it start from the contract doc). WP-1.3 starts when 1.1 and 1.2 land.
+Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (WP-1.6 needs WP-0.1's QMK setup) (5 agents max; WP-1.2 blocks on 1.1's first schema commit, start it ~1 h later or let it start from the contract doc). WP-1.3 starts when 1.1 and 1.2 land.
 
 ### Phase 2 — Plugin SDK & Daemon
 
@@ -363,14 +367,16 @@ Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (5 agents ma
 **WP-3.3 `harness-agents`** — `@ee-agent`, `@fw-agent`, `@mech-agent`, `@ops-agent` system prompts, tool allow-lists, lock scopes (`electrical.*`, `firmware.*`, `mechanical.*`, `sourcing.*|orders.*`), multimodal datasheet/3D-render inspection tools.
 **WP-3.4 `harness-converge`** — gate-failure → agent wake routing, parallel scheduling respecting lock graph, conflict rollback, convergence criteria, human-in-the-loop checkpoints, `atomc converge --max-cost`.
 **WP-3.5 `harness-tests`** — scripted fake provider, recorded sessions, nightly live run with cost cap.
+**WP-3.6 `studio-shell`** (Vite+React, WS to daemon, 4-pane layout) · **WP-3.7 `studio-3d`** (R3F PCB + plate + case + jig from GLB, test-pad overlay) · **WP-3.8 `studio-telemetry`** (WaveDrom matrix scan, Renode/QMK console stream) · **WP-3.9 `studio-gates-orders`** (gate board, BOM/quote/order table).
 
 ### Phase 4 — Core hardware plugins (vertical slice on example)
 
 **WP-4.1 `plugin-atopile`** — compile `.ato` through atopile 0.15 Python API; extract components/nets/assertions/test-points; parse `.kicad_pcb` (kiutils) for outline + pad coordinates; ERC gates.
-**WP-4.2 `plugin-renode`** — IR → `.repl` (STM32G4 platform + peripherals mapped to nets) + `.resc`; build firmware (CMake/arm-gcc); run pytest suites via pyrenode3 (UART banner, CAN TX frame, GPIO waveform assertions); fault injection (sensor NACK, brown-out).
-**WP-4.3 `plugin-cad-jig`** — build123d: PCB solid from outline, component bboxes; pogo-pin bed-of-nails plate (P50/P75 receptacles), alignment pins, clamshell; enclosure; collision + spacing gates; export `.step/.stl/.glb` + PNG renders (for multimodal agents).
-**WP-4.4 `example-firmware`** — bare-metal C for STM32G431: clock, UART banner, I²C TMP117 read, FDCAN TX every 100 ms; CMake preset; Renode test suite.
-**WP-4.5 `e2e-vertical-slice`** — `atomc build` on example yields IR + `.repl` + `.step`; goldens; docs walkthrough with embedded GLB.
+**WP-4.2 `plugin-renode`** — IR → `.repl` (STM32F411 platform + GPIO matrix mapped to row/col nets + UART) + `.resc`; run pytest suites via pyrenode3: boot without HardFault, QMK debug console banner, inject key presses by driving column GPIO when row is strobed (a Python/C# matrix peripheral model generated from IR), assert keycodes via QMK debug output/HID report buffer; fault injection (stuck key, ghosting, brown-out).
+**WP-4.2b `plugin-qmk`** — IR → `keyboards/atomc/<name>/keyboard.json` (matrix pins, diode direction, layout geometry from switch placements, USB ids) + default keymap; `qmk compile` tool + `fw.qmk_compile` gate; artifact `.bin/.uf2` sha into IR.
+**WP-4.3 `plugin-cad-jig`** — build123d: PCB solid from outline, component bboxes; pogo-pin bed-of-nails jig (P75 receptacles, alignment pins on mounting holes, clamshell lid); **switch plate** (14 mm cutouts at 19.05 mm pitch from IR switch placements), **case** (tray mount, USB-C cutout aligned to connector); collision + spacing gates; export `.step/.stl/.glb` + PNG renders (for multimodal agents).
+**WP-4.4 `example-firmware`** — QMK keymaps for pad + keeb (layers, debug console on UART for emulation builds via `keymaps/renode`), Renode test suite covering every key position.
+**WP-4.5 `e2e-vertical-slice`** — `atomc build` on `atomc-pad`, then `atomc-keeb`, yields IR + QMK firmware + `.repl` + plate/case/jig `.step`; goldens; docs walkthrough with embedded GLB.
 
 ### Phase 5 — Supply chain & logistics
 
@@ -380,9 +386,9 @@ Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (5 agents ma
 **WP-5.4 `plugin-orders`** — cart builder (vendor CSV/BOM upload formats), order records, mock carrier webhook + polling, `atomc orders` TUI table.
 **WP-5.5 `cli-quote-orders`** — `atomc quote`/`atomc orders` UX + docs.
 
-### Phase 6 — Studio (deferred)
+### Phase 6 — Hardening & 1.0
 
-**WP-6.1 `studio-shell`** (Vite+React, WS to daemon, 4-pane layout) · **WP-6.2 `studio-3d`** (R3F PCB + jig from GLB, pad overlay) · **WP-6.3 `studio-telemetry`** (WaveDrom + Renode log stream) · **WP-6.4 `studio-gates-orders`**.
+Real prototype order of `atomc-keeb` through `atomc orders` (user places payment manually), bring-up with the printed pogo jig + OpenOCD flash plugin, Homebrew tap, docs polish, `v1.0.0`.
 
 ---
 
@@ -391,7 +397,7 @@ Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5, WP-1.6 in parallel (5 agents ma
 ### 9.1 Topology
 
 - Orchestrator (this pi session) stays in `~/github.com/dtmirizzi/atomc` on `main`.
-- Each WP: `herdr worktree create --cwd <repo> --branch wp/<id>-<slug> --base main --label "WP-<id>" --no-focus` → returns workspace + root pane. Then `herdr agent start wp-<id> --kind pi --pane <pane>` and `herdr agent prompt wp-<id> "$(cat docs/plan/briefs/WP-<id>.md)" --wait --timeout 3600000`.
+- Each WP: `herdr worktree create --cwd <repo> --branch wp/<id>-<slug> --base main --label "WP-<id>" --no-focus` → returns workspace + root pane. Then `herdr agent start wp-<id> --kind pi --pane <pane> -- --provider openrouter --model deepseek/deepseek-v4.1-flash --thinking medium` (**always** pass the model — the global pi default is Gemini/Opus) and `herdr agent prompt wp-<id> "$(cat docs/plan/briefs/WP-<id>.md)" --wait --timeout 3600000`.
 - Agent names: `wp-0-1`, `wp-1-1`, … (herdr regex `[a-z][a-z0-9_-]{0,31}`).
 - Poll: `herdr agent wait <name> --until blocked --timeout …` in a loop; on `blocked` read `herdr agent read <name> --source recent-unwrapped --lines 120`, answer, continue.
 

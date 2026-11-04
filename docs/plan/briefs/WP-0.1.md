@@ -29,6 +29,11 @@ root for verification; it is gitignored.
    - A verification venv: `uv venv --python 3.14 .venv && uv pip install --python .venv/bin/python
      "build123d==0.13.0" "cadquery-ocp" kiutils trimesh pydantic
      "pyrenode3 @ git+https://github.com/antmicro/pyrenode3"`
+   - **QMK**: `uv tool install qmk` (latest), then `qmk setup -y -H ~/qmk_firmware` (clones
+     qmk_firmware + submodules; this is large, allow time). Make sure QMK uses an arm-none-eabi-gcc it
+     accepts (`qmk doctor` must pass; if the brew cask gcc-arm-embedded version is rejected, use
+     `brew tap osx-cross/arm && brew install arm-gcc-bin@13` or whatever `qmk doctor` recommends).
+     Export `QMK_HOME=~/qmk_firmware` into `~/.atomc/env.sh`.
    - Optional flag `--with-kicad` → `brew install --cask kicad` (do NOT run by default; GUI app)
    - Exports needed env (`PYRENODE_RUNTIME=coreclr`, `PYRENODE_BIN` or `PYRENODE_PKG`) into
      `~/.atomc/env.sh` and prints instructions to source it.
@@ -36,7 +41,7 @@ root for verification; it is gitignored.
    Checks: uv, python 3.14, pnpm, node, ato (`ato --version`), arm-none-eabi-gcc, cmake, ninja,
    dotnet 8, renode (`renode --version` headless), `import build123d, OCP` in `.venv`,
    `from pyrenode3.wrappers import Emulation` in `.venv` (with the env sourced), `import kiutils`,
-   `gh auth status`. Each check prints name, found version, PASS/FAIL, and a fix hint.
+   `gh auth status`, `qmk --version`, `qmk doctor` (pass). Each check prints name, found version, PASS/FAIL, and a fix hint.
 3. **Functional smoke proofs** (document in ENVIRONMENT.md with exact commands + output excerpts):
    - `ato create project` scratch project in `/tmp`, `ato build` succeeds.
    - build123d: generate a 50×30×1.6 mm box with one 1 mm hole, export `.step`, assert file > 1 KB.
@@ -46,13 +51,18 @@ root for verification; it is gitignored.
      `platforms/cpus/stm32g4*.repl`. If pyrenode3 cannot work on macOS, document precisely why and
      prove the fallback (Renode telnet monitor on port 1234 or `renode-test` Robot runner) instead.
    - arm-none-eabi-gcc compiles a trivial `main.c` for `-mcpu=cortex-m4 -mthumb`.
+   - QMK: `qmk compile -kb handwired/onekey/blackpill_f411 -km default` succeeds (STM32F411 —
+     the MCU our example keyboard uses) and the produced `.bin` is recorded. Then load that `.bin`
+     into Renode on the `platforms/cpus/stm32f4.repl` (or closest F411 platform) and show it boots
+     without a HardFault for 2 s of emulated time (record what you observe; partial success is fine,
+     just document it precisely — this de-risks Phase 4).
 4. `docs/plan/ENVIRONMENT.md` — exact versions installed, paths, env vars, workarounds, time taken,
    and anything that blocks later phases.
 
 ## Definition of done
 - `bash scripts/bootstrap.sh` twice in a row: second run completes in < 30 s with every step "skipped".
 - `python3 scripts/doctor.py` exits 0 (KiCad check reports SKIP unless installed).
-- All four smoke proofs recorded in ENVIRONMENT.md.
+- All five smoke proofs recorded in ENVIRONMENT.md.
 - Commits on branch `wp/0.1-bootstrap` using conventional commits; a `HANDOFF.md` at
   `docs/plan/handoffs/WP-0.1.md` with: what was done, how to re-verify, open issues, and any
   "root changes needed" for the orchestrator.
