@@ -1,0 +1,12 @@
+{
+  "ext": {},
+  "meta": {
+    "atomc_version": "0.1.0",
+    "created_at": "2026-11-04T00:00:00Z",
+    "modified_at": "2026-11-04T00:00:00Z",
+    "name": "minimal",
+    "project_id": "proj:minimal",
+    "rev": 0
+  },
+  "schema_version": "0.1.0"
+}
