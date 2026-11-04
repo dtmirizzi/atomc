@@ -1,0 +1,19 @@
+# Keep the build context small: BuildKit uses this file instead of the
+# context-root .dockerignore because the Dockerfile lives in docker/.
+**/.git
+**/.venv
+**/node_modules
+**/dist
+**/build
+**/.turbo
+**/coverage
+**/htmlcov
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.atomc
+docs/.vitepress/cache
+docs/.vitepress/dist
+**/*.pyc
+.DS_Store
