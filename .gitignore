@@ -21,3 +21,7 @@ docs/.vitepress/dist/
 .DS_Store
 # hardware artifacts (generated)
 examples/**/build/
+
+# coverage
+.coverage
+htmlcov/

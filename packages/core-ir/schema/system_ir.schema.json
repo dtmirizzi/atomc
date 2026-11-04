@@ -1,0 +1,3003 @@
+{
+  "$defs": {
+    "Alternate": {
+      "additionalProperties": false,
+      "properties": {
+        "lcsc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lcsc"
+        },
+        "mpn": {
+          "title": "Mpn",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "mpn"
+      ],
+      "title": "Alternate",
+      "type": "object"
+    },
+    "Artifact": {
+      "additionalProperties": false,
+      "description": "A produced file tracked by the IR.",
+      "properties": {
+        "bytes": {
+          "minimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "elf",
+            "bin",
+            "uf2",
+            "step",
+            "stl",
+            "glb",
+            "png",
+            "repl",
+            "resc",
+            "csv",
+            "json",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "produced_at": {
+          "format": "date-time",
+          "title": "Produced At",
+          "type": "string"
+        },
+        "produced_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Produced By"
+        },
+        "sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "path",
+        "sha256",
+        "bytes",
+        "produced_at"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "Assembly": {
+      "additionalProperties": false,
+      "properties": {
+        "parts_count": {
+          "minimum": 0,
+          "title": "Parts Count",
+          "type": "integer"
+        },
+        "side": {
+          "enum": [
+            "top",
+            "bottom",
+            "both"
+          ],
+          "title": "Side",
+          "type": "string"
+        }
+      },
+      "required": [
+        "side",
+        "parts_count"
+      ],
+      "title": "Assembly",
+      "type": "object"
+    },
+    "Assertion": {
+      "additionalProperties": false,
+      "properties": {
+        "expr": {
+          "title": "Expr",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "status": {
+          "default": "unknown",
+          "enum": [
+            "pass",
+            "fail",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "expr"
+      ],
+      "title": "Assertion",
+      "type": "object"
+    },
+    "BBox": {
+      "additionalProperties": false,
+      "properties": {
+        "max": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Max",
+          "type": "array"
+        },
+        "min": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Min",
+          "type": "array"
+        }
+      },
+      "required": [
+        "min",
+        "max"
+      ],
+      "title": "BBox",
+      "type": "object"
+    },
+    "BomLine": {
+      "additionalProperties": false,
+      "properties": {
+        "alternates": {
+          "items": {
+            "$ref": "#/$defs/Alternate"
+          },
+          "title": "Alternates",
+          "type": "array"
+        },
+        "chosen_offer_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chosen Offer Ref"
+        },
+        "component_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Component Refs",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "lcsc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lcsc"
+        },
+        "mpn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mpn"
+        },
+        "offers": {
+          "items": {
+            "$ref": "#/$defs/Offer"
+          },
+          "title": "Offers",
+          "type": "array"
+        },
+        "qty_per_unit": {
+          "minimum": 1,
+          "title": "Qty Per Unit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "qty_per_unit"
+      ],
+      "title": "BomLine",
+      "type": "object"
+    },
+    "Budget": {
+      "additionalProperties": false,
+      "properties": {
+        "per_unit_minor": {
+          "minimum": 0,
+          "title": "Per Unit Minor",
+          "type": "integer",
+          "unit": "minor_currency_units"
+        },
+        "total_minor": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer",
+              "unit": "minor_currency_units"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total Minor"
+        }
+      },
+      "required": [
+        "per_unit_minor"
+      ],
+      "title": "Budget",
+      "type": "object"
+    },
+    "Capture": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "uart",
+            "gpio",
+            "wavedrom",
+            "hid"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "scenario_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scenario Ref"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "path"
+      ],
+      "title": "Capture",
+      "type": "object"
+    },
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Attributes",
+          "type": "object"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "designator": {
+          "title": "Designator",
+          "type": "string"
+        },
+        "dnp": {
+          "default": false,
+          "title": "Dnp",
+          "type": "boolean"
+        },
+        "footprint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Footprint"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "lcsc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lcsc"
+        },
+        "manufacturer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Manufacturer"
+        },
+        "mpn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mpn"
+        },
+        "package": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Package"
+        },
+        "pins": {
+          "items": {
+            "$ref": "#/$defs/Pin"
+          },
+          "title": "Pins",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "id",
+        "designator"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "ComponentBBox": {
+      "additionalProperties": false,
+      "properties": {
+        "component_ref": {
+          "title": "Component Ref",
+          "type": "string"
+        },
+        "max": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Max",
+          "type": "array"
+        },
+        "min": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "title": "Min",
+          "type": "array"
+        }
+      },
+      "required": [
+        "component_ref",
+        "min",
+        "max"
+      ],
+      "title": "ComponentBBox",
+      "type": "object"
+    },
+    "DocumentMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "atomc_version": {
+          "title": "Atomc Version",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "modified_at": {
+          "format": "date-time",
+          "title": "Modified At",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "project_id": {
+          "title": "Project Id",
+          "type": "string"
+        },
+        "rev": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Rev",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "name",
+        "created_at",
+        "modified_at",
+        "atomc_version"
+      ],
+      "title": "DocumentMeta",
+      "type": "object"
+    },
+    "Electrical": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "assertions": {
+          "items": {
+            "$ref": "#/$defs/Assertion"
+          },
+          "title": "Assertions",
+          "type": "array"
+        },
+        "components": {
+          "items": {
+            "$ref": "#/$defs/Component"
+          },
+          "title": "Components",
+          "type": "array"
+        },
+        "erc": {
+          "items": {
+            "$ref": "#/$defs/ErcViolation"
+          },
+          "title": "Erc",
+          "type": "array"
+        },
+        "nets": {
+          "items": {
+            "$ref": "#/$defs/Net"
+          },
+          "title": "Nets",
+          "type": "array"
+        },
+        "source": {
+          "$ref": "#/$defs/ElectricalSource"
+        }
+      },
+      "required": [
+        "_meta",
+        "source"
+      ],
+      "title": "Electrical",
+      "type": "object"
+    },
+    "ElectricalSource": {
+      "additionalProperties": false,
+      "properties": {
+        "ato_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ato Version"
+        },
+        "entry": {
+          "title": "Entry",
+          "type": "string"
+        },
+        "kind": {
+          "const": "atopile",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "entry"
+      ],
+      "title": "ElectricalSource",
+      "type": "object"
+    },
+    "Enclosure": {
+      "additionalProperties": false,
+      "properties": {
+        "clearance_mm": {
+          "title": "Clearance Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "kind": {
+          "enum": [
+            "tray",
+            "sandwich",
+            "none"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "wall_mm": {
+          "title": "Wall Mm",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "required": [
+        "kind",
+        "wall_mm",
+        "clearance_mm"
+      ],
+      "title": "Enclosure",
+      "type": "object"
+    },
+    "ErcViolation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Refs",
+          "type": "array"
+        },
+        "rule": {
+          "title": "Rule",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "rule",
+        "severity",
+        "message"
+      ],
+      "title": "ErcViolation",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "json",
+            "artifact",
+            "image"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "FabQuote": {
+      "additionalProperties": false,
+      "properties": {
+        "breakdown": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Breakdown",
+          "type": "object"
+        },
+        "currency": {
+          "default": "USD",
+          "title": "Currency",
+          "type": "string"
+        },
+        "fab": {
+          "enum": [
+            "jlcpcb",
+            "pcbway",
+            "other"
+          ],
+          "title": "Fab",
+          "type": "string"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "lead_time_days": {
+          "title": "Lead Time Days",
+          "type": "integer",
+          "unit": "days"
+        },
+        "total_minor": {
+          "minimum": 0,
+          "title": "Total Minor",
+          "type": "integer",
+          "unit": "minor_currency_units"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "id",
+        "fab",
+        "total_minor",
+        "lead_time_days",
+        "fetched_at"
+      ],
+      "title": "FabQuote",
+      "type": "object"
+    },
+    "Fabrication": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "assembly": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Assembly"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pcb": {
+          "$ref": "#/$defs/PcbSpec"
+        },
+        "quotes": {
+          "items": {
+            "$ref": "#/$defs/FabQuote"
+          },
+          "title": "Quotes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "_meta",
+        "pcb"
+      ],
+      "title": "Fabrication",
+      "type": "object"
+    },
+    "Fault": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "stuck_key",
+            "ghost",
+            "brownout",
+            "sensor_nack",
+            "custom"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Fault",
+      "type": "object"
+    },
+    "Firmware": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "peripherals": {
+          "items": {
+            "$ref": "#/$defs/PeriphMap"
+          },
+          "title": "Peripherals",
+          "type": "array"
+        },
+        "suites": {
+          "items": {
+            "$ref": "#/$defs/TestSuite"
+          },
+          "title": "Suites",
+          "type": "array"
+        },
+        "targets": {
+          "items": {
+            "$ref": "#/$defs/FwTarget"
+          },
+          "title": "Targets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "_meta"
+      ],
+      "title": "Firmware",
+      "type": "object"
+    },
+    "FwTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "artifacts": {
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "build_cmd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Build Cmd"
+        },
+        "core": {
+          "title": "Core",
+          "type": "string"
+        },
+        "framework": {
+          "enum": [
+            "qmk",
+            "zephyr",
+            "baremetal",
+            "other"
+          ],
+          "title": "Framework",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "mcu": {
+          "title": "Mcu",
+          "type": "string"
+        },
+        "memory": {
+          "items": {
+            "$ref": "#/$defs/MemoryRegion"
+          },
+          "title": "Memory",
+          "type": "array"
+        },
+        "source_dir": {
+          "title": "Source Dir",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "mcu",
+        "core",
+        "framework",
+        "source_dir"
+      ],
+      "title": "FwTarget",
+      "type": "object"
+    },
+    "GateResult": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_ms": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Duration Ms",
+          "type": "integer",
+          "unit": "ms"
+        },
+        "evaluated_at": {
+          "format": "date-time",
+          "title": "Evaluated At",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "ir_rev": {
+          "minimum": 0,
+          "title": "Ir Rev",
+          "type": "integer"
+        },
+        "owner_agent": {
+          "anyOf": [
+            {
+              "enum": [
+                "ee-agent",
+                "fw-agent",
+                "mech-agent",
+                "ops-agent"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Owner Agent"
+        },
+        "plugin": {
+          "title": "Plugin",
+          "type": "string"
+        },
+        "refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Refs",
+          "type": "array"
+        },
+        "severity": {
+          "default": "blocking",
+          "enum": [
+            "blocking",
+            "advisory"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "SKIP",
+            "ERROR"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "suggestions": {
+          "items": {
+            "$ref": "#/$defs/Suggestion"
+          },
+          "title": "Suggestions",
+          "type": "array"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "plugin",
+        "evaluated_at",
+        "ir_rev"
+      ],
+      "title": "GateResult",
+      "type": "object"
+    },
+    "Gates": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "results": {
+          "additionalProperties": {
+            "$ref": "#/$defs/GateResult"
+          },
+          "title": "Results",
+          "type": "object"
+        }
+      },
+      "required": [
+        "_meta"
+      ],
+      "title": "Gates",
+      "type": "object"
+    },
+    "HistoryEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "at",
+        "status"
+      ],
+      "title": "HistoryEntry",
+      "type": "object"
+    },
+    "Hole": {
+      "additionalProperties": false,
+      "properties": {
+        "diameter_mm": {
+          "title": "Diameter Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "plated": {
+          "default": false,
+          "title": "Plated",
+          "type": "boolean"
+        },
+        "x": {
+          "title": "X",
+          "type": "number",
+          "unit": "mm"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "required": [
+        "id",
+        "x",
+        "y",
+        "diameter_mm"
+      ],
+      "title": "Hole",
+      "type": "object"
+    },
+    "Jig": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment": {
+          "enum": [
+            "mounting_holes",
+            "pins"
+          ],
+          "title": "Alignment",
+          "type": "string"
+        },
+        "min_pitch_mm": {
+          "default": 2.54,
+          "title": "Min Pitch Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "plate_thickness_mm": {
+          "title": "Plate Thickness Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "pogo_part": {
+          "default": "P75-E2",
+          "title": "Pogo Part",
+          "type": "string"
+        },
+        "spring_force_n": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spring Force N"
+        }
+      },
+      "required": [
+        "plate_thickness_mm",
+        "alignment"
+      ],
+      "title": "Jig",
+      "type": "object"
+    },
+    "Keepout": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "component",
+            "copper",
+            "pogo"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "polygon": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "minItems": 3,
+          "title": "Polygon",
+          "type": "array"
+        },
+        "side": {
+          "enum": [
+            "top",
+            "bottom"
+          ],
+          "title": "Side",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "polygon",
+        "side",
+        "kind"
+      ],
+      "title": "Keepout",
+      "type": "object"
+    },
+    "Key": {
+      "additionalProperties": false,
+      "properties": {
+        "col": {
+          "minimum": 0,
+          "title": "Col",
+          "type": "integer"
+        },
+        "diode_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Diode Ref"
+        },
+        "h_u": {
+          "default": 1.0,
+          "title": "H U",
+          "type": "number"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "keycode_default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Keycode Default"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "rotation_deg": {
+          "default": 0.0,
+          "title": "Rotation Deg",
+          "type": "number"
+        },
+        "row": {
+          "minimum": 0,
+          "title": "Row",
+          "type": "integer"
+        },
+        "switch_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Switch Ref"
+        },
+        "w_u": {
+          "default": 1.0,
+          "title": "W U",
+          "type": "number"
+        },
+        "x_u": {
+          "default": 0.0,
+          "title": "X U",
+          "type": "number"
+        },
+        "y_u": {
+          "default": 0.0,
+          "title": "Y U",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "row",
+        "col"
+      ],
+      "title": "Key",
+      "type": "object"
+    },
+    "Keyboard": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "keys": {
+          "items": {
+            "$ref": "#/$defs/Key"
+          },
+          "title": "Keys",
+          "type": "array"
+        },
+        "matrix": {
+          "$ref": "#/$defs/Matrix"
+        },
+        "qmk": {
+          "$ref": "#/$defs/Qmk"
+        },
+        "usb": {
+          "$ref": "#/$defs/Usb"
+        }
+      },
+      "required": [
+        "_meta",
+        "matrix",
+        "usb",
+        "qmk"
+      ],
+      "title": "Keyboard",
+      "type": "object"
+    },
+    "Layout": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "keepouts": {
+          "items": {
+            "$ref": "#/$defs/Keepout"
+          },
+          "title": "Keepouts",
+          "type": "array"
+        },
+        "layers": {
+          "default": 2,
+          "minimum": 1,
+          "title": "Layers",
+          "type": "integer"
+        },
+        "mounting_holes": {
+          "items": {
+            "$ref": "#/$defs/Hole"
+          },
+          "title": "Mounting Holes",
+          "type": "array"
+        },
+        "outline": {
+          "$ref": "#/$defs/Outline"
+        },
+        "placements": {
+          "items": {
+            "$ref": "#/$defs/Placement"
+          },
+          "title": "Placements",
+          "type": "array"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LayoutSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "test_pads": {
+          "items": {
+            "$ref": "#/$defs/TestPad"
+          },
+          "title": "Test Pads",
+          "type": "array"
+        }
+      },
+      "required": [
+        "_meta",
+        "outline"
+      ],
+      "title": "Layout",
+      "type": "object"
+    },
+    "LayoutSource": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "kicad_pcb",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        }
+      },
+      "required": [
+        "kind",
+        "path"
+      ],
+      "title": "LayoutSource",
+      "type": "object"
+    },
+    "Lock": {
+      "additionalProperties": false,
+      "description": "An advisory subtree lock held by an agent.",
+      "properties": {
+        "acquired_at": {
+          "format": "date-time",
+          "title": "Acquired At",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "holder": {
+          "title": "Holder",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "holder",
+        "acquired_at",
+        "expires_at"
+      ],
+      "title": "Lock",
+      "type": "object"
+    },
+    "Matrix": {
+      "additionalProperties": false,
+      "properties": {
+        "col_pins": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Col Pins",
+          "type": "array"
+        },
+        "cols": {
+          "minimum": 1,
+          "title": "Cols",
+          "type": "integer"
+        },
+        "diode_direction": {
+          "enum": [
+            "COL2ROW",
+            "ROW2COL"
+          ],
+          "title": "Diode Direction",
+          "type": "string"
+        },
+        "row_pins": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Row Pins",
+          "type": "array"
+        },
+        "rows": {
+          "minimum": 1,
+          "title": "Rows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "rows",
+        "cols",
+        "diode_direction"
+      ],
+      "title": "Matrix",
+      "type": "object"
+    },
+    "MechCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "collision",
+            "clearance",
+            "pogo_spacing",
+            "cutout"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "status"
+      ],
+      "title": "MechCheck",
+      "type": "object"
+    },
+    "Mechanical": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "artifacts": {
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/MechCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "component_bboxes": {
+          "items": {
+            "$ref": "#/$defs/ComponentBBox"
+          },
+          "title": "Component Bboxes",
+          "type": "array"
+        },
+        "enclosure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Enclosure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "jig": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Jig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pcb_bbox": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BBox"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "plate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Plate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "_meta"
+      ],
+      "title": "Mechanical",
+      "type": "object"
+    },
+    "MemoryRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "length": {
+          "exclusiveMinimum": 0,
+          "title": "Length",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "origin": {
+          "minimum": 0,
+          "title": "Origin",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "origin",
+        "length"
+      ],
+      "title": "MemoryRegion",
+      "type": "object"
+    },
+    "Net": {
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "anyOf": [
+            {
+              "enum": [
+                "power",
+                "ground",
+                "signal",
+                "diff",
+                "usb",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Class"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "voltage_v": {
+          "anyOf": [
+            {
+              "type": "number",
+              "unit": "V"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Voltage V"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "Net",
+      "type": "object"
+    },
+    "NodeMeta": {
+      "additionalProperties": false,
+      "description": "Per-top-level-node concurrency envelope (JSON key ``_meta``).",
+      "properties": {
+        "lock": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Lock"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Rev",
+          "type": "integer"
+        }
+      },
+      "title": "NodeMeta",
+      "type": "object"
+    },
+    "Offer": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "default": "USD",
+          "title": "Currency",
+          "type": "string"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "lead_time_days": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "unit": "days"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lead Time Days"
+        },
+        "moq": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Moq",
+          "type": "integer"
+        },
+        "price_breaks": {
+          "items": {
+            "$ref": "#/$defs/PriceBreak"
+          },
+          "title": "Price Breaks",
+          "type": "array"
+        },
+        "sku": {
+          "title": "Sku",
+          "type": "string"
+        },
+        "stock": {
+          "minimum": 0,
+          "title": "Stock",
+          "type": "integer"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "vendor": {
+          "enum": [
+            "lcsc",
+            "jlcpcb",
+            "mouser",
+            "digikey",
+            "other"
+          ],
+          "title": "Vendor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "vendor",
+        "sku",
+        "stock",
+        "fetched_at"
+      ],
+      "title": "Offer",
+      "type": "object"
+    },
+    "Order": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "default": "USD",
+          "title": "Currency",
+          "type": "string"
+        },
+        "external_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "External Id"
+        },
+        "history": {
+          "items": {
+            "$ref": "#/$defs/HistoryEntry"
+          },
+          "title": "History",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "parts",
+            "pcb",
+            "pcba"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/OrderLine"
+          },
+          "title": "Lines",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "placed",
+            "paid",
+            "shipped",
+            "delivered",
+            "cancelled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "total_minor": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Total Minor",
+          "type": "integer",
+          "unit": "minor_currency_units"
+        },
+        "tracking": {
+          "items": {
+            "$ref": "#/$defs/Tracking"
+          },
+          "title": "Tracking",
+          "type": "array"
+        },
+        "vendor": {
+          "title": "Vendor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "vendor",
+        "kind",
+        "status"
+      ],
+      "title": "Order",
+      "type": "object"
+    },
+    "OrderLine": {
+      "additionalProperties": false,
+      "properties": {
+        "qty": {
+          "minimum": 1,
+          "title": "Qty",
+          "type": "integer"
+        },
+        "sku": {
+          "title": "Sku",
+          "type": "string"
+        },
+        "unit_price_minor": {
+          "minimum": 0,
+          "title": "Unit Price Minor",
+          "type": "integer",
+          "unit": "minor_currency_units"
+        }
+      },
+      "required": [
+        "sku",
+        "qty",
+        "unit_price_minor"
+      ],
+      "title": "OrderLine",
+      "type": "object"
+    },
+    "Orders": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "orders": {
+          "items": {
+            "$ref": "#/$defs/Order"
+          },
+          "title": "Orders",
+          "type": "array"
+        }
+      },
+      "required": [
+        "_meta"
+      ],
+      "title": "Orders",
+      "type": "object"
+    },
+    "Outline": {
+      "additionalProperties": false,
+      "properties": {
+        "polygon": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "minItems": 3,
+          "title": "Polygon",
+          "type": "array"
+        },
+        "thickness_mm": {
+          "default": 1.6,
+          "title": "Thickness Mm",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "required": [
+        "polygon"
+      ],
+      "title": "Outline",
+      "type": "object"
+    },
+    "PcbSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "finish": {
+          "enum": [
+            "HASL",
+            "LF-HASL",
+            "ENIG"
+          ],
+          "title": "Finish",
+          "type": "string"
+        },
+        "height_mm": {
+          "exclusiveMinimum": 0,
+          "title": "Height Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "layers": {
+          "minimum": 1,
+          "title": "Layers",
+          "type": "integer"
+        },
+        "qty": {
+          "minimum": 1,
+          "title": "Qty",
+          "type": "integer"
+        },
+        "thickness_mm": {
+          "exclusiveMinimum": 0,
+          "title": "Thickness Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "width_mm": {
+          "exclusiveMinimum": 0,
+          "title": "Width Mm",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "required": [
+        "layers",
+        "width_mm",
+        "height_mm",
+        "thickness_mm",
+        "finish",
+        "color",
+        "qty"
+      ],
+      "title": "PcbSpec",
+      "type": "object"
+    },
+    "PeriphMap": {
+      "additionalProperties": false,
+      "properties": {
+        "base_address": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Address"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "uart",
+            "gpio",
+            "i2c",
+            "spi",
+            "usb",
+            "can",
+            "timer",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "signals": {
+          "items": {
+            "$ref": "#/$defs/Signal"
+          },
+          "title": "Signals",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "kind"
+      ],
+      "title": "PeriphMap",
+      "type": "object"
+    },
+    "Pin": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "net_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Net Ref"
+        },
+        "number": {
+          "title": "Number",
+          "type": "string"
+        }
+      },
+      "required": [
+        "number"
+      ],
+      "title": "Pin",
+      "type": "object"
+    },
+    "Placement": {
+      "additionalProperties": false,
+      "properties": {
+        "component_ref": {
+          "title": "Component Ref",
+          "type": "string"
+        },
+        "rotation_deg": {
+          "default": 0,
+          "title": "Rotation Deg",
+          "type": "number",
+          "unit": "deg"
+        },
+        "side": {
+          "enum": [
+            "top",
+            "bottom"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "x": {
+          "title": "X",
+          "type": "number",
+          "unit": "mm"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "required": [
+        "component_ref",
+        "x",
+        "y",
+        "side"
+      ],
+      "title": "Placement",
+      "type": "object"
+    },
+    "Plate": {
+      "additionalProperties": false,
+      "properties": {
+        "cutout_mm": {
+          "default": 14.0,
+          "title": "Cutout Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "material": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Material"
+        },
+        "pitch_mm": {
+          "default": 19.05,
+          "title": "Pitch Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "thickness_mm": {
+          "default": 1.5,
+          "title": "Thickness Mm",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "title": "Plate",
+      "type": "object"
+    },
+    "Platform": {
+      "additionalProperties": false,
+      "properties": {
+        "generated_from_rev": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Generated From Rev"
+        },
+        "repl_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repl Path"
+        },
+        "resc_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resc Path"
+        }
+      },
+      "title": "Platform",
+      "type": "object"
+    },
+    "PriceBreak": {
+      "additionalProperties": false,
+      "properties": {
+        "qty": {
+          "minimum": 1,
+          "title": "Qty",
+          "type": "integer"
+        },
+        "unit_price_minor": {
+          "minimum": 0,
+          "title": "Unit Price Minor",
+          "type": "integer",
+          "unit": "minor_currency_units"
+        }
+      },
+      "required": [
+        "qty",
+        "unit_price_minor"
+      ],
+      "title": "PriceBreak",
+      "type": "object"
+    },
+    "ProvNode": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_ms": {
+          "minimum": 0,
+          "title": "Duration Ms",
+          "type": "integer",
+          "unit": "ms"
+        },
+        "inputs_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Inputs Hash",
+          "type": "string"
+        },
+        "outputs_hash": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Outputs Hash",
+          "type": "string"
+        },
+        "producer": {
+          "title": "Producer",
+          "type": "string"
+        },
+        "ran_at": {
+          "format": "date-time",
+          "title": "Ran At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "producer",
+        "inputs_hash",
+        "outputs_hash",
+        "ran_at",
+        "duration_ms"
+      ],
+      "title": "ProvNode",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "nodes": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ProvNode"
+          },
+          "title": "Nodes",
+          "type": "object"
+        }
+      },
+      "required": [
+        "_meta"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Qmk": {
+      "additionalProperties": false,
+      "properties": {
+        "board": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Board"
+        },
+        "bootloader": {
+          "default": "stm32-dfu",
+          "title": "Bootloader",
+          "type": "string"
+        },
+        "keyboard_path": {
+          "title": "Keyboard Path",
+          "type": "string"
+        },
+        "processor": {
+          "default": "STM32F411",
+          "title": "Processor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "keyboard_path"
+      ],
+      "title": "Qmk",
+      "type": "object"
+    },
+    "Scenario": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "fault": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Fault"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Scenario",
+      "type": "object"
+    },
+    "Signal": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "net_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Net Ref"
+        },
+        "pin": {
+          "title": "Pin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "pin"
+      ],
+      "title": "Signal",
+      "type": "object"
+    },
+    "Simulation": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "captures": {
+          "items": {
+            "$ref": "#/$defs/Capture"
+          },
+          "title": "Captures",
+          "type": "array"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "scenarios": {
+          "items": {
+            "$ref": "#/$defs/Scenario"
+          },
+          "title": "Scenarios",
+          "type": "array"
+        }
+      },
+      "required": [
+        "_meta",
+        "platform"
+      ],
+      "title": "Simulation",
+      "type": "object"
+    },
+    "Sourcing": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/$defs/NodeMeta"
+        },
+        "bom": {
+          "items": {
+            "$ref": "#/$defs/BomLine"
+          },
+          "title": "Bom",
+          "type": "array"
+        },
+        "budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Budget"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "build_qty": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Build Qty",
+          "type": "integer"
+        },
+        "currency": {
+          "default": "USD",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "_meta"
+      ],
+      "title": "Sourcing",
+      "type": "object"
+    },
+    "Suggestion": {
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "patch": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SuggestionPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "title": "Suggestion",
+      "type": "object"
+    },
+    "SuggestionPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "ops": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Ops",
+          "type": "array"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "SuggestionPatch",
+      "type": "object"
+    },
+    "TestPad": {
+      "additionalProperties": false,
+      "properties": {
+        "diameter_mm": {
+          "default": 1.0,
+          "title": "Diameter Mm",
+          "type": "number",
+          "unit": "mm"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "default": "pogo",
+          "enum": [
+            "pogo",
+            "edge",
+            "tag_connect"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "net_ref": {
+          "title": "Net Ref",
+          "type": "string"
+        },
+        "side": {
+          "default": "bottom",
+          "enum": [
+            "top",
+            "bottom"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "x": {
+          "title": "X",
+          "type": "number",
+          "unit": "mm"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number",
+          "unit": "mm"
+        }
+      },
+      "required": [
+        "id",
+        "net_ref",
+        "x",
+        "y"
+      ],
+      "title": "TestPad",
+      "type": "object"
+    },
+    "TestRun": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_ms": {
+          "minimum": 0,
+          "title": "Duration Ms",
+          "type": "integer",
+          "unit": "ms"
+        },
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "ran_at": {
+          "format": "date-time",
+          "title": "Ran At",
+          "type": "string"
+        },
+        "report_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Report Path"
+        },
+        "skipped": {
+          "minimum": 0,
+          "title": "Skipped",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ran_at",
+        "passed",
+        "failed",
+        "skipped",
+        "duration_ms"
+      ],
+      "title": "TestRun",
+      "type": "object"
+    },
+    "TestSuite": {
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "const": "pytest",
+          "default": "pytest",
+          "title": "Framework",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "last_result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TestRun"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path"
+      ],
+      "title": "TestSuite",
+      "type": "object"
+    },
+    "Tracking": {
+      "additionalProperties": false,
+      "properties": {
+        "carrier": {
+          "title": "Carrier",
+          "type": "string"
+        },
+        "number": {
+          "title": "Number",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "carrier",
+        "number"
+      ],
+      "title": "Tracking",
+      "type": "object"
+    },
+    "Usb": {
+      "additionalProperties": false,
+      "properties": {
+        "device_version": {
+          "default": "1.0.0",
+          "title": "Device Version",
+          "type": "string"
+        },
+        "manufacturer": {
+          "title": "Manufacturer",
+          "type": "string"
+        },
+        "pid": {
+          "title": "Pid",
+          "type": "string"
+        },
+        "product": {
+          "title": "Product",
+          "type": "string"
+        },
+        "vid": {
+          "title": "Vid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vid",
+        "pid",
+        "manufacturer",
+        "product"
+      ],
+      "title": "Usb",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The unified system IR document (``system_ir.json``).",
+  "properties": {
+    "electrical": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Electrical"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "ext": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Ext",
+      "type": "object"
+    },
+    "fabrication": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Fabrication"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "firmware": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Firmware"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "gates": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Gates"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "keyboard": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Keyboard"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "layout": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Layout"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "mechanical": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Mechanical"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "meta": {
+      "$ref": "#/$defs/DocumentMeta"
+    },
+    "orders": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Orders"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "provenance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Provenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "simulation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Simulation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "sourcing": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Sourcing"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "meta"
+  ],
+  "title": "SystemIR",
+  "type": "object"
+}
