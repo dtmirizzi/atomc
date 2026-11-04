@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling>=1.33"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atomc-core-ir"
+version = "0.1.0"
+description = "Pydantic v2 models for the atomc unified system IR (system_ir.json)"
+requires-python = ">=3.14,<3.15"
+license = "Apache-2.0"
+dependencies = [
+  "pydantic>=2.14",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=9.2",
+  "hypothesis>=6.140",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/atomc_core_ir"]
