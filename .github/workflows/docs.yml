@@ -1,0 +1,68 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # `hashFiles` only works after checkout, so probe for the docs package in a
+  # cheap job and gate the rest on its output. Before WP-1.5 lands, this
+  # workflow is a no-op instead of a failure.
+  detect:
+    name: detect docs package
+    runs-on: ubuntu-latest
+    outputs:
+      has_docs: ${{ steps.probe.outputs.has_docs }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: probe
+        run: |
+          if [ -f docs/package.json ]; then
+            echo "has_docs=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_docs=false" >> "$GITHUB_OUTPUT"
+            echo "docs package not present yet (WP-1.5) - skipping build/deploy"
+          fi
+
+  build:
+    name: build VitePress
+    needs: detect
+    if: needs.detect.outputs.has_docs == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm docs:build
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    name: deploy to GitHub Pages
+    needs: [detect, build]
+    if: needs.detect.outputs.has_docs == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
