@@ -1,0 +1,18 @@
+{
+  "name": "@atomc/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "atomc documentation site (VitePress) → https://dtmirizzi.github.io/atomc/",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "node scripts/sync.mjs && vitepress dev",
+    "build": "node scripts/sync.mjs && vitepress build",
+    "preview": "vitepress preview",
+    "sync": "node scripts/sync.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "catalog:",
+    "vue": "^3.5.44"
+  }
+}
