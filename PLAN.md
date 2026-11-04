@@ -37,7 +37,7 @@ Override by editing this table and re-briefing affected agents.
 | D17 | CI | GitHub Actions from day one; Linux runners for Renode/KiCad, macOS runner for OCP smoke | |
 | D18 | Docs site | **VitePress 1.6** → GitHub Pages at `https://dtmirizzi.github.io/atomc/` | TS-heavy repo; MD+Vue components for schema browser and 3D viewer |
 | D19 | Out of scope (v0) | Real order placement/payment, carrier webhooks beyond a mock, thermal FEA, PCBWay | listed as plugin examples only |
-| D20 | Parallelism | ≤4 sub-agents concurrently in Phase 0–2; ≤6 in Phase 4–5 | token cost + review bandwidth |
+| D20 | Parallelism | ≤5 sub-agents concurrently in Phase 0–2; ≤6 in Phase 3–5 (DeepSeek Flash is cheap; the limit is review bandwidth) | token cost + review bandwidth |
 
 **Resolved by user 2026-11-04:** keyboard+QMK example, Apache-2.0, no vendor API keys, pi sub-agents on DeepSeek V4.1 Flash, Studio in Phase 3.
 
