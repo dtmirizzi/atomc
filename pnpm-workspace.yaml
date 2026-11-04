@@ -1,0 +1,32 @@
+packages:
+  - "apps/*"
+  - "packages/*/ts"
+  - "plugins/*/ts"
+  - "docs"
+  - "tests/contract"
+
+# Single source of truth for TS dependency versions (PLAN.md §2).
+catalog:
+  typescript: ^7.0.2
+  vitest: ^5.1.0
+  "@vitest/coverage-v8": ^5.1.0
+  tsup: ^9.0.0
+  turbo: ^2.11.10
+  zod: ^4.6.7
+  "@mariozechner/pi-ai": ^0.73.1
+  "@mariozechner/pi-agent-core": ^0.73.1
+  commander: ^15.0.0
+  ws: ^8.22.1
+  "@types/ws": ^8.18.1
+  "@types/node": ^25.0.0
+  json-schema-to-typescript: ^16.0.0
+  "@biomejs/biome": ^2.6.5
+  "@changesets/cli": ^3.0.3
+  vitepress: ^1.6.4
+  three: ^0.187.0
+  "@react-three/fiber": ^9.8.2
+  vite: ^8.3.5
+  react: ^19.3.1
+  react-dom: ^19.3.1
+  fast-json-patch: ^3.1.1
+  tsx: ^4.20.0

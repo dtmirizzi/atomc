@@ -1,0 +1,23 @@
+{
+  "name": "atomc-monorepo",
+  "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.30.3",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "biome check . && turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "contract": "turbo run contract",
+    "docs:dev": "pnpm --filter @atomc/docs dev",
+    "docs:build": "pnpm --filter @atomc/docs build",
+    "changeset": "changeset"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@changesets/cli": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,42 @@
+# uv workspace root for atomc (not itself a distributable package).
+# Convention: every Python distribution lives at <pkg>/python/pyproject.toml.
+[project]
+name = "atomc-workspace"
+version = "0.0.0"
+requires-python = ">=3.14,<3.15"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/*/python", "plugins/*/python"]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.2",
+  "pytest-asyncio>=1.4",
+  "pytest-cov>=7",
+  "hypothesis>=6.140",
+  "ruff>=0.17",
+  "mypy>=2.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "PT", "N", "ANN"]
+ignore = ["ANN401"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["ANN"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"

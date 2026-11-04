@@ -1,0 +1,8 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [["@atomc/*"]],
+  "access": "public",
+  "baseBranch": "main"
+}
