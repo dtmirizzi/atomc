@@ -36,6 +36,7 @@ from .common import (
     TemperatureC,
     Timestamp,
     VoltageV,
+    validate_ir_id,
 )
 from .document import (
     SCHEMA_VERSION,
@@ -176,4 +177,5 @@ __all__ = [
     "export_json_schema",
     "make_node_meta",
     "release_lock",
+    "validate_ir_id",
 ]
