@@ -24,9 +24,9 @@ Read `_common.md` first. Read PLAN §5 (distribution) and §6 (testing) carefull
 4. `release-pypi.yml` — on tag `v*` / dispatch(dry_run): `uv build --all-packages`, publish with
    `pypa/gh-action-pypi-publish` via **Trusted Publishing** (environment `pypi`); dry_run → TestPyPI or
    skip publish. Document the one-time PyPI trusted publisher setup steps for the user.
-5. `scripts/release/sync-versions.py` — reads the version from root `package.json`... no: from
-   `.changeset`-bumped `packages/core-ir/ts/package.json` (or a `VERSION` file you create under
-   `scripts/release/VERSION`) and writes it into every `*/python/pyproject.toml`. Lock-step versions (PLAN §5.2). Include a `--check` mode.
+5. `scripts/release/sync-versions.py` — the single version lives in `scripts/release/VERSION`
+   (start at `0.0.1`); the script writes it into every `*/python/pyproject.toml` and every
+   `@atomc/*` `package.json` (lock-step, PLAN §5.2). Include a `--check` mode used by CI.
 6. `docker/Dockerfile` — multi-stage: `base` (debian bookworm-slim + uv + node 22 + pnpm), `kernels`
    (Renode 1.17.0 linux portable, arm-none-eabi-gcc, QMK CLI, python 3.14 venv w/ build123d/OCP),
    `atomc` (copies repo, `uv sync`, `pnpm install --frozen-lockfile`, `pnpm build`). Plus `docker.yml`
