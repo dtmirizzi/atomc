@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling>=1.33"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atomc-daemon"
+version = "0.0.1"
+description = "atomcd — daemon owning the atomc system IR, DAG scheduler, gate runner and JSON-RPC host"
+requires-python = ">=3.14,<3.15"
+license = "Apache-2.0"
+dependencies = [
+  "atomc-core-ir",
+  "fastapi>=0.162.0",
+  "uvicorn[standard]>=0.54.0",
+  "networkx>=3.7",
+  "watchfiles>=1.3.0",
+  "structlog>=26.1.0",
+  "typer>=0.27.3",
+  "pydantic>=2.14.2",
+  "pydantic-settings>=2.16.2",
+  "httpx>=0.28.1",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=9.2",
+  "pytest-asyncio>=1.4",
+  "pytest-cov>=7",
+]
+
+[project.scripts]
+atomcd = "atomcd.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/atomcd"]
+
+[tool.uv.sources]
+atomc-core-ir = { workspace = true }
