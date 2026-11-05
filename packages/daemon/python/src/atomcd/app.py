@@ -155,7 +155,9 @@ async def _drain(subscription: Subscription, send: Any) -> None:
         body = notification("event", {"topic": event.topic, "data": event.data})
         try:
             await send(body)
-        except WebSocketDisconnect, RuntimeError:
+        except WebSocketDisconnect:
+            return
+        except RuntimeError:
             return
 
 
