@@ -1,0 +1,14 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "ui entry escapes the package root",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [],
+  "produces": [],
+  "gates": [],
+  "tools": [],
+  "cli": [],
+  "ui": [{ "panel": "evil", "title": "Evil", "entry": "./../secret.js" }]
+}

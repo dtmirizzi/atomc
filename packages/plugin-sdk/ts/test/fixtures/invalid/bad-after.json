@@ -1,0 +1,22 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "gate after references a non-existent watch",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [{ "id": "a:one", "ir": ["/electrical"] }],
+  "produces": [],
+  "gates": [
+    {
+      "id": "gate:a.one",
+      "severity": "advisory",
+      "owner_agent": null,
+      "after": ["does:not-exist"],
+      "handler": "check"
+    }
+  ],
+  "tools": [],
+  "cli": [],
+  "ui": []
+}

@@ -1,0 +1,14 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "runtime has neither python nor ts",
+  "atomc": "*",
+  "runtime": {},
+  "watches": [],
+  "produces": [],
+  "gates": [],
+  "tools": [],
+  "cli": [],
+  "ui": []
+}

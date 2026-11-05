@@ -94,12 +94,12 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
-      - name: mypy --strict
+      - name: mypy --strict (package source + release tooling)
         if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
         run: |
           uv sync --all-packages
           dirs=()
-          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+          for p in packages/*/python/src plugins/*/python/src apps/*/python/src scripts/release; do
             if [ -d "$p" ]; then dirs+=("$p"); fi
           done
           uv run mypy "${dirs[@]}"
@@ -143,7 +143,9 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          enable-cache: true
+          # TypeScript contract tests invoke `uv run` but do not install the Python workspace;
+          # omit uv cache because these runners may have no populated cache path yet.
+          enable-cache: false
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
