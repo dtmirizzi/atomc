@@ -15,10 +15,21 @@ export {
   type Subscription,
 } from "./client.js";
 export {
+  daemonWebSocketUrl,
+  type EnsureDaemonDeps,
+  type EnsureDaemonOptions,
+  type EnsureDaemonResult,
+  ensureDaemon,
+  type SpawnDaemon,
+  type SpawnDaemonOptions,
+  type SpawnedDaemon,
+} from "./ensure-daemon.js";
+export {
   ConflictError,
   ConnectionClosedError,
   ConnectionError,
   DaemonClientError,
+  DaemonStartError,
   DagRunError,
   LockedError,
   MalformedResponseError,

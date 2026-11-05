@@ -16,8 +16,8 @@ ESM and CJS builds ship with `.d.ts` types. Runtime dependencies: `ws` and
 ## Usage
 
 ```ts
-import { DaemonClient, toRelativePatch, patch } from "@atomc/daemon-client";
-// `patch` comes from @atomc/core-ir and emits absolute pointers:
+import { DaemonClient, toRelativePatch } from "@atomc/daemon-client";
+// `patch(base)` comes from @atomc/core-ir and emits absolute pointers:
 import { patch } from "@atomc/core-ir";
 
 const client = await DaemonClient.connect({
@@ -77,12 +77,40 @@ toRelativePatch("/electrical", [
   header and is never logged by this client.
 - Never print or commit `daemon.json`.
 
-## Retries
+## Retries and reconnection
 
-No request is retried automatically. A timeout or socket close may happen after
-the daemon applied a mutation, so callers must re-read (`ir.get`, `dag.status`,
-`gates.list`) and only then decide whether to retry. Safe reads that failed
-before the connection opened should be re-issued by the caller.
+This client performs **no automatic reconnection and no automatic request
+retries**. A timeout or socket close can happen after the daemon applied a
+mutation, so retrying blindly risks double-applying a patch. Callers must re-read
+(`ir.get`, `dag.status`, `gates.list`) and only then decide whether to retry;
+`close()` rejects every in-flight request with `ConnectionClosedError`.
+
+## Daemon bootstrap
+
+```ts
+import { ensureDaemon } from "@atomc/daemon-client";
+
+const { info, started, client } = await ensureDaemon(process.cwd());
+```
+
+`ensureDaemon(projectRoot, options?)`:
+
+1. Reads `~/.atomc/daemon.json` (mode `0600`) and validates the pid, host, port,
+   and token shape.
+2. Checks the pid is alive and that `GET http://host:port/health` returns
+   `{ok: true}`. A live, healthy daemon is reused (`started: false`).
+3. Deletes a stale/incomplete pid file (dead pid or failing health).
+4. Spawns `uv run [--project <repo>] atomcd serve --project <projectRoot>` as a
+   detached child using argv (no shell interpolation), logging to
+   `~/.atomc/daemon.log`. Pass `uvProject` or set `ATOMC_REPO` for the repo.
+5. Polls the pid file and health endpoint with bounded exponential backoff until
+   `timeoutMs` (default 30 s), then kills the child and throws
+   `DaemonStartError`.
+
+The bearer token is read from the pid file and passed to
+`DaemonClient.connect`; it is never written to the log sink. `ensureDaemon` never
+retries mutating RPC requests. Process, filesystem, clock, health, and connect
+behavior are injectable via `options.deps` for tests.
 
 ## License
 
