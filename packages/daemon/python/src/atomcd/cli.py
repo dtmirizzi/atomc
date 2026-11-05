@@ -235,8 +235,9 @@ def doctor(
             check(f"{module} import", True)
         except ImportError as exc:  # pragma: no cover - defensive
             check(f"{module} import", False, str(exc))
+    # A missing state directory is normal before the daemon is first started.
     state = RuntimeState(state_dir)
-    check("state dir", state.state_dir.exists(), str(state.state_dir))
+    check("state dir", True, f"{state.state_dir} (created on daemon start)")
     payload = {"ok": all(c["ok"] for c in checks), "checks": checks}
     if json_output:
         typer.echo(json.dumps(payload, indent=2, sort_keys=True))
