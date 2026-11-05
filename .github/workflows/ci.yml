@@ -40,7 +40,7 @@ jobs:
             if [ -d "$p" ]; then dirs+=("$p"); fi
           done
           pnpm exec biome check "${dirs[@]}"
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
@@ -70,7 +70,7 @@ jobs:
       - name: TypeScript (turbo run typecheck)
         if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json') != '' }}
         run: pnpm exec turbo run typecheck
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
@@ -89,7 +89,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
@@ -139,7 +139,7 @@ jobs:
           cache: pnpm
       - name: Install JS deps
         run: pnpm install --frozen-lockfile
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
