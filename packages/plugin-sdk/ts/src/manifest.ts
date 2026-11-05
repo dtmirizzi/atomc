@@ -64,14 +64,9 @@ const GATE_ID_RE = /^gate:[a-z0-9](?:[a-z0-9._:-]*[a-z0-9])?$/;
 const NAME_RE = /^[a-z0-9]+(?:[_-][a-z0-9]+)*$/;
 const PYTHON_ENTRY_RE = /^[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*$/;
 const IDENTIFIER_RE = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
-const RELATIVE_PATH_RE = /^\.\/[A-Za-z0-9._/-]+$/;
-const HANDLER_RE = new RegExp(
-  "^(?:" +
-    "[A-Za-z_$][A-Za-z0-9_$]*" +
-    "|[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*" +
-    "|\\.\\/[A-Za-z0-9._/-]+(?:#[A-Za-z_$][A-Za-z0-9_$]*)?" +
-    ")$",
-);
+const RELATIVE_PATH_RE = /^\.\/(?!.*\.\.)[A-Za-z0-9._/-]+$/;
+const HANDLER_RE =
+  /^(?:[A-Za-z_$][A-Za-z0-9_$]*|[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*|\.\/(?!.*\.\.)[A-Za-z0-9._/-]+(?:#[A-Za-z_$][A-Za-z0-9_$]*)?)$/;
 const JSON_POINTER_RE = new RegExp(JSON_POINTER_PATTERN);
 const SEMVER_RE = new RegExp(SEMVER_PATTERN);
 const SEMVER_RANGE_RE = new RegExp(SEMVER_RANGE_PATTERN);
@@ -168,17 +163,26 @@ export const AtomcUiSchema = z.strictObject({
 export type AtomcUi = z.infer<typeof AtomcUiSchema>;
 
 /** `runtime` — at least one of `python` or `ts` is required. */
-export const AtomcRuntimeSchema = z
-  .strictObject({
+/**
+ * `runtime` — at least one of `python` or `ts` is required.
+ *
+ * Modelled as a union of two strict objects (rather than a `.refine`) so the
+ * requirement is representable as JSON Schema `anyOf` and therefore enforced by
+ * the Python SDK consuming the same artifact.
+ */
+export const AtomcRuntimeSchema = z.union([
+  z.strictObject({
+    python: z.string().regex(PYTHON_ENTRY_RE, { error: "must be a module:attribute reference" }),
+    ts: relativePathSchema.optional(),
+  }),
+  z.strictObject({
     python: z
       .string()
       .regex(PYTHON_ENTRY_RE, { error: "must be a module:attribute reference" })
       .optional(),
-    ts: relativePathSchema.optional(),
-  })
-  .refine((runtime) => runtime.python !== undefined || runtime.ts !== undefined, {
-    error: "at least one of `python` or `ts` is required",
-  });
+    ts: relativePathSchema,
+  }),
+]);
 export type AtomcRuntime = z.infer<typeof AtomcRuntimeSchema>;
 
 function addIssue(
@@ -296,20 +300,6 @@ export const AtomcPluginManifestSchema = BaseManifestSchema.superRefine((manifes
     }
   });
 
-  const watchIds = new Set(manifest.watches.map((watch) => watch.id));
-  manifest.gates.forEach((gate, gateIndex) => {
-    gate.after.forEach((afterId, afterIndex) => {
-      if (!watchIds.has(afterId)) {
-        addIssue(
-          ctx,
-          ["gates", gateIndex, "after", afterIndex],
-          `"${afterId}" does not reference a watch id declared by this manifest`,
-          "unknown_watch_reference",
-        );
-      }
-    });
-  });
-
   manifest.tools.forEach((tool, index) => {
     if (tool.mutates && manifest.produces.length === 0) {
       addIssue(
@@ -386,11 +376,14 @@ export function validatePluginManifest(
   if (!parsed.success) {
     return {
       success: false,
-      issues: parsed.error.issues.map((issue) => ({
-        path: formatPath(issue.path),
-        message: issue.message,
-        code: String(issue.code),
-      })),
+      issues: parsed.error.issues.map((issue) => {
+        const params = (issue as { params?: { rule?: string } }).params;
+        return {
+          path: formatPath(issue.path),
+          message: issue.message,
+          code: params?.rule ?? String(issue.code),
+        };
+      }),
     };
   }
 

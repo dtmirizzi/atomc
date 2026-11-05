@@ -1,0 +1,14 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "handler is an absolute path",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [],
+  "produces": [],
+  "gates": [],
+  "tools": [],
+  "cli": [{ "command": "run", "description": "run it", "handler": "/abs/handler.js" }],
+  "ui": []
+}
