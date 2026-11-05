@@ -55,12 +55,25 @@ jobs:
         run: python3 scripts/release/sync-versions.py --check
       - name: Ruff check
         if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
-        run: uv run ruff check .
+        run: |
+          # Lint the Python workspace packages + release tooling. Host helper
+          # scripts (scripts/bootstrap.sh, scripts/doctor.py) are owned by WP-0.1
+          # and are exercised by nightly-hw.yml, not this gate.
+          dirs=()
+          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+            if [ -d "$p" ]; then dirs+=("$p"); fi
+          done
+          uv run ruff check "${dirs[@]}"
       - name: Ruff format check
         if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
-        # ruff 0.17 also formats code fences in Markdown; those are docs-owned
-        # and are excluded from the CI gate.
-        run: uv run ruff format --check --exclude '*.md' .
+        run: |
+          # ruff 0.17 also formats code fences in Markdown; docs-owned files are
+          # excluded from the CI gate.
+          dirs=()
+          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+            if [ -d "$p" ]; then dirs+=("$p"); fi
+          done
+          uv run ruff format --check --exclude '*.md' "${dirs[@]}"
 
   typecheck:
     name: typecheck
@@ -85,7 +98,11 @@ jobs:
         if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
         run: |
           uv sync --all-packages
-          uv run mypy .
+          dirs=()
+          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+            if [ -d "$p" ]; then dirs+=("$p"); fi
+          done
+          uv run mypy "${dirs[@]}"
 
   test-py:
     name: test-py (${{ matrix.os }})
