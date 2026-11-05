@@ -1,0 +1,44 @@
+{
+  "name": "@atomc/studio",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Local-first hardware engineering dashboard for atomc",
+  "readme": "README.md",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:strict": "vitest run --coverage --coverage.thresholds.functions=70",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src test vite.config.ts vitest.config.ts",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install --with-deps chromium"
+  },
+  "dependencies": {
+    "@atomc/daemon-client": "workspace:*",
+    "lucide-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "catalog:",
+    "@playwright/test": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "axe-core": "catalog:",
+    "jsdom": "catalog:",
+    "typescript": "^5.9.0",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

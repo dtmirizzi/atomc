@@ -153,9 +153,30 @@ jobs:
           cache: pnpm
       - name: Install JS deps
         run: pnpm install --frozen-lockfile
-      - name: Build + test (turbo)
+      - name: Build + test + typecheck (turbo)
         if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json') != '' }}
-        run: pnpm exec turbo run build test
+        run: pnpm exec turbo run build test typecheck
+
+  studio-e2e:
+    name: studio-e2e (Chromium + axe)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium and OS dependencies
+        run: pnpm --filter @atomc/studio e2e:install
+      - name: Build Studio workspace dependencies
+        run: pnpm exec turbo run build --filter=@atomc/studio^...
+      - name: Build Studio for preview
+        run: pnpm --filter @atomc/studio build
+      - name: Run browser, mobile, and axe WCAG checks
+        run: pnpm --filter @atomc/studio e2e
 
   contract:
     name: contract
@@ -200,3 +221,26 @@ jobs:
       - name: VitePress build
         if: ${{ hashFiles('docs/package.json') != '' }}
         run: pnpm docs:build
+
+  coverage-js:
+    name: coverage-js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Build workspace packages needed by coverage tests
+        run: pnpm exec turbo run build
+      - name: Enforced workspace coverage thresholds
+        run: |
+          pnpm --filter @atomc/core-ir test:coverage
+          pnpm --filter @atomc/daemon-client test:coverage
+          pnpm --filter @atomc/plugin-sdk test:coverage
+          pnpm --filter @atomc/swarm-harness test:coverage
+          pnpm --filter @atomc/cli test:coverage
+          pnpm --filter @atomc/studio test:coverage:strict
