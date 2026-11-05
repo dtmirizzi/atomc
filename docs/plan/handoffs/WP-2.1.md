@@ -24,7 +24,7 @@ artifact at `packages/plugin-sdk/schema/atomc-plugin.schema.json` (contract v0.1
 - **`src/pointer.ts`** / **`src/glob.ts`** / **`src/semver.ts`** — RFC 6901 helpers (+ exported
   pattern strings), dependency-free POSIX glob matcher, SemVer/range syntax validators. All
   patterns are exported into the JSON Schema artifacts.
-- **Tests** — 96 Vitest tests across manifest, pointer, glob, watches, plugin, conformance and
+- **Tests** — 97 Vitest tests across manifest, pointer, glob, watches, plugin, conformance and
   schema-parity (`contract.test.ts`). Coverage 95% lines / 88% functions (threshold 85%).
 - **`packages/plugin-sdk/README.md`** — third-party quick start; its manifest example validates.
 
@@ -57,7 +57,7 @@ Types: `ApprovedTopLevelScope`, `AtomcCli`, `AtomcGate`, `AtomcPluginManifest`, 
 pnpm install --frozen-lockfile                     # after orchestrator adds the lock importer
 pnpm --filter @atomc/plugin-sdk schema:generate
 pnpm --filter @atomc/plugin-sdk schema:check
-pnpm --filter @atomc/plugin-sdk test               # 96 tests
+pnpm --filter @atomc/plugin-sdk test               # 97 tests
 pnpm --filter @atomc/plugin-sdk test:coverage      # >=85% thresholds
 pnpm --filter @atomc/plugin-sdk typecheck
 pnpm --filter @atomc/plugin-sdk lint
