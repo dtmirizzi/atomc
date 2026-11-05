@@ -1,0 +1,14 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "writes /meta",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [],
+  "produces": ["/meta"],
+  "gates": [],
+  "tools": [],
+  "cli": [],
+  "ui": []
+}

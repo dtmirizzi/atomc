@@ -1,0 +1,14 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "Bad_Name",
+  "version": "1.2.3",
+  "description": "name is not kebab-case",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [],
+  "produces": [],
+  "gates": [],
+  "tools": [],
+  "cli": [],
+  "ui": []
+}

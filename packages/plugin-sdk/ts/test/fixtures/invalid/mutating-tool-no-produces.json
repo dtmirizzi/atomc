@@ -1,0 +1,23 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "mutating tool without produces",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [],
+  "produces": [],
+  "gates": [],
+  "tools": [
+    {
+      "name": "swap_part",
+      "description": "swap a component",
+      "input_schema": { "type": "object" },
+      "agents": ["ee-agent"],
+      "mutates": true,
+      "handler": "swap_part"
+    }
+  ],
+  "cli": [],
+  "ui": []
+}

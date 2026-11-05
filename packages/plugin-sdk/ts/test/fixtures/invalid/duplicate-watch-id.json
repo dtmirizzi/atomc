@@ -1,0 +1,14 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "duplicate watch ids",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [{ "id": "a:one", "ir": ["/electrical"] }, { "id": "a:one", "ir": ["/layout"] }],
+  "produces": [],
+  "gates": [],
+  "tools": [],
+  "cli": [],
+  "ui": []
+}

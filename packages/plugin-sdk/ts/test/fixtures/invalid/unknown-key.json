@@ -1,0 +1,15 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "minimal",
+  "version": "1.2.3",
+  "description": "has an unknown top-level key",
+  "atomc": "*",
+  "runtime": { "ts": "./dist/index.js" },
+  "watches": [],
+  "produces": [],
+  "gates": [],
+  "tools": [],
+  "cli": [],
+  "ui": [],
+  "surprise": true
+}

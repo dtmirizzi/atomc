@@ -1,0 +1,60 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "sourcing",
+  "version": "0.1.0",
+  "description": "BOM availability and cost sourcing",
+  "atomc": ">=0.0.1 <0.2.0",
+  "runtime": {
+    "python": "atomc_plugin_sourcing:plugin",
+    "ts": "./dist/index.js"
+  },
+  "watches": [
+    {
+      "id": "sourcing:bom-refresh",
+      "ir": ["/electrical/components"],
+      "files": ["**/*.ato"],
+      "debounce_ms": 500
+    }
+  ],
+  "produces": ["/sourcing", "/fabrication"],
+  "gates": [
+    {
+      "id": "gate:bom.all_in_stock",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": ["sourcing:bom-refresh"],
+      "handler": "check_all_in_stock"
+    }
+  ],
+  "tools": [
+    {
+      "name": "search_parts",
+      "description": "Find purchasable alternates for a BOM line",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "mpn": { "type": "string" }
+        },
+        "required": ["mpn"],
+        "additionalProperties": false
+      },
+      "agents": ["ee-agent", "ops-agent"],
+      "mutates": false,
+      "handler": "search_parts"
+    }
+  ],
+  "cli": [
+    {
+      "command": "quote",
+      "description": "Refresh BOM and fabrication quotes",
+      "handler": "quote"
+    }
+  ],
+  "ui": [
+    {
+      "panel": "bom",
+      "title": "Bill of materials",
+      "entry": "./dist/ui/bom.js"
+    }
+  ]
+}
