@@ -151,7 +151,7 @@ validator accept/reject the same fixtures.
 | Script | Purpose |
 | --- | --- |
 | `build` | tsup → `dist/` (ESM + CJS + `.d.ts`). |
-| `test` | Vitest suite. |
+| `test` | Vitest suite (97 tests). |
 | `typecheck` | `tsc --noEmit`. |
 | `lint` | Biome. |
 | `schema:generate` / `schema:check` | Regenerate / drift-check the manifest JSON Schema. |
