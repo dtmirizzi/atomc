@@ -81,10 +81,21 @@ oldest event is dropped and a warning is logged.
 | `kernel_protocol.py` | `Kernel` / `KernelRegistry` interface for WP-2.4 |
 | `cli.py` | `atomcd serve/status/stop/doctor` |
 
+## End-to-end demo
+
+```bash
+uv run python packages/daemon/python/examples/demo.py
+```
+
+Starts a throwaway project daemon on a free port and exercises health, `/schema`, `ir.get`, a
+valid `ir.transact`, a stale-revision conflict (`-32010`), `gates.run`, a DAG run with events and
+`daemon.shutdown`, then verifies the pid file is removed. No hardware engines are imported.
+
 ## Tests
 
 ```bash
 uv run pytest packages/daemon/python -q
 uv run ruff check packages/daemon/python
-uv run mypy packages/daemon/python/src packages/daemon/python/tests
+uv run ruff format --check packages/daemon/python
+uv run mypy packages/daemon/python/src packages/daemon/python/tests packages/daemon/python/examples
 ```

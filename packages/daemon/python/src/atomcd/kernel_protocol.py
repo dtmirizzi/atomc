@@ -20,6 +20,7 @@ from typing import Any, Literal, Protocol, runtime_checkable
 KernelStatus = Literal["unknown", "starting", "ready", "error", "stopped"]
 
 
+@runtime_checkable
 class KernelHealth(Protocol):
     """Health snapshot for a single kernel."""
 

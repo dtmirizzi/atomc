@@ -14,7 +14,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 7437
-DEFAULT_STATE_DIR = Path("~/.atomc")
+DEFAULT_STATE_DIR = Path.home() / ".atomc"
 
 
 def generate_token() -> str:
