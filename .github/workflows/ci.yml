@@ -140,6 +140,10 @@ jobs:
         node: [22, 25]
     steps:
       - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
