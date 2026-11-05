@@ -13,7 +13,10 @@ export default defineConfig({
     ...devices["Desktop Chrome"],
   },
   webServer: {
-    command: "pnpm build && pnpm exec vite preview --host 127.0.0.1 --port 4189 --strictPort",
+    // CI builds in an explicit step so build errors are not swallowed by Playwright's webServer wrapper.
+    command: process.env.CI
+      ? "pnpm exec vite preview --host 127.0.0.1 --port 4189 --strictPort"
+      : "pnpm build && pnpm exec vite preview --host 127.0.0.1 --port 4189 --strictPort",
     url: "http://127.0.0.1:4189",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

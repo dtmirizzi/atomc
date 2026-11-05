@@ -171,6 +171,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Chromium and OS dependencies
         run: pnpm --filter @atomc/studio e2e:install
+      - name: Build Studio for preview
+        run: pnpm --filter @atomc/studio build
       - name: Run browser, mobile, and axe WCAG checks
         run: pnpm --filter @atomc/studio e2e
 
