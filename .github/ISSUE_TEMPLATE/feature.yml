@@ -1,0 +1,56 @@
+name: Feature request
+description: Propose a capability or improvement for atomc.
+title: "[feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, check `PLAN.md` — the idea may already be scheduled or explicitly
+        out of scope for v0. If it changes a frozen contract (`docs/architecture/contracts/`),
+        say so below.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What pain does this solve? Who is it for?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should atomc do? Include CLI/API sketches if you have them.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - core IR / contracts
+        - daemon / DAG / gates
+        - swarm harness / agents
+        - CLI
+        - Studio (UI)
+        - plugin (atopile / renode / cad-jig / sourcing / orders)
+        - docs / CI / release
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Contract / plan impact
+      description: Does this need a PLAN.md or frozen-contract change? Which work package?
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true

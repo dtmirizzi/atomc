@@ -1,0 +1,196 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.14"
+  NODE_VERSION: "22"
+
+# Phase 1 lands incrementally: every job below no-ops (skips) until the relevant
+# package exists, so a red run always means a real failure in a real package.
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Biome (TS/JS/JSON)
+        if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json', 'docs/package.json') != '' }}
+        run: |
+          # Only code/JSON: biome 2.6 also formats Markdown, and docs-owned
+          # READMEs are not part of the CI format gate.
+          mapfile -t files < <(git ls-files -- \
+            'packages/*/ts/**' 'apps/**' 'plugins/*/ts/**' \
+            'tests/contract/**' 'docs/.vitepress/**' \
+            | grep -E '\.(ts|tsx|js|jsx|mjs|cjs|json)$' \
+            | grep -vE '(^|/)generated/')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "no TS/JS sources yet - skipping biome"
+            exit 0
+          fi
+          pnpm exec biome check "${files[@]}"
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+      - name: Version lock-step (scripts/release/VERSION)
+        run: python3 scripts/release/sync-versions.py --check
+      - name: Ruff check
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        run: |
+          # Lint the Python workspace packages + release tooling. Host helper
+          # scripts (scripts/bootstrap.sh, scripts/doctor.py) are owned by WP-0.1
+          # and are exercised by nightly-hw.yml, not this gate.
+          dirs=()
+          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+            if [ -d "$p" ]; then dirs+=("$p"); fi
+          done
+          uv run ruff check "${dirs[@]}"
+      - name: Ruff format check
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        run: |
+          # ruff 0.17 also formats code fences in Markdown; docs-owned files are
+          # excluded from the CI gate.
+          dirs=()
+          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+            if [ -d "$p" ]; then dirs+=("$p"); fi
+          done
+          uv run ruff format --check --exclude '*.md' "${dirs[@]}"
+
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: TypeScript (turbo run typecheck)
+        if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json') != '' }}
+        run: pnpm exec turbo run typecheck
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+      - name: mypy --strict
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        run: |
+          uv sync --all-packages
+          dirs=()
+          for p in packages/*/python plugins/*/python apps/*/python tests scripts/release; do
+            if [ -d "$p" ]; then dirs+=("$p"); fi
+          done
+          uv run mypy "${dirs[@]}"
+
+  test-py:
+    name: test-py (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+      - name: uv sync
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        run: uv sync --all-packages
+      - name: pytest (with coverage)
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        run: uv run pytest --cov --cov-report=xml --cov-report=term-missing
+      - name: Upload coverage
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.os }}
+          path: coverage.xml
+          if-no-files-found: ignore
+
+  test-ts:
+    name: test-ts (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 25]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Build + test (turbo)
+        if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json') != '' }}
+        run: pnpm exec turbo run build test
+
+  contract:
+    name: contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          enable-cache: true
+      - name: Cross-language contract task
+        if: ${{ hashFiles('tests/contract/package.json') != '' }}
+        run: pnpm exec turbo run contract
+      - name: Python JSON Schema snapshot check
+        if: ${{ hashFiles('packages/core-ir/python/pyproject.toml') != '' }}
+        run: |
+          uv sync --all-packages
+          uv run python -m atomc_core_ir.schema --check
+      - name: TS generated types drift check
+        if: ${{ hashFiles('packages/core-ir/ts/package.json') != '' }}
+        run: pnpm --filter @atomc/core-ir gen --check
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: VitePress build
+        if: ${{ hashFiles('docs/package.json') != '' }}
+        run: pnpm docs:build
