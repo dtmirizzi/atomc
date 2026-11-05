@@ -39,11 +39,14 @@ All ten brief deliverables, plus the WP-2.4 kernel boundary:
 9. **`atomcd` CLI** (`cli.py`): `serve`, `status`, `stop`, `doctor`; `--project`, `--host`,
    `--port`, `--state-dir`, `--json`; `serve` handles SIGINT/SIGTERM via uvicorn and removes the
    pid file.
-10. **Tests**: 126 daemon tests (HTTP, WS, golden JSON-RPC, store, plugins, DAG, gates, CLI,
+10. **Tests**: 128 daemon tests (HTTP, WS, golden JSON-RPC, store, plugins, DAG, gates, CLI,
     runtime, events, invoke, context, kernel protocol, logging) — **88 % line coverage**.
-    Fake plugin builders live in the importable `atomcd.testing` module (not `tests/fakes.py`) so
-    daemon, SDK and future RPC-contract tests cannot collide on the generic module name `fakes`;
-    `uv run pytest packages/daemon/python/tests` from the repo root collects cleanly.
+    Two extra SDK-only tests use `pytest.importorskip("atomc_plugin_sdk")` so they run in the
+    combined Phase-2 checkout and skip here. Fake plugin builders live in the importable
+    `atomcd.testing` module (not `tests/fakes.py`), and every daemon test module is uniquely
+    prefixed `test_daemon_*` so repo-root collection cannot hit pytest's duplicate-basename
+    "import file mismatch" across packages; `uv run pytest packages/daemon/python/tests` from the
+    repo root collects cleanly.
 
 **Kernel boundary (WP-2.4):** `atomcd/kernel_protocol.py` defines `Kernel`, `KernelHealth`,
 `KernelRegistry` and `KernelFactory` protocols only. No hardware engine is imported by the
@@ -54,7 +57,7 @@ are imported lazily by WP-2.4 under `atomcd/kernels/`.
 
 ```bash
 uv sync --all-packages                       # after orchestrator regenerates uv.lock
-uv run pytest packages/daemon/python/tests -q   # 126 tests (works from repo root)
+uv run pytest packages/daemon/python/tests -q   # 128 passed, 2 skipped (SDK-only), from repo root
 uv run pytest packages/daemon/python --cov=atomcd --cov-report=term-missing -q   # 88%
 uv run ruff check packages/daemon/python
 uv run ruff format --check packages/daemon/python
@@ -64,8 +67,8 @@ pnpm exec turbo run contract                 # 30 cross-language tests, green
 uv run python packages/daemon/python/examples/demo.py   # end-to-end transcript below
 ```
 
-Repo-wide at handoff: `uv run pytest -q` → **182 passed** (56 core-ir + 126 daemon);
-`uv run pytest packages/daemon/python/tests` from the repo root → **126 passed**;
+Repo-wide at handoff: `uv run pytest -q` → **184 passed, 2 skipped** (56 core-ir + 128 daemon);
+`uv run pytest packages/daemon/python/tests` from the repo root → **128 passed, 2 skipped**;
 `turbo run contract` → **30 passed**.
 
 ## Demo transcript
@@ -96,13 +99,17 @@ Note the `run_id` is `run-2` because the preceding `ir.transact` on `/electrical
 - **Manifest loader is dual-path.** `plugins/manifest.py` implements the v0.1 contract locally
   *and* prefers `atomc_plugin_sdk.validate_manifest` when importable, so the daemon is green
   before WP-2.2 lands and shares one source of truth once it does.
-- **SDK results are coerced through contract JSON.** `atomc_plugin_sdk.validate_manifest`
-  returns the SDK's own `PluginManifest` class (a *different* Pydantic model); the daemon dumps
-  it with `model_dump(mode="json", by_alias=True)` and re-validates the JSON into the local
-  `Manifest`. Feeding the foreign model straight into `Manifest.model_validate` was the 13-test
-  integration failure; `test_validate_manifest_consumes_sdk_model` injects a fake
-  `atomc_plugin_sdk` through `sys.modules` to lock the behaviour whether or not the SDK is
-  installed.
+- **SDK results are coerced, not passed to `Manifest.model_validate`.**
+  `atomc_plugin_sdk.validate_manifest` returns the SDK's own `PluginManifest` class (a
+  *different* Pydantic model), and may raise its own exception type or return a result carrying
+  `issues`/`errors`. The daemon tries several normalisations in order —
+  `model_dump(mode="python")`, `model_dump(mode="python", exclude_none=True)`,
+  `model_dump(mode="json", by_alias=True)`, then legacy `.dict()` — and validates the first
+  mapping the local models accept. SDK exceptions and non-empty issue lists become the daemon's
+  `ManifestError`. Feeding the foreign model straight into `Manifest.model_validate` was the
+  13-test integration failure. Regression coverage: fake-SDK injection tests (coercion, SDK
+  exception translation, SDK-issues translation) plus two `pytest.importorskip("atomc_plugin_sdk")`
+  tests that run only in the combined checkout with the real SDK installed.
 - **Handler calling convention is arity-adapted** (`plugins/invoke.py`): gates get `(ctx)`,
   tools get `(ctx, args)`, watch handlers get `(ctx)`; sync and async both supported. This keeps
   the daemon independent of the still-in-flight Python SDK signatures.

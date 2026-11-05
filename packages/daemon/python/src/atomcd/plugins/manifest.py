@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterator, Mapping
 from pathlib import Path
 from typing import Any, Literal
 
@@ -211,44 +212,98 @@ def _validate_pointer(pointer: str, *, where: str) -> None:
         raise ValueError(f"{where}: JSON pointer {pointer!r} must start with '/'")
 
 
-def _coerce_manifest(value: Any) -> Manifest:
-    """Convert an SDK validation result into the daemon's local :class:`Manifest`.
+def _sdk_issues(value: Any) -> list[str]:
+    """Extract validation issue strings from an SDK result object, if any."""
+    issues: list[str] = []
+    for attr in ("errors", "issues", "problems"):
+        found = getattr(value, attr, None)
+        if isinstance(found, list):
+            issues.extend(str(item) for item in found)
+    if getattr(value, "ok", True) is False and not issues:
+        issues.append("SDK reported manifest validation failure")
+    return issues
 
-    ``atomc_plugin_sdk.validate_manifest`` returns the SDK's own ``PluginManifest`` class, which
-    is a *different* Pydantic model. Feeding that instance straight into
-    ``Manifest.model_validate`` fails, so dump it back to contract JSON first and validate the
-    JSON against the local models (single wire contract, two class definitions).
+
+def _candidate_mappings(value: Any) -> Iterator[Mapping[str, Any]]:
+    """Yield every plausible mapping form of an SDK manifest result.
+
+    The SDK returns its own ``PluginManifest`` Pydantic model, which is a *different* class from
+    the daemon's :class:`Manifest`. We try several dump modes (Python values with and without
+    ``None`` stripping, contract JSON, and the legacy ``.dict()``) and pick the first that the
+    local models accept, so SDK-added/alias differences do not leak into the daemon.
     """
+    if isinstance(value, Mapping):
+        yield dict(value)
+        return
+    dump = getattr(value, "model_dump", None)
+    if callable(dump):
+        for kwargs in (
+            {"mode": "python"},
+            {"mode": "python", "exclude_none": True},
+            {"mode": "json", "by_alias": True},
+            {},
+        ):
+            try:
+                dumped = dump(**kwargs)
+            except Exception:
+                continue
+            if isinstance(dumped, Mapping):
+                yield dict(dumped)
+    legacy = getattr(value, "dict", None)
+    if callable(legacy):
+        try:
+            dumped = legacy()
+        except Exception:
+            dumped = None
+        if isinstance(dumped, Mapping):
+            yield dict(dumped)
+
+
+def _coerce_manifest(value: Any) -> Manifest:
+    """Convert an SDK validation result into the daemon's local :class:`Manifest`."""
     if isinstance(value, Manifest):
         return value
-    if isinstance(value, BaseModel):
-        return Manifest.model_validate(value.model_dump(mode="json", by_alias=True))
-    if isinstance(value, dict):
-        return Manifest.model_validate(value)
-    if hasattr(value, "model_dump"):
-        dumped = value.model_dump(mode="json", by_alias=True)
-        if isinstance(dumped, dict):
-            return Manifest.model_validate(dumped)
-    raise ManifestError(f"SDK validate_manifest returned unsupported value {type(value).__name__}")
+    issues = _sdk_issues(value)
+    if issues:
+        raise ManifestError(f"plugin manifest rejected: {issues}")
+    for mapping in _candidate_mappings(value):
+        try:
+            return Manifest.model_validate(mapping)
+        except ValidationError:
+            continue
+    raise ManifestError(
+        f"could not coerce SDK manifest result {type(value).__name__} into the local Manifest"
+    )
+
+
+def _local_validation_errors(exc: ValidationError) -> list[dict[str, str]]:
+    return [
+        {"path": "/".join(str(p) for p in err["loc"]), "message": err["msg"]}
+        for err in exc.errors()
+    ]
 
 
 def validate_manifest(data: dict[str, Any]) -> Manifest:
     """Validate raw manifest data into a :class:`Manifest`.
 
     Prefers ``atomc_plugin_sdk.validate_manifest`` when that package is importable so the daemon
-    and SDK never disagree; the SDK result is coerced back to the local models via contract JSON.
-    Falls back to the local contract models when the SDK is absent.
+    and SDK never disagree. The SDK may return its own ``PluginManifest`` model or raise its own
+    validation error; both are normalised to the local models / :class:`ManifestError`. Falls
+    back to the local contract models when the SDK is absent.
     """
     sdk = _load_sdk_validator()
+    if sdk is not None:
+        try:
+            parsed = sdk(data)
+        except ManifestError:
+            raise
+        except Exception as exc:
+            raise ManifestError(f"plugin manifest rejected by SDK: {exc}") from exc
+        return _coerce_manifest(parsed)
     try:
-        if sdk is not None:
-            return _coerce_manifest(sdk(data))
         return Manifest.model_validate(data)
     except ValidationError as exc:
-        errors = [
-            {"path": "/".join(str(p) for p in err["loc"]), "message": err["msg"]}
-            for err in exc.errors()
-        ]
+        errors = _local_validation_errors(exc)
         raise ManifestError(f"invalid plugin manifest: {errors}", errors) from exc
 
 

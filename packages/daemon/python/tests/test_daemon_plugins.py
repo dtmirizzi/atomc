@@ -79,11 +79,18 @@ def test_manifest_version_mismatch() -> None:
         validate_manifest(data)
 
 
-def test_validate_manifest_consumes_sdk_model(monkeypatch: pytest.MonkeyPatch) -> None:
-    """When the SDK is installed, its foreign ``PluginManifest`` must be coerced, not rejected."""
+def _inject_fake_sdk(monkeypatch: pytest.MonkeyPatch, validate: Any) -> None:
+    """Install a fake ``atomc_plugin_sdk`` module for the duration of a test."""
     import sys
     import types
 
+    module = types.ModuleType("atomc_plugin_sdk")
+    module.__dict__["validate_manifest"] = validate
+    monkeypatch.setitem(sys.modules, "atomc_plugin_sdk", module)
+
+
+def test_validate_manifest_consumes_sdk_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    """When the SDK is installed, its foreign ``PluginManifest`` must be coerced, not rejected."""
     from pydantic import BaseModel, ConfigDict
 
     class SDKPluginManifest(BaseModel):
@@ -95,14 +102,59 @@ def test_validate_manifest_consumes_sdk_model(monkeypatch: pytest.MonkeyPatch) -
         captured.update(data)
         return SDKPluginManifest(**data)
 
-    module = types.ModuleType("atomc_plugin_sdk")
-    module.__dict__["validate_manifest"] = sdk_validate
-    monkeypatch.setitem(sys.modules, "atomc_plugin_sdk", module)
-
+    _inject_fake_sdk(monkeypatch, sdk_validate)
     result = validate_manifest(manifest_dict(name="sdk-demo"))
     assert isinstance(result, Manifest)
     assert result.name == "sdk-demo"
     assert captured["name"] == "sdk-demo"
+
+
+def test_validate_manifest_translates_sdk_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A custom SDK validation exception is normalised to :class:`ManifestError`."""
+
+    class SDKError(Exception):
+        pass
+
+    def sdk_validate(data: dict[str, Any]) -> Any:
+        raise SDKError("bad manifest")
+
+    _inject_fake_sdk(monkeypatch, sdk_validate)
+    with pytest.raises(ManifestError, match="rejected by SDK"):
+        validate_manifest(manifest_dict(name="broken"))
+
+
+def test_validate_manifest_translates_sdk_issues(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An SDK result carrying issues (instead of raising) is normalised too."""
+
+    class SDKResult:
+        def __init__(self) -> None:
+            self.issues = ["name must be kebab-case"]
+
+    def sdk_validate(data: dict[str, Any]) -> SDKResult:
+        return SDKResult()
+
+    _inject_fake_sdk(monkeypatch, sdk_validate)
+    with pytest.raises(ManifestError, match="rejected"):
+        validate_manifest(manifest_dict(name="broken"))
+
+
+def test_validate_manifest_with_real_sdk_if_installed() -> None:
+    """Regression: with the real SDK installed, a valid manifest still yields a local Manifest."""
+    pytest.importorskip("atomc_plugin_sdk")
+    result = validate_manifest(
+        manifest_dict(name="real-sdk", watches=[{"id": "real-sdk:w", "ir": ["/electrical"]}])
+    )
+    assert isinstance(result, Manifest)
+    assert result.name == "real-sdk"
+
+
+def test_invalid_manifest_with_real_sdk_if_installed() -> None:
+    """Regression: the real SDK rejecting a manifest surfaces as :class:`ManifestError`."""
+    pytest.importorskip("atomc_plugin_sdk")
+    data = manifest_dict()
+    data["name"] = "Bad Name"
+    with pytest.raises(ManifestError):
+        validate_manifest(data)
 
 
 def test_pointer_allowed_boundaries() -> None:
