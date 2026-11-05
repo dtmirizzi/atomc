@@ -131,7 +131,7 @@ Python (managed by `uv`, pinned in `uv.lock`):
 | cadquery-ocp | 8.0.1.1.0 | cp314 arm64 wheel exists |
 | kiutils | 1.4.8 | `.kicad_pcb` parsing |
 | trimesh | 5.2.0 | collision / glb export |
-| pyrenode3 | git `antmicro/pyrenode3@main` | pythonnet; needs `PYRENODE_RUNTIME=coreclr` + `PYRENODE_BIN` |
+| pyrenode3 | git `antmicro/pyrenode3@main` (installed 0.0.1, commit recorded in `docs/plan/ENVIRONMENT.md`) | Pythonnet; exports `PYRENODE_PATH` only (legacy `PYRENODE_BIN`/`PYRENODE_PKG` aliases must not be combined) |
 | pytest | 9.2.0 | |
 | pytest-asyncio | 1.4.1 | |
 | ruff | 0.17.3 | |
@@ -166,7 +166,7 @@ External binaries:
 |------|---------|---------|
 | Renode | 1.17.0 | `renode-1.17.0.osx-arm64-portable.dmg` → `/Applications/Renode.app` or `~/.local/opt/renode` |
 | .NET runtime | 8 LTS | `brew install dotnet@8` (pyrenode3 coreclr) |
-| arm-none-eabi-gcc | latest brew | `brew install --cask gcc-arm-embedded` |
+| arm-none-eabi-gcc | GNU Arm Embedded 13.2.1 (`osx-cross/arm/arm-gcc-bin@13` for QMK); Homebrew core 16.2.0 also installed | Formula install avoids cask's sudo installer; `~/.atomc/env.sh` puts the full toolchain first (core formula lacks newlib specs) |
 | cmake, ninja | latest | brew |
 | QMK CLI | latest (`uv tool install qmk`) | `qmk setup -H ~/qmk_firmware` (clones qmk_firmware + submodules); toolchain via `brew tap osx-cross/arm` / QMK-recommended arm-none-eabi-gcc |
 | KiCad | 9.x (optional) | `brew install --cask kicad` — only for `ato build` layout + viewing |
@@ -307,8 +307,8 @@ Each WP maps to one herdr worktree workspace + one `pi` agent, briefed from `doc
 ### Phase 0 — Environment bootstrap (1 agent, runs first, blocking)
 
 **WP-0.1 `bootstrap`** — install & verify all toolchains; write `scripts/bootstrap.sh` + `scripts/doctor.py`.
-- Install: `uv python install 3.14`; `uv tool install atopile==0.15.9`; `brew install dotnet@8 cmake ninja`; `brew install --cask gcc-arm-embedded`; Renode 1.17.0 osx-arm64 portable → `~/.local/opt/renode-1.17.0` (symlink `renode` on PATH); `pip`-free: `uv venv --python 3.14 .venv && uv pip install build123d==0.13.0 kiutils trimesh pyrenode3@git+https://github.com/antmicro/pyrenode3`; `pnpm add -g turbo@2 @biomejs/biome@2`; optional `brew install --cask kicad`.
-- Verify (and encode in `doctor.py`): `ato --version`, `python -c "import build123d, OCP"`, `renode --version`, `python -c "from pyrenode3.wrappers import Emulation"`, `arm-none-eabi-gcc --version`, Renode runs `stm32g4` demo script headless and exits.
+- Install (verified on macOS arm64; exact idempotent implementation in `scripts/bootstrap.sh`): `uv python install 3.14`; `uv tool install atopile==0.15.9`; `brew install dotnet@8 cmake ninja arm-none-eabi-gcc`; `osx-cross/arm/arm-gcc-bin@13` full toolchain plus AVR/QMK formula dependencies; Renode 1.17.0 osx-arm64 portable → `~/.local/opt/renode-1.17.0`; uv installs QMK CLI and clones firmware into `~/qmk_firmware`; verification venv installs build123d/OCP/kiutils/trimesh/pyrenode3; `pnpm` installs turbo + biome globals without editing shell rc files. Optional: `bash scripts/bootstrap.sh --with-kicad`.
+- Verify (encoded in `doctor.py`): `ato --version`, imports for build123d/OCP/kiutils/trimesh, `renode --version`, pyrenode3 imports and starts an F4 platform, full GNU Arm compile probe, `qmk doctor`, GitHub CLI auth, and optional KiCad detection. Renode 1.17.0 smoke uses an available STM32F4 platform (there is no STM32G4 platform in the packaged macOS build).
 - Done when: `scripts/bootstrap.sh` is idempotent (second run no-ops), `scripts/doctor.py` exits 0, and `docs/plan/ENVIRONMENT.md` records exact versions + any workarounds (e.g. pyrenode3 env vars, Gatekeeper quarantine on Renode dmg).
 
 ### Phase 1 — Monorepo & Unified System IR
@@ -437,14 +437,14 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 
 | WP | Owner | Branch | State |
 |----|-------|--------|-------|
-| WP-0.1 bootstrap | pi / DeepSeek Flash | `wp/0.1-bootstrap` | in progress (brew toolchain downloads) |
-| WP-1.0 contracts | orchestrator | main | done (contracts + workspace skeleton pushed) |
-| WP-1.1 core-ir-py | pi / DeepSeek Flash | `wp/1.1-core-ir-py` | in progress |
-| WP-1.2 core-ir-ts | pi / DeepSeek Flash | `wp/1.2-core-ir-ts` | in progress (depends on schema) |
-| WP-1.3 contract-tests | — | — | not started |
-| WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | in progress |
-| WP-1.5 docs-site | pi / DeepSeek Flash | `wp/1.5-docs-site` | in progress |
-| WP-1.6 example-seed | — | `wp/1.6-example-seed` | queued (awaiting QMK install + IR schema) |
+| WP-0.1 bootstrap | pi / DeepSeek Flash | `wp/0.1-bootstrap` | merged to main; 23 doctor checks pass; repeat bootstrap is idempotent |
+| WP-1.0 contracts | orchestrator | main | merged; contracts + uv/pnpm workspaces pushed |
+| WP-1.1 core-ir-py | pi / DeepSeek Flash | `wp/1.1-core-ir-py` | merged; 56 pytest tests, 98% coverage; strict mypy/ruff clean |
+| WP-1.2 core-ir-ts | pi / DeepSeek Flash | `wp/1.2-core-ir-ts` | merged; 34 Vitest tests, schema generation/typecheck/build pass (uses local TS 5.9 for tsup DTS) |
+| WP-1.3 contract-tests | queued | — | next: cross-language round-trip / JSON Patch contract harness |
+| WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | PR #1 open; Docker + all CI jobs passed on latest run; awaiting merge |
+| WP-1.5 docs-site | pi / DeepSeek Flash | `wp/1.5-docs-site` | merged; VitePress build passes; GitHub Pages enabled at https://dtmirizzi.github.io/atomc/ |
+| WP-1.6 example-seed | pi / DeepSeek Flash | `wp/1.6-example-seed` | active; QMK pad build underway; circuit + keeb scaffold still in progress |
 
 ---
 
