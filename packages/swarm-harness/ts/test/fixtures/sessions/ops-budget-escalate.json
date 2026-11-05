@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "ops-budget-escalate",
+  "description": "ops-agent crosses the per-run cost cap on its first turn, so the harness escalates.",
+  "agent": "ops-agent",
+  "model": { "provider": "fake", "model": "recorded-1" },
+  "failure": {
+    "id": "gate:bom.all_in_stock",
+    "status": "FAIL",
+    "severity": "blocking",
+    "owner_agent": "ops-agent",
+    "ir_rev": 10,
+    "summary": "2 BOM lines out of stock",
+    "refs": ["bom:line-3", "bom:line-7"]
+  },
+  "turns": [
+    {
+      "turn": 0,
+      "decision": {
+        "kind": "tool",
+        "tool": { "plugin": "sourcing", "tool": "solve", "args": { "budgetMinor": 4500 } },
+        "usage": { "inputTokens": 400, "outputTokens": 120, "costMinor": 500 }
+      }
+    }
+  ]
+}

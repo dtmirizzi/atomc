@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "ee-gate-retry-pass",
+  "description": "ee-agent verifies once against a failing gate, retries the turn, and passes on the second verification.",
+  "agent": "ee-agent",
+  "model": { "provider": "fake", "model": "recorded-1" },
+  "failure": {
+    "id": "gate:erc.no_unconnected",
+    "status": "FAIL",
+    "severity": "blocking",
+    "owner_agent": "ee-agent",
+    "ir_rev": 10,
+    "summary": "1 unconnected pin",
+    "refs": ["comp:U2"]
+  },
+  "turns": [
+    {
+      "turn": 0,
+      "decision": {
+        "kind": "verify",
+        "usage": { "inputTokens": 20, "outputTokens": 4, "costMinor": 1 }
+      }
+    },
+    {
+      "turn": 1,
+      "decision": {
+        "kind": "verify",
+        "usage": { "inputTokens": 22, "outputTokens": 4, "costMinor": 1 }
+      }
+    }
+  ]
+}

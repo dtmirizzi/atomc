@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "fw-tool-verify",
+  "description": "fw-agent compiles QMK with an allow-listed tool, then verifies.",
+  "agent": "fw-agent",
+  "model": { "provider": "fake", "model": "recorded-1" },
+  "failure": {
+    "id": "gate:fw.qmk_compile",
+    "status": "FAIL",
+    "severity": "blocking",
+    "owner_agent": "fw-agent",
+    "ir_rev": 10,
+    "summary": "qmk compile failed: undefined reference to matrix_scan",
+    "refs": ["fw:qmk"]
+  },
+  "turns": [
+    {
+      "turn": 0,
+      "decision": {
+        "kind": "tool",
+        "tool": {
+          "plugin": "qmk",
+          "tool": "compile",
+          "args": { "keyboard": "atomc/keeb" }
+        },
+        "usage": { "inputTokens": 90, "outputTokens": 16, "costMinor": 4 }
+      },
+      "request": { "remainingCostMinor": 100, "toolNames": ["qmk:compile"] }
+    },
+    {
+      "turn": 1,
+      "decision": {
+        "kind": "verify",
+        "usage": { "inputTokens": 30, "outputTokens": 6, "costMinor": 2 }
+      }
+    }
+  ]
+}
