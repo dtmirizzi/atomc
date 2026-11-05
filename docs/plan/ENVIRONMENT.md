@@ -7,8 +7,8 @@ exact versions observed, the non-obvious workarounds, and the smoke proofs that 
 actually works. Re-run `bash scripts/bootstrap.sh` (idempotent) and `python3 scripts/doctor.py` to
 reproduce or re-verify.
 
-- Bootstrap script: [`scripts/bootstrap.sh`](../../../scripts/bootstrap.sh)
-- Doctor script: [`scripts/doctor.py`](../../../scripts/doctor.py)
+- Bootstrap script: [`scripts/bootstrap.sh`](https://github.com/dtmirizzi/atomc/blob/main/scripts/bootstrap.sh)
+- Doctor script: [`scripts/doctor.py`](https://github.com/dtmirizzi/atomc/blob/main/scripts/doctor.py)
 - Shared env file written by bootstrap: `~/.atomc/env.sh` (source it; shell rc files are untouched)
 
 ```bash
