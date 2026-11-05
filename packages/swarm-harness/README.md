@@ -58,6 +58,55 @@ const result = await runAgent({
 `result.outcome` is `PASS | RETRY | ESCALATE | ABORTED`. Only `PASS` means every owned gate returned
 `PASS`/`SKIP`/advisory-`FAIL`; a crashed gate (`ERROR`) escalates to the orchestrator.
 
+## Specialist agents
+
+The four contract specialists ship as frozen, validated `AgentDefinition`s:
+
+| Agent | Locks / produces | Gates (owner) | Tool namespace |
+|---|---|---|---|
+| `ee-agent` | `/electrical`, `/layout`, `/keyboard` | `erc.*`, `layout.testpads.*`, `kb.*` | `atopile:*` |
+| `fw-agent` | `/firmware`, `/simulation` | `fw.qmk_compile`, `fw.matrix_pins_match_ir`, `fw.renode_boot`, `fw.matrix_scan` | `qmk:*`, `renode:*` |
+| `mech-agent` | `/mechanical` | `mech.*` | `cad-jig:*` |
+| `ops-agent` | `/sourcing`, `/fabrication`, `/orders` | `bom.*`, `fab.quote_under_budget` | `sourcing:*`, `orders:*` |
+
+```ts
+import {
+  AGENT_DEFINITIONS,
+  AgentRegistry,
+  defaultAgentRegistry,
+  routeGateToAgents,
+} from "@atomc/swarm-harness";
+
+AGENT_DEFINITIONS["ee-agent"].lockScopes; // ["/electrical", "/layout", "/keyboard"]
+routeGateToAgents("gate:bom.cost_under_budget"); // ["ops-agent", "ee-agent"]
+
+const registry = new AgentRegistry(); // or defaultAgentRegistry()
+registry.register({ ...AGENT_DEFINITIONS["ee-agent"], model: { provider: "openrouter", model: "x" } });
+registry.agentsForGate("gate:fw.qmk_compile"); // [fw-agent definition]
+```
+
+The registry validates every definition: ids must be one of the four contract agents, lock scopes
+must be JSON pointers under a real IR node, `produces` must sit inside the lock scopes, and `/meta` is
+forbidden. Override model routing, budgets or prompts per agent without forking the package.
+
+## Multimodal inspection
+
+Two harness-owned, read-only tools give agents eyes on rendered artifacts:
+`harness:inspect_datasheet` (pinouts, package dimensions, electrical limits) and
+`harness:inspect_render` (board/plate/case/jig geometry). They are granted to every specialist and
+return a `ModelAttachment` (base64 image) that the provider inlines as an image content part.
+Documents must be rasterised by the producing plugin first; only `image/png|jpeg|webp|gif` up to
+8 MiB are accepted.
+
+```ts
+import { HarnessInspectionDaemon, MultimodalInspector } from "@atomc/swarm-harness";
+import { readFile } from "node:fs/promises";
+
+const inspector = new MultimodalInspector({ readFile: async (p) => new Uint8Array(await readFile(p)) });
+const daemon = new HarnessInspectionDaemon(daemonClientAdapter, inspector);
+// pass `daemon` to runAgent: inspection calls are served locally, everything else is forwarded.
+```
+
 ## Providers and model routing
 
 The harness depends on the narrow `ModelProvider` port, not on a vendor SDK:
@@ -74,10 +123,28 @@ or `give_up`. Tool calls are checked against the agent allow-list (`"*"`, `"plug
 `"plugin:tool"`) before the daemon is asked to run them. Patches must land inside a declared lock
 scope and at the current `_meta.rev`.
 
-Adapters (real LLM, recorded replay) live outside this package. Tests use `FakeProvider`, which
-scripts a decision list and never touches the network. This WP ships **no** real pi-ai/OpenRouter
-adapter: wiring `@mariozechner/pi-ai` and `@mariozechner/pi-agent-core` behind `ModelProvider` is a
-tracked follow-up so the deterministic core stays provider-free.
+Adapters (real LLM, recorded replay) live outside the deterministic core and are injected. The
+package ships a structural `PiAiProvider` for `@mariozechner/pi-ai` that never imports the vendor SDK
+— integrators pass `getModel(...)` and `completeSimple` in:
+
+```ts
+import { PiAiProvider } from "@atomc/swarm-harness";
+import { completeSimple, getModel } from "@mariozechner/pi-ai";
+
+const provider = new PiAiProvider({
+  systemPrompt: AGENT_DEFINITIONS["ee-agent"].systemPrompt,
+  model: getModel("openrouter", "deepseek/deepseek-v4-flash"),
+  complete: completeSimple,
+  apiKey: process.env.OPENROUTER_API_KEY,
+  reasoning: "medium",
+});
+```
+
+`toPiAiContext` (pure) turns a `ModelRequest` — failure summary, scoped IR reads, tool descriptors and
+attachments — into a pi-ai `Context`; `toModelDecision` maps the reply back to a `ModelDecision`
+(tool call, `patch`, `verify`, `give_up`) and converts usage to integer-USD-minor accounting. Tool
+names are encoded as `"<plugin>__<tool>"`. Tests inject a fake `complete` and never touch the network
+or the SDK.
 
 ## Spend and turn caps
 
