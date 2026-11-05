@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 2 active.** Phase 0 + all Phase 1 work (including cross-language contract tests) is merged. Phase 2 begins with the Plugin SDK, daemon core, and typed daemon client.
+Status: **Phase 2 integration merged; kernel adapters and RPC contract tests remain.** Phase 0, all Phase 1 work, and Phase 2 plugin SDKs, daemon core, and typed client are merged to `main`. CI is green on Python 3.14 (Linux/macOS) and Node 22/25.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -364,7 +364,7 @@ Phase 1 execution record: WP-1.0 contracts, WP-0.1 environment, WP-1.1/1.2 IR, W
 **WP-2.5 `daemon-client-ts`** — `packages/daemon-client/ts`: typed JSON-RPC client, WebSocket event stream, bounded retries only for safe reads, `ensureDaemon()` pid/token discovery + uv spawn into `~/.atomc/venv`. Includes `toRelativePatch(path, ops)` to reconcile core TS absolute-pointer patch builder with RPC relative-ops contract; mock-server tests.
 **WP-2.6 `rpc-contract-tests`** — `tests/rpc`: daemon/client golden tests, auth, status/health, lock contention, conflict/rollback, event subscription, DAG incremental build with fake plugins. Depends on WP-2.3 and WP-2.5.
 
-Phase 2 fan-out: WP-2.1, WP-2.2, WP-2.3, WP-2.5 have exclusive directories and start in parallel (≤5 agents); WP-2.2 consumes WP-2.1's published schema before final conformance. WP-2.4 starts when WP-2.3's kernel protocol is committed. WP-2.6 starts after daemon and client endpoints exist.
+Phase 2 execution record: WP-2.1, WP-2.2, WP-2.3, and WP-2.5 were integrated together in PR #6 after integration testing exposed and fixed missing workspace lock importers, SDK-to-daemon manifest error translation, pytest test-module collisions, mypy scoping, and a daemon doctor false-negative. WP-2.4 (warm hardware kernels) and WP-2.6 (RPC contract tests) are now unblocked and remain the Phase 2 work.
 
 ### Phase 3 — Swarm Harness & CLI
 
@@ -449,12 +449,12 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | merged (PR #1); CI + Docker checks green |
 | WP-1.5 docs-site | pi / DeepSeek Flash | `wp/1.5-docs-site` | merged; VitePress build passes; GitHub Pages enabled at https://dtmirizzi.github.io/atomc/ |
 | WP-1.6 example-seed | pi / DeepSeek Flash | `wp/1.6-example-seed` | merged (PR #2); both ato builds, four QMK builds and both IR validations pass |
-| WP-2.1 plugin-sdk-ts | pi / DeepSeek Flash | `wp/2.1-plugin-sdk-ts` | active; manifest schema generated in worktree, tests/implementation in progress |
-| WP-2.2 plugin-sdk-py | pi / DeepSeek Flash | `wp/2.2-plugin-sdk-py` | active; Python SDK + tests in progress, will consume WP-2.1 schema |
-| WP-2.3 daemon-core | pi / DeepSeek Flash | `wp/2.3-daemon-core` | active; RPC/app/IR store scaffold in progress |
-| WP-2.4 daemon-kernels | — | `wp/2.4-daemon-kernels` | queued; starts after WP-2.3 kernel protocol lands |
-| WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | active; client + mock WS tests in progress |
-| WP-2.6 rpc-contract-tests | — | `wp/2.6-rpc-contract-tests` | blocked on daemon + client
+| WP-2.1 plugin-sdk-ts | pi / DeepSeek Flash | `wp/2.1-plugin-sdk-ts` | merged in PR #6; shared manifest schema and 97 Vitest tests |
+| WP-2.2 plugin-sdk-py | pi / DeepSeek Flash | `wp/2.2-plugin-sdk-py` | merged in PR #6; 93 pytest tests against WP-2.1 shared schema |
+| WP-2.3 daemon-core | pi / DeepSeek Flash | `wp/2.3-daemon-core` | merged in PR #6; authenticated RPC, IR store, DAG, gates and daemon tests |
+| WP-2.4 daemon-kernels | queued | `wp/2.4-daemon-kernels` | ready: kernel protocol is in merged daemon package |
+| WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | merged in PR #6; 54 Vitest tests and 92.8% statement coverage |
+| WP-2.6 rpc-contract-tests | queued | `wp/2.6-rpc-contract-tests` | ready to start against merged daemon and client
 
 ---
 
