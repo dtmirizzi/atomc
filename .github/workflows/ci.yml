@@ -159,7 +159,6 @@ jobs:
 
   studio-e2e:
     name: studio-e2e (Chromium + axe)
-    if: ${{ hashFiles('apps/atomc-studio/package.json') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
