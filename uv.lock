@@ -82,7 +82,7 @@ wheels = [
 
 [[package]]
 name = "atomc-core-ir"
-version = "0.1.0"
+version = "0.0.1"
 source = { editable = "packages/core-ir/python" }
 dependencies = [
     { name = "pydantic" },

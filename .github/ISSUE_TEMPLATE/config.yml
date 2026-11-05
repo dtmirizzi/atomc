@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/dtmirizzi/atomc/security/advisories/new
+    about: Report security issues privately — do not open a public issue.
+  - name: Question or discussion
+    url: https://github.com/dtmirizzi/atomc/discussions
+    about: Ask questions, share hardware builds, and discuss ideas.
+  - name: Read the plan first
+    url: https://github.com/dtmirizzi/atomc/blob/main/PLAN.md
+    about: Scope, decisions, and the work breakdown live in PLAN.md.

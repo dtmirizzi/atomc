@@ -1,0 +1,73 @@
+name: Bug report
+description: Something is broken, crashes, or produces a wrong result.
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please run `python3 scripts/doctor.py`
+        and include its output — it makes triage much faster. For security issues use
+        [private reporting](https://github.com/dtmirizzi/atomc/security/advisories/new) instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: Exact commands, config, or input files (redact secrets).
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: atomc version
+      description: Output of `cat scripts/release/VERSION` (or the tag you are on).
+      placeholder: "0.0.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS (arm64)
+        - macOS (x86_64)
+        - Linux (x86_64)
+        - Linux (arm64)
+        - Windows (WSL2)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: doctor.py output
+      description: Paste `python3 scripts/doctor.py --json` (or "not installed yet").
+      render: shell
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / stack traces
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submit checks
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I am not reporting a security vulnerability here.
+          required: true

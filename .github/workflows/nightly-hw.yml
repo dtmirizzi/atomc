@@ -1,0 +1,40 @@
+name: Nightly hardware smoke
+
+on:
+  schedule:
+    # 06:00 UTC every day.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: doctor + e2e placeholders (in Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build atomc image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/Dockerfile
+          target: atomc
+          load: true
+          tags: atomc:nightly
+          cache-from: type=gha
+
+      # `scripts/doctor.py` (WP-0.1) probes host tools that may not all exist in
+      # the container yet; keep it advisory while Phase 1 lands.
+      - name: Doctor
+        if: ${{ hashFiles('scripts/doctor.py') != '' }}
+        continue-on-error: true
+        run: docker run --rm atomc:nightly python scripts/doctor.py --json
+
+      - name: e2e placeholders
+        if: ${{ hashFiles('tests/e2e/**') != '' }}
+        continue-on-error: true
+        run: docker run --rm atomc:nightly uv run pytest tests/e2e -q

@@ -1,0 +1,75 @@
+name: Release PyPI
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: build sdists/wheels and skip the upload"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build sdist + wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.14"
+          enable-cache: true
+
+      - name: Tag matches scripts/release/VERSION
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(cat scripts/release/VERSION)"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::tag v${tag} does not match scripts/release/VERSION=${version}"
+            exit 1
+          fi
+
+      - name: Every package version matches VERSION
+        run: python3 scripts/release/sync-versions.py --check
+
+      - name: uv build --all-packages
+        if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
+        run: uv build --all-packages --out-dir dist
+
+      - name: Upload distribution artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-dist
+          path: dist/
+          if-no-files-found: ignore
+
+  publish:
+    name: publish to PyPI (Trusted Publishing)
+    needs: build
+    runs-on: ubuntu-latest
+    # One-time setup on PyPI: register a *pending* trusted publisher for this
+    # repo with workflow `release-pypi.yml` and environment `pypi`. No API token.
+    environment:
+      name: pypi
+      url: https://pypi.org/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: python-dist
+          path: dist/
+      - name: Publish
+        # Skip on manual dry runs; always publish on a v* tag.
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
