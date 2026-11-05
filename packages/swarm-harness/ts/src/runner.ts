@@ -8,6 +8,7 @@
  * self-report success. Locks are released on every exit path.
  */
 import { ConflictError, type GateResult } from "@atomc/daemon-client";
+import { z } from "zod";
 import { SwarmStateMachine } from "./state-machine.js";
 import { TranscriptWriter } from "./transcript.js";
 import type {
@@ -91,12 +92,16 @@ function isBlockingFailure(gate: GateResult): boolean {
   return gate.status === "FAIL" && gate.severity === "blocking";
 }
 
-function terminalEvent(outcome: RunOutcome): "RELEASE_PASS" | "RELEASE_RETRY" | "RELEASE_ESCALATE" {
+function terminalEvent(
+  outcome: RunOutcome,
+): "RELEASE_PASS" | "RELEASE_RETRY" | "RELEASE_ESCALATE" | "RELEASE_ABORTED" {
   switch (outcome) {
     case "PASS":
       return "RELEASE_PASS";
     case "RETRY":
       return "RELEASE_RETRY";
+    case "ABORTED":
+      return "RELEASE_ABORTED";
     default:
       return "RELEASE_ESCALATE";
   }
@@ -107,7 +112,13 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
   const { definition, failure, daemon, provider } = options;
   const now = options.now ?? (() => new Date());
   const at = (): string => now().toISOString();
-  const emit = (event: SwarmEvent): void => options.onEvent?.(event);
+  const emit = (event: SwarmEvent): void => {
+    try {
+      options.onEvent?.(event);
+    } catch {
+      // Observability callbacks must not interrupt lock cleanup or the agent transaction.
+    }
+  };
 
   const budget: AgentBudget = { ...DEFAULT_BUDGET, ...definition.budget };
   const maxTurns = budget.maxTurns;
@@ -117,7 +128,8 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
   const maxConflictRetries = options.maxConflictRetries ?? 1;
   const lockTtlS = options.lockTtlS ?? 120;
   const holder = `agent:${definition.id}#${options.sessionSeq ?? 1}`;
-  const runId = options.runId ?? `run-${now().getTime()}`;
+  const requestedRunId = options.runId ?? `run-${now().getTime()}`;
+  const runId = requestedRunId.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 128) || "run";
   const session: AgentSession = {
     id: `${runId}:${definition.id}`,
     runId,
@@ -149,6 +161,7 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
   let outcome: RunOutcome = "ESCALATE";
   let reason: string | undefined;
   let gateResults: GateResult[] = [];
+  let currentTools: ToolDescriptor[] = [];
 
   const readScopes = async (): Promise<void> => {
     const reads: Array<{ path: string; rev: number; value: unknown }> = [];
@@ -179,9 +192,10 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
   };
 
   const recordUsage = (usage: TurnUsage | undefined): void => {
-    if (usage?.costMinor !== undefined) costMinor += usage.costMinor;
-    if (usage?.inputTokens !== undefined) tokens += usage.inputTokens;
-    if (usage?.outputTokens !== undefined) tokens += usage.outputTokens;
+    const boundedCount = (value: number | undefined): number =>
+      value === undefined || !Number.isFinite(value) ? 0 : Math.max(0, Math.floor(value));
+    costMinor += boundedCount(usage?.costMinor);
+    tokens += boundedCount(usage?.inputTokens) + boundedCount(usage?.outputTokens);
   };
 
   const acquireLocks = async (): Promise<void> => {
@@ -241,6 +255,13 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
         "ACTION_FAILED",
         "ESCALATE",
         `patch path ${proposal.path} is outside the agent lock scopes`,
+      );
+    }
+    if (definition.produces !== undefined && !isWithinScopes(proposal.path, definition.produces)) {
+      throw new RunBail(
+        "ACTION_FAILED",
+        "ESCALATE",
+        `patch path ${proposal.path} is outside the agent produces scopes`,
       );
     }
     const read = scopeFor(proposal.path);
@@ -315,8 +336,36 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
       });
       return;
     }
+    const descriptor = currentTools.find(
+      (tool) => tool.plugin === call.plugin && tool.name === call.tool,
+    );
+    if (descriptor === undefined) {
+      throw new RunBail(
+        "ACTION_FAILED",
+        "ESCALATE",
+        `tool ${call.plugin}:${call.tool} is not available from the daemon`,
+      );
+    }
+    let schema: z.ZodType;
     try {
-      const result = await daemon.callTool(call.plugin, call.tool, call.args, holder);
+      schema = z.fromJSONSchema(descriptor.input_schema as never);
+    } catch (error) {
+      throw new RunBail(
+        "ACTION_FAILED",
+        "ESCALATE",
+        `tool ${call.plugin}:${call.tool} has an invalid input schema: ${messageOf(error)}`,
+      );
+    }
+    const parsed = schema.safeParse(call.args);
+    if (!parsed.success) {
+      throw new RunBail(
+        "ACTION_FAILED",
+        "ESCALATE",
+        `tool ${call.plugin}:${call.tool} arguments failed schema validation: ${parsed.error.message}`,
+      );
+    }
+    try {
+      const result = await daemon.callTool(call.plugin, call.tool, parsed.data, holder);
       emit({ kind: "tool.called", plugin: call.plugin, tool: call.tool, at: at() });
       await transcript.append({
         kind: "tool",
@@ -355,7 +404,7 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
         throw new RunBail("ACTION_FAILED", "ESCALATE", `token budget (${maxTokens}) reached`);
       }
 
-      const tools: ToolDescriptor[] = daemon.listTools ? await daemon.listTools(definition.id) : [];
+      currentTools = daemon.listTools ? await daemon.listTools(definition.id) : [];
       const decision = await provider.nextTurn({
         session,
         failure,
@@ -365,13 +414,19 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
           value: read.value,
         })),
         transcript: [],
-        tools,
+        tools: currentTools,
         turn: turns,
         remainingCostMinor: Math.max(0, maxCostMinor - costMinor),
       });
       turns += 1;
       recordUsage(decision.usage);
       await transcript.append({ kind: "decision", turn: turns, decision, at: at() });
+      if (costMinor >= maxCostMinor) {
+        throw new RunBail("ACTION_FAILED", "ESCALATE", `cost budget (${maxCostMinor}) reached`);
+      }
+      if (maxTokens !== undefined && tokens >= maxTokens) {
+        throw new RunBail("ACTION_FAILED", "ESCALATE", `token budget (${maxTokens}) reached`);
+      }
 
       switch (decision.kind) {
         case "verify": {
@@ -422,27 +477,25 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
     machine.send("LOCKED");
     await actAndVerify();
     machine.send("VERIFIED");
-    machine.send("RELEASE_PASS");
     outcome = "PASS";
   } catch (error) {
     if (error instanceof RunBail) {
       machine.trySend(error.event);
       outcome = error.outcome;
       reason = error.message;
-      machine.trySend(terminalEvent(outcome));
     } else if (options.signal?.aborted) {
       machine.trySend("ABORT");
       outcome = "ABORTED";
       reason = "aborted";
     } else {
       emit({ kind: "error", message: messageOf(error), at: at() });
-      machine.trySend("ACTION_FAILED");
+      machine.trySend(machine.state === "PLAN" ? "PLAN_FAILED" : "ACTION_FAILED");
       outcome = "ESCALATE";
       reason = messageOf(error);
-      machine.trySend("RELEASE_ESCALATE");
     }
   } finally {
     await releaseAll();
+    machine.trySend(terminalEvent(outcome));
     await transcript.append({
       kind: "outcome",
       outcome,

@@ -3,35 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { runAgent } from "../src/runner.js";
-import type { AgentDefinition, GateFailure } from "../src/types.js";
-import { FakeDaemon, FakeProvider } from "./fakes.js";
+import { definition, FakeDaemon, FakeProvider, failure } from "./fakes.js";
 
 async function projectRoot(): Promise<string> {
   return mkdtemp(join(tmpdir(), "swarm-pass-"));
 }
-
-export function definition(overrides: Partial<AgentDefinition> = {}): AgentDefinition {
-  return {
-    id: "ee-agent",
-    systemPrompt: "you fix electrical gates",
-    permittedTools: [],
-    lockScopes: ["/electrical", "/layout"],
-    gates: ["erc.no_unconnected"],
-    model: { provider: "fake", model: "fake-1" },
-    budget: { maxTurns: 8, maxCostMinor: 100 },
-    ...overrides,
-  };
-}
-
-export const failure: GateFailure = {
-  id: "gate:erc.no_unconnected",
-  status: "FAIL",
-  severity: "blocking",
-  owner_agent: "ee-agent",
-  ir_rev: 10,
-  summary: "2 unconnected pins",
-  refs: ["comp:U1"],
-};
 
 describe("runAgent — convergence is gate-driven", () => {
   it("returns PASS and releases every lock when gates pass", async () => {
@@ -52,10 +28,13 @@ describe("runAgent — convergence is gate-driven", () => {
     expect(result.state).toBe("DONE");
     expect(result.gateResults).toHaveLength(1);
     expect(daemon.lockCalls).toBe(2);
+    expect(daemon.lockOrder).toEqual(["/electrical", "/layout"]);
     expect(daemon.unlockCalls).toBe(2);
     expect(daemon.locked.size).toBe(0);
     expect(daemon.runDagCalls).toBe(1);
     expect(daemon.runGateCalls).toBe(1);
+    expect(daemon.dagTargets).toEqual([undefined]);
+    expect(daemon.gateIds).toEqual([["erc.no_unconnected"]]);
     expect(events).toContain("lock.released");
     expect(events).toContain("gate.result");
   });

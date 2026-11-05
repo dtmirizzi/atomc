@@ -7,6 +7,15 @@ import {
 } from "../src/state-machine.js";
 
 describe("SwarmStateMachine", () => {
+  it("routes aborts through RELEASE before entering the ABORTED terminal state", () => {
+    for (const state of ["PLAN", "CLAIM_LOCK", "ACT", "VERIFY"] as const) {
+      const machine = new SwarmStateMachine(state);
+      expect(machine.send("ABORT")).toBe("RELEASE");
+      expect(machine.send("RELEASE_ABORTED")).toBe("ABORTED");
+      expect(isTerminal(machine.state)).toBe(true);
+    }
+  });
+
   it("walks the frozen loop and records history", () => {
     const machine = new SwarmStateMachine();
     machine.send("START");

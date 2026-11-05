@@ -87,6 +87,12 @@ export class TranscriptWriter {
       maxBytes?: number;
     },
   ) {
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(options.runId) || options.runId === "..") {
+      throw new RangeError("runId must be a safe single path segment (1–128 ASCII characters)");
+    }
+    if (!/^[a-z][a-z0-9-]{0,63}$/.test(options.agentId)) {
+      throw new RangeError("agentId must be a safe kebab-case path segment");
+    }
     this.#path = join(
       options.projectRoot,
       ".atomc",
@@ -105,7 +111,7 @@ export class TranscriptWriter {
 
   /** Serialize and append one entry, rotating the file when it grows past the cap. */
   async append(entry: unknown): Promise<void> {
-    const serialized = `${JSON.stringify(redactEntry(entry))}\n`;
+    const serialized = `${JSON.stringify(redactEntry(entry, this.#redact))}\n`;
     await mkdir(dirname(this.#path), { recursive: true });
     await this.#rotateIfNeeded(serialized.length);
     await appendFile(this.#path, serialized, "utf8");

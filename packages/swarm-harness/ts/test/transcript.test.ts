@@ -20,6 +20,11 @@ describe("transcript redaction", () => {
     expect(redactValue(["api_key", "visible"], [], new WeakSet())).toEqual(["api_key", "visible"]);
   });
 
+  it("applies caller-provided redaction patterns as well as built-in patterns", () => {
+    const redacted = redactEntry({ note: "customer: ZXQ-12345" }, [/ZXQ-[0-9]+/g]);
+    expect(redacted).toEqual({ note: "customer: [REDACTED]" });
+  });
+
   it("handles circular references without throwing", () => {
     const value: Record<string, unknown> = { name: "a" };
     value.self = value;
@@ -29,15 +34,32 @@ describe("transcript redaction", () => {
 });
 
 describe("TranscriptWriter", () => {
+  it("rejects path traversal and malformed run/agent ids", () => {
+    const common = { projectRoot: "/tmp/atomc", agentId: "ee-agent" };
+    expect(() => new TranscriptWriter({ ...common, runId: "../outside" })).toThrow(/runId/);
+    expect(() => new TranscriptWriter({ ...common, runId: "run", agentId: "../outside" })).toThrow(
+      /agentId/,
+    );
+    expect(() => new TranscriptWriter({ ...common, runId: "run", agentId: "EE Agent" })).toThrow(
+      /agentId/,
+    );
+  });
+
   it("writes redacted JSONL under .atomc/sessions/<run>/<agent>.jsonl", async () => {
     const root = await mkdtemp(join(tmpdir(), "swarm-tx-"));
-    const writer = new TranscriptWriter({ projectRoot: root, runId: "r1", agentId: "ee-agent" });
-    await writer.append({ kind: "meta", token: "abc", note: "hello" });
+    const writer = new TranscriptWriter({
+      projectRoot: root,
+      runId: "r1",
+      agentId: "ee-agent",
+      redact: [/customer-[0-9]+/g],
+    });
+    await writer.append({ kind: "meta", token: "abc", note: "customer-9281" });
 
     expect(writer.path).toBe(join(root, ".atomc", "sessions", "r1", "ee-agent.jsonl"));
     const contents = await readFile(writer.path, "utf8");
     expect(contents).toContain("[REDACTED]");
     expect(contents).not.toContain("abc");
+    expect(contents).not.toContain("9281");
     expect(contents.trim().split("\n")).toHaveLength(1);
   });
 

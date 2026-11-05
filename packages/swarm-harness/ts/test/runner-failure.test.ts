@@ -3,8 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { runAgent } from "../src/runner.js";
-import { FakeDaemon, FakeProvider, gate } from "./fakes.js";
-import { definition, failure } from "./runner-pass.test.js";
+import { definition, FakeDaemon, FakeProvider, failure, gate } from "./fakes.js";
 
 async function projectRoot(): Promise<string> {
   return mkdtemp(join(tmpdir(), "swarm-fail-"));

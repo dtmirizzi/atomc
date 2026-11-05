@@ -26,6 +26,7 @@ export const AGENT_EVENTS = [
   "RELEASE_PASS",
   "RELEASE_RETRY",
   "RELEASE_ESCALATE",
+  "RELEASE_ABORTED",
   "ABORT",
 ] as const;
 export type AgentEvent = (typeof AGENT_EVENTS)[number];
@@ -46,30 +47,31 @@ export class StateTransitionError extends Error {
 /** Transition table for the frozen loop. Terminals have no outgoing edges. */
 export const TRANSITIONS: Readonly<Record<AgentState, Partial<Record<AgentEvent, AgentState>>>> = {
   IDLE: { START: "PLAN", ABORT: "ABORTED" },
-  PLAN: { PLANNED: "CLAIM_LOCK", PLAN_FAILED: "RELEASE", ABORT: "ABORTED" },
+  PLAN: { PLANNED: "CLAIM_LOCK", PLAN_FAILED: "RELEASE", ABORT: "RELEASE" },
   CLAIM_LOCK: {
     LOCKED: "ACT",
     LOCK_FAILED: "RELEASE",
     ACTION_FAILED: "RELEASE",
-    ABORT: "ABORTED",
+    ABORT: "RELEASE",
   },
   ACT: {
     TURN: "ACT",
     VERIFY_REQUESTED: "VERIFY",
     GIVE_UP: "RELEASE",
     ACTION_FAILED: "RELEASE",
-    ABORT: "ABORTED",
+    ABORT: "RELEASE",
   },
   VERIFY: {
     VERIFIED: "RELEASE",
     RETRY_TURN: "ACT",
     ACTION_FAILED: "RELEASE",
-    ABORT: "ABORTED",
+    ABORT: "RELEASE",
   },
   RELEASE: {
     RELEASE_PASS: "DONE",
     RELEASE_RETRY: "RETRY",
     RELEASE_ESCALATE: "ESCALATE",
+    RELEASE_ABORTED: "ABORTED",
   },
   DONE: {},
   RETRY: {},

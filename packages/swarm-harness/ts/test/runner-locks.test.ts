@@ -3,14 +3,41 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { runAgent } from "../src/runner.js";
-import { FakeDaemon, FakeProvider, ThrowingProvider } from "./fakes.js";
-import { definition, failure } from "./runner-pass.test.js";
+import { definition, FakeDaemon, FakeProvider, failure, ThrowingProvider } from "./fakes.js";
 
 async function projectRoot(): Promise<string> {
   return mkdtemp(join(tmpdir(), "swarm-lock-"));
 }
 
 describe("runAgent — lock lifecycle", () => {
+  it("holds the full declared lock set throughout mutation and verification", async () => {
+    const daemon = new FakeDaemon();
+    const result = await runAgent({
+      definition: definition(),
+      failure,
+      daemon,
+      provider: new FakeProvider([
+        {
+          kind: "patch",
+          proposal: {
+            path: "/electrical",
+            baseRev: 10,
+            ops: [{ op: "add", path: "/components/-", value: { ref: "U2" } }],
+          },
+        },
+        { kind: "verify" },
+      ]),
+      projectRoot: await projectRoot(),
+      runId: "locks-during-work",
+    });
+    expect(result.outcome).toBe("PASS");
+    expect(daemon.maxLocked).toBe(2);
+    expect(daemon.locked.size).toBe(0);
+    expect(daemon.events.indexOf("runGates:erc.no_unconnected")).toBeLessThan(
+      daemon.events.indexOf("unlock:/layout"),
+    );
+  });
+
   it("releases locks when the provider throws", async () => {
     const daemon = new FakeDaemon();
     const result = await runAgent({
@@ -26,6 +53,24 @@ describe("runAgent — lock lifecycle", () => {
     expect(result.reason).toContain("model boom");
     expect(daemon.locked.size).toBe(0);
     expect(daemon.unlockCalls).toBe(2);
+  });
+
+  it("continues releasing remaining scopes when an unlock fails", async () => {
+    const daemon = new FakeDaemon();
+    daemon.unlockFailures.add("/layout");
+    const result = await runAgent({
+      definition: definition(),
+      failure,
+      daemon,
+      provider: new FakeProvider([{ kind: "verify" }]),
+      projectRoot: await projectRoot(),
+      runId: "unlock-failure",
+    });
+    expect(result.outcome).toBe("PASS");
+    expect(daemon.unlockCalls).toBe(2);
+    expect(daemon.events.slice(-2)).toEqual(["unlock:/layout", "unlock:/electrical"]);
+    expect(daemon.locked.has("/electrical")).toBe(false);
+    expect(daemon.locked.has("/layout")).toBe(true);
   });
 
   it("does not acquire locks when aborted before planning", async () => {
@@ -44,6 +89,7 @@ describe("runAgent — lock lifecycle", () => {
 
     expect(result.outcome).toBe("ABORTED");
     expect(result.state).toBe("ABORTED");
+    expect(result.reason).toContain("aborted");
     expect(daemon.lockCalls).toBe(0);
     expect(daemon.locked.size).toBe(0);
   });
