@@ -103,6 +103,25 @@ importers:
         specifier: 'catalog:'
         version: 5.1.0(@types/node@25.9.9)(@vitest/coverage-v8@5.1.0)(vite@8.3.5(@types/node@25.9.9)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
 
+  tests/contract:
+    dependencies:
+      '@atomc/core-ir':
+        specifier: workspace:*
+        version: link:../../packages/core-ir/ts
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 25.9.9
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.5(@types/node@25.9.9)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 5.1.0(@types/node@25.9.9)(@vitest/coverage-v8@5.1.0)(vite@8.3.5(@types/node@25.9.9)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+
 packages:
 
   '@algolia/abtesting@1.27.0':
