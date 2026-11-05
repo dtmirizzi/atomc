@@ -1,0 +1,183 @@
+"""
+atomc-pad — 3x3 macropad development fixture.
+
+STM32F411CEU6 (blackpill-compatible), USB-C with 5.1k CC pull-downs and a
+USBLC6-2SC6 ESD array, 3.3 V LDO from VBUS, 25 MHz HSE, SWD/UART/BOOT0/NRST
+breakout, a 3x3 COL2ROW key matrix (one 1N4148W per Kailh MX hot-swap socket)
+and bottom-side test pads for the pogo jig.
+
+The component definitions under `parts/` are hand-authored atomic parts seeded
+for this example; real LCSC/EasyEDA parts are pulled with `ato create part` /
+`ato add` once the atopile package registry is reachable (see README).
+"""
+
+import ElectricPower
+
+from "parts/STM32F411CEU6/STM32F411CEU6.ato" import STM32F411CEU6_part
+from "parts/USB_C_Receptacle/USB_C_Receptacle.ato" import USB_C_Receptacle_part
+from "parts/LDO_AP2112K/LDO_AP2112K.ato" import LDO_AP2112K_part
+from "parts/USBLC6_2SC6/USBLC6_2SC6.ato" import USBLC6_2SC6_part
+from "parts/Crystal_25MHz/Crystal_25MHz.ato" import Crystal_25MHz_part
+from "parts/PushButton/PushButton.ato" import PushButton_part
+from "parts/Resistor_0402/Resistor_0402.ato" import Resistor_0402_part
+from "parts/Capacitor_0402/Capacitor_0402.ato" import Capacitor_0402_part
+from "parts/Diode_1N4148W/Diode_1N4148W.ato" import Diode_1N4148W_part
+from "parts/Switch_Kailh_MX/Switch_Kailh_MX.ato" import Switch_Kailh_MX_part
+from "parts/TestPoint/TestPoint.ato" import TestPoint_part
+
+
+module App:
+    """atomc-pad top-level design."""
+
+    mcu = new STM32F411CEU6_part
+    usb = new USB_C_Receptacle_part
+    ldo = new LDO_AP2112K_part
+    esd = new USBLC6_2SC6_part
+    xtal = new Crystal_25MHz_part
+    boot = new PushButton_part
+    reset = new PushButton_part
+
+    r_cc1 = new Resistor_0402_part
+    r_cc2 = new Resistor_0402_part
+    r_boot = new Resistor_0402_part
+    c_vbus = new Capacitor_0402_part
+    c_out1 = new Capacitor_0402_part
+    c_out2 = new Capacitor_0402_part
+
+    # Power rails. `vbus.lv` doubles as the board ground reference.
+    vbus = new ElectricPower
+    v3v3 = new ElectricPower
+
+    # --- USB-C: VBUS, ground, CC pull-downs, ESD-protected data -----------
+    vbus.hv ~ usb.1
+    vbus.lv ~ usb.2
+    vbus.lv ~ usb.7
+    vbus.lv ~ usb.8
+    usb.3 ~ r_cc1.1
+    r_cc1.2 ~ vbus.lv
+    usb.4 ~ r_cc2.1
+    r_cc2.2 ~ vbus.lv
+    usb.5 ~ esd.1
+    esd.6 ~ mcu.15
+    usb.6 ~ esd.2
+    esd.4 ~ mcu.16
+    esd.5 ~ vbus.hv
+    esd.3 ~ vbus.lv
+
+    # --- LDO: VBUS -> 3V3 --------------------------------------------------
+    ldo.1 ~ vbus.hv
+    ldo.2 ~ vbus.lv
+    ldo.3 ~ vbus.hv
+    ldo.5 ~ v3v3.hv
+    v3v3.lv ~ vbus.lv
+    vbus.hv ~ c_vbus.1
+    c_vbus.2 ~ vbus.lv
+    v3v3.hv ~ c_out1.1
+    c_out1.2 ~ vbus.lv
+    v3v3.hv ~ c_out2.1
+    c_out2.2 ~ vbus.lv
+    mcu.1 ~ v3v3.hv
+    mcu.2 ~ vbus.lv
+
+    # --- HSE 25 MHz --------------------------------------------------------
+    xtal.1 ~ mcu.17
+    xtal.3 ~ mcu.18
+    xtal.2 ~ vbus.lv
+    xtal.4 ~ vbus.lv
+
+    # --- Reset / boot ------------------------------------------------------
+    mcu.3 ~ r_boot.1
+    r_boot.2 ~ vbus.lv
+    mcu.3 ~ boot.1
+    boot.2 ~ vbus.lv
+    mcu.4 ~ reset.1
+    reset.2 ~ vbus.lv
+
+    # --- Debug / UART breakout --------------------------------------------
+    tp_swdio = new TestPoint_part
+    tp_swclk = new TestPoint_part
+    tp_nrst = new TestPoint_part
+    tp_boot0 = new TestPoint_part
+    tp_tx = new TestPoint_part
+    tp_rx = new TestPoint_part
+    mcu.5 ~ tp_swdio.1
+    mcu.6 ~ tp_swclk.1
+    mcu.4 ~ tp_nrst.1
+    mcu.3 ~ tp_boot0.1
+    mcu.7 ~ tp_tx.1
+    mcu.8 ~ tp_rx.1
+
+    # --- 3x3 COL2ROW key matrix -------------------------------------------
+    sw1 = new Switch_Kailh_MX_part
+    sw2 = new Switch_Kailh_MX_part
+    sw3 = new Switch_Kailh_MX_part
+    sw4 = new Switch_Kailh_MX_part
+    sw5 = new Switch_Kailh_MX_part
+    sw6 = new Switch_Kailh_MX_part
+    sw7 = new Switch_Kailh_MX_part
+    sw8 = new Switch_Kailh_MX_part
+    sw9 = new Switch_Kailh_MX_part
+    d1 = new Diode_1N4148W_part
+    d2 = new Diode_1N4148W_part
+    d3 = new Diode_1N4148W_part
+    d4 = new Diode_1N4148W_part
+    d5 = new Diode_1N4148W_part
+    d6 = new Diode_1N4148W_part
+    d7 = new Diode_1N4148W_part
+    d8 = new Diode_1N4148W_part
+    d9 = new Diode_1N4148W_part
+
+    # Row 0 (mcu.9)
+    sw1.1 ~ mcu.12
+    sw1.2 ~ d1.1
+    d1.2 ~ mcu.9
+    sw2.1 ~ mcu.13
+    sw2.2 ~ d2.1
+    d2.2 ~ mcu.9
+    sw3.1 ~ mcu.14
+    sw3.2 ~ d3.1
+    d3.2 ~ mcu.9
+    # Row 1 (mcu.10)
+    sw4.1 ~ mcu.12
+    sw4.2 ~ d4.1
+    d4.2 ~ mcu.10
+    sw5.1 ~ mcu.13
+    sw5.2 ~ d5.1
+    d5.2 ~ mcu.10
+    sw6.1 ~ mcu.14
+    sw6.2 ~ d6.1
+    d6.2 ~ mcu.10
+    # Row 2 (mcu.11)
+    sw7.1 ~ mcu.12
+    sw7.2 ~ d7.1
+    d7.2 ~ mcu.11
+    sw8.1 ~ mcu.13
+    sw8.2 ~ d8.1
+    d8.2 ~ mcu.11
+    sw9.1 ~ mcu.14
+    sw9.2 ~ d9.1
+    d9.2 ~ mcu.11
+
+    # --- Bottom-side pogo test pads ---------------------------------------
+    tp_vbus = new TestPoint_part
+    tp_3v3 = new TestPoint_part
+    tp_gnd = new TestPoint_part
+    tp_row0 = new TestPoint_part
+    tp_row1 = new TestPoint_part
+    tp_row2 = new TestPoint_part
+    tp_col0 = new TestPoint_part
+    tp_col1 = new TestPoint_part
+    tp_col2 = new TestPoint_part
+    tp_vbus.1 ~ vbus.hv
+    tp_3v3.1 ~ v3v3.hv
+    tp_gnd.1 ~ vbus.lv
+    tp_row0.1 ~ mcu.9
+    tp_row1.1 ~ mcu.10
+    tp_row2.1 ~ mcu.11
+    tp_col0.1 ~ mcu.12
+    tp_col1.1 ~ mcu.13
+    tp_col2.1 ~ mcu.14
+
+    # --- Design intent assertions -----------------------------------------
+    assert v3v3.voltage within 3.3V +/- 5%
+    assert vbus.voltage within 5V +/- 5%

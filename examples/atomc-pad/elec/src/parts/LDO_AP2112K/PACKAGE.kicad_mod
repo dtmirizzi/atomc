@@ -1,0 +1,34 @@
+(footprint "LDO_AP2112K:PACKAGE"
+	(version 20241229)
+	(generator "atomc_seed")
+	(generator_version "v5")
+	(layer "F.Cu")
+	(descr "AP2112K-3.3TRG1")
+	(attr smd)
+	(pad "1" smd rect
+		(at -4.5 4.5 0)
+		(size 0.6 0.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+	)
+	(pad "2" smd rect
+		(at -3.5 4.5 0)
+		(size 0.6 0.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+	)
+	(pad "3" smd rect
+		(at -2.5 4.5 0)
+		(size 0.6 0.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+	)
+	(pad "4" smd rect
+		(at -1.5 4.5 0)
+		(size 0.6 0.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+	)
+	(pad "5" smd rect
+		(at -0.5 4.5 0)
+		(size 0.6 0.6)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+	)
+	(embedded_fonts no)
+)

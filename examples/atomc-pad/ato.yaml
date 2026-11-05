@@ -1,0 +1,9 @@
+requires-atopile: "0.15.9"
+
+paths:
+  src: ./elec/src
+  layout: ./layout
+
+builds:
+  default:
+    entry: elec/src/main.ato:App

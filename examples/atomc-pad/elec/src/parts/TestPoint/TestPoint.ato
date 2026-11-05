@@ -1,0 +1,13 @@
+import has_designator_prefix
+import is_atomic_part
+import is_auto_generated
+import has_part_picked
+
+component TestPoint_part:
+    """Hand-authored atomic part seed (TESTPAD)."""
+    trait is_auto_generated<system="ato_part", source="handwritten", date="2026-11-04T00:00:00Z">
+    trait is_atomic_part<manufacturer="atomc", partnumber="TESTPAD", footprint="PACKAGE.kicad_mod", symbol="PACKAGE.kicad_sym">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C990001", manufacturer="atomc", partno="TESTPAD">
+    trait has_designator_prefix<prefix="TP">
+
+    pin 1

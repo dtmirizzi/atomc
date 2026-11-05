@@ -1,0 +1,4496 @@
+{
+  "electrical": {
+    "_meta": {
+      "rev": 1
+    },
+    "assertions": [
+      {
+        "expr": "R1.value == R2.value",
+        "id": "assert:usb_cc",
+        "status": "pass"
+      },
+      {
+        "expr": "3.3V +/- 5%",
+        "id": "assert:ldo_out",
+        "status": "pass"
+      }
+    ],
+    "components": [
+      {
+        "attributes": {},
+        "designator": "U1",
+        "dnp": false,
+        "footprint": "Package_DFN_QFN:QFN-48-1EP_7x7mm_P0.5mm_EP5.6x5.6mm",
+        "id": "comp:U1",
+        "lcsc": "C60442",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "STM32F411CEU6",
+        "package": "UFQFPN48",
+        "pins": [
+          {
+            "name": "VBAT",
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "name": "VDD",
+            "net_ref": "net:3V3",
+            "number": "2"
+          },
+          {
+            "name": "BOOT0",
+            "net_ref": "net:BOOT0",
+            "number": "3"
+          },
+          {
+            "name": "NRST",
+            "net_ref": "net:NRST",
+            "number": "4"
+          },
+          {
+            "name": "PA13",
+            "net_ref": "net:SWDIO",
+            "number": "5"
+          },
+          {
+            "name": "PA14",
+            "net_ref": "net:SWCLK",
+            "number": "6"
+          },
+          {
+            "name": "PA9",
+            "net_ref": "net:UART_TX",
+            "number": "7"
+          },
+          {
+            "name": "PA10",
+            "net_ref": "net:UART_RX",
+            "number": "8"
+          },
+          {
+            "name": "PA11",
+            "net_ref": "net:USB_DM",
+            "number": "9"
+          },
+          {
+            "name": "PA12",
+            "net_ref": "net:USB_DP",
+            "number": "10"
+          },
+          {
+            "name": "PH0",
+            "net_ref": "net:HSE_IN",
+            "number": "11"
+          },
+          {
+            "name": "PH1",
+            "net_ref": "net:HSE_OUT",
+            "number": "12"
+          },
+          {
+            "name": "ROW0",
+            "net_ref": "net:ROW0",
+            "number": "13"
+          },
+          {
+            "name": "ROW1",
+            "net_ref": "net:ROW1",
+            "number": "14"
+          },
+          {
+            "name": "ROW2",
+            "net_ref": "net:ROW2",
+            "number": "15"
+          },
+          {
+            "name": "ROW3",
+            "net_ref": "net:ROW3",
+            "number": "16"
+          },
+          {
+            "name": "COL0",
+            "net_ref": "net:COL0",
+            "number": "17"
+          },
+          {
+            "name": "COL1",
+            "net_ref": "net:COL1",
+            "number": "18"
+          },
+          {
+            "name": "COL2",
+            "net_ref": "net:COL2",
+            "number": "19"
+          },
+          {
+            "name": "COL3",
+            "net_ref": "net:COL3",
+            "number": "20"
+          },
+          {
+            "name": "COL4",
+            "net_ref": "net:COL4",
+            "number": "21"
+          },
+          {
+            "name": "COL5",
+            "net_ref": "net:COL5",
+            "number": "22"
+          },
+          {
+            "name": "COL6",
+            "net_ref": "net:COL6",
+            "number": "23"
+          },
+          {
+            "name": "COL7",
+            "net_ref": "net:COL7",
+            "number": "24"
+          },
+          {
+            "name": "COL8",
+            "net_ref": "net:COL8",
+            "number": "25"
+          },
+          {
+            "name": "COL9",
+            "net_ref": "net:COL9",
+            "number": "26"
+          },
+          {
+            "name": "COL10",
+            "net_ref": "net:COL10",
+            "number": "27"
+          },
+          {
+            "name": "COL11",
+            "net_ref": "net:COL11",
+            "number": "28"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "J1",
+        "dnp": false,
+        "id": "comp:J1",
+        "lcsc": "C165948",
+        "manufacturer": "GCT",
+        "mpn": "USB4085-GF-A",
+        "package": "SMD",
+        "pins": [
+          {
+            "name": "VBUS",
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "CC1",
+            "net_ref": "net:CC1",
+            "number": "3"
+          },
+          {
+            "name": "CC2",
+            "net_ref": "net:CC2",
+            "number": "4"
+          },
+          {
+            "name": "DP",
+            "net_ref": "net:USB_DP",
+            "number": "5"
+          },
+          {
+            "name": "DM",
+            "net_ref": "net:USB_DM",
+            "number": "6"
+          },
+          {
+            "name": "SHIELD1",
+            "net_ref": "net:GND",
+            "number": "7"
+          },
+          {
+            "name": "SHIELD2",
+            "net_ref": "net:GND",
+            "number": "8"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U2",
+        "dnp": false,
+        "id": "comp:U2",
+        "lcsc": "C51118",
+        "manufacturer": "Diodes Inc",
+        "mpn": "AP2112K-3.3TRG1",
+        "package": "SOT-25-5",
+        "pins": [
+          {
+            "name": "VIN",
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "EN",
+            "net_ref": "net:VBUS",
+            "number": "3"
+          },
+          {
+            "name": "NC",
+            "number": "4"
+          },
+          {
+            "name": "VOUT",
+            "net_ref": "net:3V3",
+            "number": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U3",
+        "dnp": false,
+        "id": "comp:U3",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "USBLC6-2SC6",
+        "package": "SOT-23-6",
+        "pins": [
+          {
+            "name": "IO1",
+            "net_ref": "net:USB_DP",
+            "number": "1"
+          },
+          {
+            "name": "IO2",
+            "net_ref": "net:USB_DM",
+            "number": "2"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "3"
+          },
+          {
+            "name": "IO2'",
+            "net_ref": "net:USB_DM",
+            "number": "4"
+          },
+          {
+            "name": "VBUS",
+            "net_ref": "net:VBUS",
+            "number": "5"
+          },
+          {
+            "name": "IO1'",
+            "net_ref": "net:USB_DP",
+            "number": "6"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "Y1",
+        "dnp": false,
+        "id": "comp:Y1",
+        "manufacturer": "Abracon",
+        "mpn": "ABM8-25.000MHZ",
+        "package": "SMD3225-4",
+        "pins": [
+          {
+            "name": "XTAL1",
+            "net_ref": "net:HSE_IN",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "XTAL2",
+            "net_ref": "net:HSE_OUT",
+            "number": "3"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "4"
+          }
+        ],
+        "value": "25MHz"
+      },
+      {
+        "attributes": {},
+        "designator": "R1",
+        "dnp": false,
+        "id": "comp:R1",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:CC1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "5.1k"
+      },
+      {
+        "attributes": {},
+        "designator": "R2",
+        "dnp": false,
+        "id": "comp:R2",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:CC2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "5.1k"
+      },
+      {
+        "attributes": {},
+        "designator": "R3",
+        "dnp": false,
+        "id": "comp:R3",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:BOOT0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "10k"
+      },
+      {
+        "attributes": {},
+        "designator": "C1",
+        "dnp": false,
+        "id": "comp:C1",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "1uF"
+      },
+      {
+        "attributes": {},
+        "designator": "C2",
+        "dnp": false,
+        "id": "comp:C2",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "1uF"
+      },
+      {
+        "attributes": {},
+        "designator": "C3",
+        "dnp": false,
+        "id": "comp:C3",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "100nF"
+      },
+      {
+        "attributes": {},
+        "designator": "C4",
+        "dnp": false,
+        "id": "comp:C4",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "100nF"
+      },
+      {
+        "attributes": {},
+        "designator": "C5",
+        "dnp": false,
+        "id": "comp:C5",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "100nF"
+      },
+      {
+        "attributes": {},
+        "designator": "SW49",
+        "dnp": false,
+        "id": "comp:SW_BOOT",
+        "mpn": "TS-1187A",
+        "package": "SMD",
+        "pins": [
+          {
+            "net_ref": "net:BOOT0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "BOOT0"
+      },
+      {
+        "attributes": {},
+        "designator": "SW50",
+        "dnp": false,
+        "id": "comp:SW_RESET",
+        "mpn": "TS-1187A",
+        "package": "SMD",
+        "pins": [
+          {
+            "net_ref": "net:NRST",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "NRST"
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 0",
+        "designator": "SW1",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW1",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D1",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D1",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 1",
+        "designator": "SW2",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW2",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D2",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D2",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 2",
+        "designator": "SW3",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW3",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D3",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D3",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 3",
+        "designator": "SW4",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW4",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D4",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D4",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL3",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 4",
+        "designator": "SW5",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW5",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL4",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D5",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D5",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL4",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 5",
+        "designator": "SW6",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW6",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL5",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D6",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D6",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL5",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 6",
+        "designator": "SW7",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW7",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL6",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D7",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D7",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL6",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 7",
+        "designator": "SW8",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW8",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL7",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D8",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D8",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL7",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 8",
+        "designator": "SW9",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW9",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL8",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D9",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D9",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL8",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 9",
+        "designator": "SW10",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW10",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL9",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D10",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D10",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL9",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 10",
+        "designator": "SW11",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW11",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL10",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D11",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D11",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL10",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 0 col 11",
+        "designator": "SW12",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW12",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL11",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D12",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D12",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL11",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 0",
+        "designator": "SW13",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW13",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D13",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D13",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 1",
+        "designator": "SW14",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW14",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D14",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D14",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 2",
+        "designator": "SW15",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW15",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D15",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D15",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 3",
+        "designator": "SW16",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW16",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D16",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D16",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL3",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 4",
+        "designator": "SW17",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW17",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL4",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D17",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D17",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL4",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 5",
+        "designator": "SW18",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW18",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL5",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D18",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D18",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL5",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 6",
+        "designator": "SW19",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW19",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL6",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D19",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D19",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL6",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 7",
+        "designator": "SW20",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW20",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL7",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D20",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D20",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL7",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 8",
+        "designator": "SW21",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW21",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL8",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D21",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D21",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL8",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 9",
+        "designator": "SW22",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW22",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL9",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D22",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D22",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL9",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 10",
+        "designator": "SW23",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW23",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL10",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D23",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D23",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL10",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 1 col 11",
+        "designator": "SW24",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW24",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL11",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D24",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D24",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL11",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 0",
+        "designator": "SW25",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW25",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D25",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D25",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 1",
+        "designator": "SW26",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW26",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D26",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D26",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 2",
+        "designator": "SW27",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW27",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D27",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D27",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 3",
+        "designator": "SW28",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW28",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D28",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D28",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL3",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 4",
+        "designator": "SW29",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW29",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL4",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D29",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D29",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL4",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 5",
+        "designator": "SW30",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW30",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL5",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D30",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D30",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL5",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 6",
+        "designator": "SW31",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW31",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL6",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D31",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D31",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL6",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 7",
+        "designator": "SW32",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW32",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL7",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D32",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D32",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL7",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 8",
+        "designator": "SW33",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW33",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL8",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D33",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D33",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL8",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 9",
+        "designator": "SW34",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW34",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL9",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D34",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D34",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL9",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 10",
+        "designator": "SW35",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW35",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL10",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D35",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D35",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL10",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 2 col 11",
+        "designator": "SW36",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW36",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL11",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D36",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D36",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL11",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 0",
+        "designator": "SW37",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW37",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D37",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D37",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 1",
+        "designator": "SW38",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW38",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D38",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D38",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 2",
+        "designator": "SW39",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW39",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D39",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D39",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 3",
+        "designator": "SW40",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW40",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D40",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D40",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL3",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 4",
+        "designator": "SW41",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW41",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL4",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D41",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D41",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL4",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 5",
+        "designator": "SW42",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW42",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL5",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D42",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D42",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL5",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 6",
+        "designator": "SW43",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW43",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL6",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D43",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D43",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL6",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 7",
+        "designator": "SW44",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW44",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL7",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D44",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D44",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL7",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 8",
+        "designator": "SW45",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW45",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL8",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D45",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D45",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL8",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 9",
+        "designator": "SW46",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW46",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL9",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D46",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D46",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL9",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 10",
+        "designator": "SW47",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW47",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL10",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D47",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D47",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL10",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "row 3 col 11",
+        "designator": "SW48",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW48",
+        "mpn": "SW_Hotswap_Kailh_MX",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL11",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D48",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D48",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL11",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW3",
+            "number": "2"
+          }
+        ]
+      }
+    ],
+    "erc": [],
+    "nets": [
+      {
+        "class": "power",
+        "id": "net:VBUS",
+        "name": "VBUS"
+      },
+      {
+        "class": "ground",
+        "id": "net:GND",
+        "name": "GND"
+      },
+      {
+        "class": "power",
+        "id": "net:3V3",
+        "name": "3V3"
+      },
+      {
+        "class": "signal",
+        "id": "net:SWDIO",
+        "name": "SWDIO"
+      },
+      {
+        "class": "signal",
+        "id": "net:SWCLK",
+        "name": "SWCLK"
+      },
+      {
+        "class": "signal",
+        "id": "net:NRST",
+        "name": "NRST"
+      },
+      {
+        "class": "signal",
+        "id": "net:BOOT0",
+        "name": "BOOT0"
+      },
+      {
+        "class": "signal",
+        "id": "net:UART_TX",
+        "name": "UART_TX"
+      },
+      {
+        "class": "signal",
+        "id": "net:UART_RX",
+        "name": "UART_RX"
+      },
+      {
+        "class": "usb",
+        "id": "net:USB_DP",
+        "name": "USB_DP"
+      },
+      {
+        "class": "usb",
+        "id": "net:USB_DM",
+        "name": "USB_DM"
+      },
+      {
+        "class": "usb",
+        "id": "net:CC1",
+        "name": "CC1"
+      },
+      {
+        "class": "usb",
+        "id": "net:CC2",
+        "name": "CC2"
+      },
+      {
+        "class": "signal",
+        "id": "net:HSE_IN",
+        "name": "HSE_IN"
+      },
+      {
+        "class": "signal",
+        "id": "net:HSE_OUT",
+        "name": "HSE_OUT"
+      },
+      {
+        "class": "signal",
+        "id": "net:ROW0",
+        "name": "ROW0"
+      },
+      {
+        "class": "signal",
+        "id": "net:ROW1",
+        "name": "ROW1"
+      },
+      {
+        "class": "signal",
+        "id": "net:ROW2",
+        "name": "ROW2"
+      },
+      {
+        "class": "signal",
+        "id": "net:ROW3",
+        "name": "ROW3"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL0",
+        "name": "COL0"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL1",
+        "name": "COL1"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL2",
+        "name": "COL2"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL3",
+        "name": "COL3"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL4",
+        "name": "COL4"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL5",
+        "name": "COL5"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL6",
+        "name": "COL6"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL7",
+        "name": "COL7"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL8",
+        "name": "COL8"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL9",
+        "name": "COL9"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL10",
+        "name": "COL10"
+      },
+      {
+        "class": "signal",
+        "id": "net:COL11",
+        "name": "COL11"
+      }
+    ],
+    "source": {
+      "ato_version": "0.15.9",
+      "entry": "main.ato:App",
+      "kind": "atopile"
+    }
+  },
+  "ext": {},
+  "firmware": {
+    "_meta": {
+      "rev": 1
+    },
+    "peripherals": [
+      {
+        "base_address": 1073807360,
+        "id": "periph:usart1",
+        "kind": "uart",
+        "signals": [
+          {
+            "name": "TX",
+            "net_ref": "net:UART_TX",
+            "pin": "A9"
+          },
+          {
+            "name": "RX",
+            "net_ref": "net:UART_RX",
+            "pin": "A10"
+          }
+        ]
+      },
+      {
+        "base_address": 1342177280,
+        "id": "periph:usb_otg_fs",
+        "kind": "usb",
+        "signals": [
+          {
+            "name": "DM",
+            "net_ref": "net:USB_DM",
+            "pin": "A11"
+          },
+          {
+            "name": "DP",
+            "net_ref": "net:USB_DP",
+            "pin": "A12"
+          }
+        ]
+      }
+    ],
+    "suites": [],
+    "targets": [
+      {
+        "artifacts": [],
+        "build_cmd": "qmk compile",
+        "core": "cortex-m4f",
+        "framework": "qmk",
+        "id": "fw:main",
+        "mcu": "STM32F411CEU6",
+        "memory": [
+          {
+            "length": 524288,
+            "name": "flash",
+            "origin": 134217728
+          },
+          {
+            "length": 131072,
+            "name": "ram",
+            "origin": 536870912
+          }
+        ],
+        "source_dir": "qmk"
+      }
+    ]
+  },
+  "keyboard": {
+    "_meta": {
+      "rev": 1
+    },
+    "keys": [
+      {
+        "col": 0,
+        "diode_ref": "comp:D1",
+        "h_u": 1.0,
+        "id": "key:K0_0",
+        "keycode_default": "KC_A",
+        "label": "K00",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW1",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D2",
+        "h_u": 1.0,
+        "id": "key:K0_1",
+        "keycode_default": "KC_A",
+        "label": "K01",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW2",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D3",
+        "h_u": 1.0,
+        "id": "key:K0_2",
+        "keycode_default": "KC_A",
+        "label": "K02",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW3",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 3,
+        "diode_ref": "comp:D4",
+        "h_u": 1.0,
+        "id": "key:K0_3",
+        "keycode_default": "KC_A",
+        "label": "K03",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW4",
+        "w_u": 1.0,
+        "x_u": 3.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 4,
+        "diode_ref": "comp:D5",
+        "h_u": 1.0,
+        "id": "key:K0_4",
+        "keycode_default": "KC_A",
+        "label": "K04",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW5",
+        "w_u": 1.0,
+        "x_u": 4.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 5,
+        "diode_ref": "comp:D6",
+        "h_u": 1.0,
+        "id": "key:K0_5",
+        "keycode_default": "KC_A",
+        "label": "K05",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW6",
+        "w_u": 1.0,
+        "x_u": 5.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 6,
+        "diode_ref": "comp:D7",
+        "h_u": 1.0,
+        "id": "key:K0_6",
+        "keycode_default": "KC_A",
+        "label": "K06",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW7",
+        "w_u": 1.0,
+        "x_u": 6.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 7,
+        "diode_ref": "comp:D8",
+        "h_u": 1.0,
+        "id": "key:K0_7",
+        "keycode_default": "KC_A",
+        "label": "K07",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW8",
+        "w_u": 1.0,
+        "x_u": 7.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 8,
+        "diode_ref": "comp:D9",
+        "h_u": 1.0,
+        "id": "key:K0_8",
+        "keycode_default": "KC_A",
+        "label": "K08",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW9",
+        "w_u": 1.0,
+        "x_u": 8.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 9,
+        "diode_ref": "comp:D10",
+        "h_u": 1.0,
+        "id": "key:K0_9",
+        "keycode_default": "KC_A",
+        "label": "K09",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW10",
+        "w_u": 1.0,
+        "x_u": 9.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 10,
+        "diode_ref": "comp:D11",
+        "h_u": 1.0,
+        "id": "key:K0_10",
+        "keycode_default": "KC_A",
+        "label": "K010",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW11",
+        "w_u": 1.0,
+        "x_u": 10.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 11,
+        "diode_ref": "comp:D12",
+        "h_u": 1.0,
+        "id": "key:K0_11",
+        "keycode_default": "KC_A",
+        "label": "K011",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW12",
+        "w_u": 1.0,
+        "x_u": 11.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 0,
+        "diode_ref": "comp:D13",
+        "h_u": 1.0,
+        "id": "key:K1_0",
+        "keycode_default": "KC_A",
+        "label": "K10",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW13",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D14",
+        "h_u": 1.0,
+        "id": "key:K1_1",
+        "keycode_default": "KC_A",
+        "label": "K11",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW14",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D15",
+        "h_u": 1.0,
+        "id": "key:K1_2",
+        "keycode_default": "KC_A",
+        "label": "K12",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW15",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 3,
+        "diode_ref": "comp:D16",
+        "h_u": 1.0,
+        "id": "key:K1_3",
+        "keycode_default": "KC_A",
+        "label": "K13",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW16",
+        "w_u": 1.0,
+        "x_u": 3.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 4,
+        "diode_ref": "comp:D17",
+        "h_u": 1.0,
+        "id": "key:K1_4",
+        "keycode_default": "KC_A",
+        "label": "K14",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW17",
+        "w_u": 1.0,
+        "x_u": 4.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 5,
+        "diode_ref": "comp:D18",
+        "h_u": 1.0,
+        "id": "key:K1_5",
+        "keycode_default": "KC_A",
+        "label": "K15",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW18",
+        "w_u": 1.0,
+        "x_u": 5.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 6,
+        "diode_ref": "comp:D19",
+        "h_u": 1.0,
+        "id": "key:K1_6",
+        "keycode_default": "KC_A",
+        "label": "K16",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW19",
+        "w_u": 1.0,
+        "x_u": 6.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 7,
+        "diode_ref": "comp:D20",
+        "h_u": 1.0,
+        "id": "key:K1_7",
+        "keycode_default": "KC_A",
+        "label": "K17",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW20",
+        "w_u": 1.0,
+        "x_u": 7.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 8,
+        "diode_ref": "comp:D21",
+        "h_u": 1.0,
+        "id": "key:K1_8",
+        "keycode_default": "KC_A",
+        "label": "K18",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW21",
+        "w_u": 1.0,
+        "x_u": 8.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 9,
+        "diode_ref": "comp:D22",
+        "h_u": 1.0,
+        "id": "key:K1_9",
+        "keycode_default": "KC_A",
+        "label": "K19",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW22",
+        "w_u": 1.0,
+        "x_u": 9.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 10,
+        "diode_ref": "comp:D23",
+        "h_u": 1.0,
+        "id": "key:K1_10",
+        "keycode_default": "KC_A",
+        "label": "K110",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW23",
+        "w_u": 1.0,
+        "x_u": 10.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 11,
+        "diode_ref": "comp:D24",
+        "h_u": 1.0,
+        "id": "key:K1_11",
+        "keycode_default": "KC_A",
+        "label": "K111",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW24",
+        "w_u": 1.0,
+        "x_u": 11.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 0,
+        "diode_ref": "comp:D25",
+        "h_u": 1.0,
+        "id": "key:K2_0",
+        "keycode_default": "KC_A",
+        "label": "K20",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW25",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D26",
+        "h_u": 1.0,
+        "id": "key:K2_1",
+        "keycode_default": "KC_A",
+        "label": "K21",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW26",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D27",
+        "h_u": 1.0,
+        "id": "key:K2_2",
+        "keycode_default": "KC_A",
+        "label": "K22",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW27",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 3,
+        "diode_ref": "comp:D28",
+        "h_u": 1.0,
+        "id": "key:K2_3",
+        "keycode_default": "KC_A",
+        "label": "K23",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW28",
+        "w_u": 1.0,
+        "x_u": 3.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 4,
+        "diode_ref": "comp:D29",
+        "h_u": 1.0,
+        "id": "key:K2_4",
+        "keycode_default": "KC_A",
+        "label": "K24",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW29",
+        "w_u": 1.0,
+        "x_u": 4.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 5,
+        "diode_ref": "comp:D30",
+        "h_u": 1.0,
+        "id": "key:K2_5",
+        "keycode_default": "KC_A",
+        "label": "K25",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW30",
+        "w_u": 1.0,
+        "x_u": 5.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 6,
+        "diode_ref": "comp:D31",
+        "h_u": 1.0,
+        "id": "key:K2_6",
+        "keycode_default": "KC_A",
+        "label": "K26",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW31",
+        "w_u": 1.0,
+        "x_u": 6.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 7,
+        "diode_ref": "comp:D32",
+        "h_u": 1.0,
+        "id": "key:K2_7",
+        "keycode_default": "KC_A",
+        "label": "K27",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW32",
+        "w_u": 1.0,
+        "x_u": 7.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 8,
+        "diode_ref": "comp:D33",
+        "h_u": 1.0,
+        "id": "key:K2_8",
+        "keycode_default": "KC_A",
+        "label": "K28",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW33",
+        "w_u": 1.0,
+        "x_u": 8.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 9,
+        "diode_ref": "comp:D34",
+        "h_u": 1.0,
+        "id": "key:K2_9",
+        "keycode_default": "KC_A",
+        "label": "K29",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW34",
+        "w_u": 1.0,
+        "x_u": 9.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 10,
+        "diode_ref": "comp:D35",
+        "h_u": 1.0,
+        "id": "key:K2_10",
+        "keycode_default": "KC_A",
+        "label": "K210",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW35",
+        "w_u": 1.0,
+        "x_u": 10.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 11,
+        "diode_ref": "comp:D36",
+        "h_u": 1.0,
+        "id": "key:K2_11",
+        "keycode_default": "KC_A",
+        "label": "K211",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW36",
+        "w_u": 1.0,
+        "x_u": 11.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 0,
+        "diode_ref": "comp:D37",
+        "h_u": 1.0,
+        "id": "key:K3_0",
+        "keycode_default": "KC_A",
+        "label": "K30",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW37",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D38",
+        "h_u": 1.0,
+        "id": "key:K3_1",
+        "keycode_default": "KC_A",
+        "label": "K31",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW38",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D39",
+        "h_u": 1.0,
+        "id": "key:K3_2",
+        "keycode_default": "KC_A",
+        "label": "K32",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW39",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 3,
+        "diode_ref": "comp:D40",
+        "h_u": 1.0,
+        "id": "key:K3_3",
+        "keycode_default": "KC_A",
+        "label": "K33",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW40",
+        "w_u": 1.0,
+        "x_u": 3.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 4,
+        "diode_ref": "comp:D41",
+        "h_u": 1.0,
+        "id": "key:K3_4",
+        "keycode_default": "KC_A",
+        "label": "K34",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW41",
+        "w_u": 1.0,
+        "x_u": 4.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 5,
+        "diode_ref": "comp:D42",
+        "h_u": 1.0,
+        "id": "key:K3_5",
+        "keycode_default": "KC_A",
+        "label": "K35",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW42",
+        "w_u": 1.0,
+        "x_u": 5.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 6,
+        "diode_ref": "comp:D43",
+        "h_u": 1.0,
+        "id": "key:K3_6",
+        "keycode_default": "KC_A",
+        "label": "K36",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW43",
+        "w_u": 1.0,
+        "x_u": 6.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 7,
+        "diode_ref": "comp:D44",
+        "h_u": 1.0,
+        "id": "key:K3_7",
+        "keycode_default": "KC_A",
+        "label": "K37",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW44",
+        "w_u": 1.0,
+        "x_u": 7.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 8,
+        "diode_ref": "comp:D45",
+        "h_u": 1.0,
+        "id": "key:K3_8",
+        "keycode_default": "KC_A",
+        "label": "K38",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW45",
+        "w_u": 1.0,
+        "x_u": 8.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 9,
+        "diode_ref": "comp:D46",
+        "h_u": 1.0,
+        "id": "key:K3_9",
+        "keycode_default": "KC_A",
+        "label": "K39",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW46",
+        "w_u": 1.0,
+        "x_u": 9.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 10,
+        "diode_ref": "comp:D47",
+        "h_u": 1.0,
+        "id": "key:K3_10",
+        "keycode_default": "KC_A",
+        "label": "K310",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW47",
+        "w_u": 1.0,
+        "x_u": 10.0,
+        "y_u": 3.0
+      },
+      {
+        "col": 11,
+        "diode_ref": "comp:D48",
+        "h_u": 1.0,
+        "id": "key:K3_11",
+        "keycode_default": "KC_A",
+        "label": "K311",
+        "rotation_deg": 0.0,
+        "row": 3,
+        "switch_ref": "comp:SW48",
+        "w_u": 1.0,
+        "x_u": 11.0,
+        "y_u": 3.0
+      }
+    ],
+    "matrix": {
+      "col_pins": [
+        "A0",
+        "A1",
+        "A2",
+        "A3",
+        "A5",
+        "A6",
+        "A7",
+        "B0",
+        "B1",
+        "B10",
+        "C14",
+        "C15"
+      ],
+      "cols": 12,
+      "diode_direction": "COL2ROW",
+      "row_pins": [
+        "B12",
+        "B13",
+        "B14",
+        "B15"
+      ],
+      "rows": 4
+    },
+    "qmk": {
+      "board": "BLACKPILL_STM32_F411",
+      "bootloader": "stm32-dfu",
+      "keyboard_path": "atomc/keeb",
+      "processor": "STM32F411"
+    },
+    "usb": {
+      "device_version": "1.0.0",
+      "manufacturer": "atomc",
+      "pid": "0x0002",
+      "product": "atomc-keeb",
+      "vid": "0xFEED"
+    }
+  },
+  "layout": {
+    "_meta": {
+      "rev": 1
+    },
+    "keepouts": [],
+    "layers": 2,
+    "mounting_holes": [
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H1",
+        "plated": true,
+        "x": 4.0,
+        "y": 4.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H2",
+        "plated": true,
+        "x": 236.0,
+        "y": 4.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H3",
+        "plated": true,
+        "x": 4.0,
+        "y": 96.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H4",
+        "plated": true,
+        "x": 236.0,
+        "y": 96.0
+      }
+    ],
+    "outline": {
+      "polygon": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          240.0,
+          0.0
+        ],
+        [
+          240.0,
+          100.0
+        ],
+        [
+          0.0,
+          100.0
+        ]
+      ],
+      "thickness_mm": 1.6
+    },
+    "placements": [
+      {
+        "component_ref": "comp:U1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 30.0,
+        "y": 80.0
+      },
+      {
+        "component_ref": "comp:J1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 10.0,
+        "y": 90.0
+      },
+      {
+        "component_ref": "comp:SW1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 15.0,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D1",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 15.0,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW2",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 34.05,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D2",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 34.05,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW3",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 53.1,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D3",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 53.1,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW4",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 72.15,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D4",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 72.15,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW5",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 91.2,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D5",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 91.2,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW6",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 110.25,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D6",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 110.25,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW7",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 129.3,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D7",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 129.3,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW8",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 148.35,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D8",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 148.35,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW9",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 167.4,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D9",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 167.4,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW10",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 186.45,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D10",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 186.45,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW11",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 205.5,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D11",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 205.5,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW12",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 224.55,
+        "y": 15.0
+      },
+      {
+        "component_ref": "comp:D12",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 224.55,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW13",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 15.0,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D13",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 15.0,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW14",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 34.05,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D14",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 34.05,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW15",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 53.1,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D15",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 53.1,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW16",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 72.15,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D16",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 72.15,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW17",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 91.2,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D17",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 91.2,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW18",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 110.25,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D18",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 110.25,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW19",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 129.3,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D19",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 129.3,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW20",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 148.35,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D20",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 148.35,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW21",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 167.4,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D21",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 167.4,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW22",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 186.45,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D22",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 186.45,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW23",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 205.5,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D23",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 205.5,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW24",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 224.55,
+        "y": 34.05
+      },
+      {
+        "component_ref": "comp:D24",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 224.55,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW25",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 15.0,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D25",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 15.0,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW26",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 34.05,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D26",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 34.05,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW27",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 53.1,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D27",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 53.1,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW28",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 72.15,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D28",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 72.15,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW29",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 91.2,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D29",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 91.2,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW30",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 110.25,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D30",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 110.25,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW31",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 129.3,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D31",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 129.3,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW32",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 148.35,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D32",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 148.35,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW33",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 167.4,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D33",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 167.4,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW34",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 186.45,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D34",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 186.45,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW35",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 205.5,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D35",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 205.5,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW36",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 224.55,
+        "y": 53.1
+      },
+      {
+        "component_ref": "comp:D36",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 224.55,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW37",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 15.0,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D37",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 15.0,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW38",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 34.05,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D38",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 34.05,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW39",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 53.1,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D39",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 53.1,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW40",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 72.15,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D40",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 72.15,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW41",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 91.2,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D41",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 91.2,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW42",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 110.25,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D42",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 110.25,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW43",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 129.3,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D43",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 129.3,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW44",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 148.35,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D44",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 148.35,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW45",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 167.4,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D45",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 167.4,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW46",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 186.45,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D46",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 186.45,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW47",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 205.5,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D47",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 205.5,
+        "y": 62.15
+      },
+      {
+        "component_ref": "comp:SW48",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 224.55,
+        "y": 72.15
+      },
+      {
+        "component_ref": "comp:D48",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 224.55,
+        "y": 62.15
+      }
+    ],
+    "test_pads": [
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_VBUS",
+        "kind": "pogo",
+        "label": "VBUS",
+        "net_ref": "net:VBUS",
+        "side": "bottom",
+        "x": 6.0,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_3V3",
+        "kind": "pogo",
+        "label": "3V3",
+        "net_ref": "net:3V3",
+        "side": "bottom",
+        "x": 8.54,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_GND",
+        "kind": "pogo",
+        "label": "GND",
+        "net_ref": "net:GND",
+        "side": "bottom",
+        "x": 11.08,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_SWDIO",
+        "kind": "pogo",
+        "label": "SWDIO",
+        "net_ref": "net:SWDIO",
+        "side": "bottom",
+        "x": 13.62,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_SWCLK",
+        "kind": "pogo",
+        "label": "SWCLK",
+        "net_ref": "net:SWCLK",
+        "side": "bottom",
+        "x": 16.16,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_NRST",
+        "kind": "pogo",
+        "label": "NRST",
+        "net_ref": "net:NRST",
+        "side": "bottom",
+        "x": 18.7,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_BOOT0",
+        "kind": "pogo",
+        "label": "BOOT0",
+        "net_ref": "net:BOOT0",
+        "side": "bottom",
+        "x": 21.24,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_UART_TX",
+        "kind": "pogo",
+        "label": "UART_TX",
+        "net_ref": "net:UART_TX",
+        "side": "bottom",
+        "x": 23.78,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_UART_RX",
+        "kind": "pogo",
+        "label": "UART_RX",
+        "net_ref": "net:UART_RX",
+        "side": "bottom",
+        "x": 26.32,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW0",
+        "kind": "pogo",
+        "label": "ROW0",
+        "net_ref": "net:ROW0",
+        "side": "bottom",
+        "x": 28.86,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW1",
+        "kind": "pogo",
+        "label": "ROW1",
+        "net_ref": "net:ROW1",
+        "side": "bottom",
+        "x": 31.4,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW2",
+        "kind": "pogo",
+        "label": "ROW2",
+        "net_ref": "net:ROW2",
+        "side": "bottom",
+        "x": 33.94,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW3",
+        "kind": "pogo",
+        "label": "ROW3",
+        "net_ref": "net:ROW3",
+        "side": "bottom",
+        "x": 6.0,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL0",
+        "kind": "pogo",
+        "label": "COL0",
+        "net_ref": "net:COL0",
+        "side": "bottom",
+        "x": 8.54,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL1",
+        "kind": "pogo",
+        "label": "COL1",
+        "net_ref": "net:COL1",
+        "side": "bottom",
+        "x": 11.08,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL2",
+        "kind": "pogo",
+        "label": "COL2",
+        "net_ref": "net:COL2",
+        "side": "bottom",
+        "x": 13.62,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL3",
+        "kind": "pogo",
+        "label": "COL3",
+        "net_ref": "net:COL3",
+        "side": "bottom",
+        "x": 16.16,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL4",
+        "kind": "pogo",
+        "label": "COL4",
+        "net_ref": "net:COL4",
+        "side": "bottom",
+        "x": 18.7,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL5",
+        "kind": "pogo",
+        "label": "COL5",
+        "net_ref": "net:COL5",
+        "side": "bottom",
+        "x": 21.24,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL6",
+        "kind": "pogo",
+        "label": "COL6",
+        "net_ref": "net:COL6",
+        "side": "bottom",
+        "x": 23.78,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL7",
+        "kind": "pogo",
+        "label": "COL7",
+        "net_ref": "net:COL7",
+        "side": "bottom",
+        "x": 26.32,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL8",
+        "kind": "pogo",
+        "label": "COL8",
+        "net_ref": "net:COL8",
+        "side": "bottom",
+        "x": 28.86,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL9",
+        "kind": "pogo",
+        "label": "COL9",
+        "net_ref": "net:COL9",
+        "side": "bottom",
+        "x": 31.4,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL10",
+        "kind": "pogo",
+        "label": "COL10",
+        "net_ref": "net:COL10",
+        "side": "bottom",
+        "x": 33.94,
+        "y": 8.54
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL11",
+        "kind": "pogo",
+        "label": "COL11",
+        "net_ref": "net:COL11",
+        "side": "bottom",
+        "x": 6.0,
+        "y": 11.08
+      }
+    ]
+  },
+  "mechanical": {
+    "_meta": {
+      "rev": 1
+    },
+    "artifacts": [],
+    "checks": [
+      {
+        "detail": "min pitch 2.54 mm",
+        "id": "check:pogo",
+        "kind": "pogo_spacing",
+        "status": "pass"
+      }
+    ],
+    "component_bboxes": [],
+    "enclosure": {
+      "clearance_mm": 0.4,
+      "kind": "tray",
+      "params": {},
+      "wall_mm": 2.0
+    },
+    "jig": {
+      "alignment": "mounting_holes",
+      "min_pitch_mm": 2.54,
+      "plate_thickness_mm": 5.0,
+      "pogo_part": "P75-E2"
+    },
+    "pcb_bbox": {
+      "max": [
+        240.0,
+        100.0,
+        1.6
+      ],
+      "min": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "plate": {
+      "cutout_mm": 14.0,
+      "material": "PLA",
+      "pitch_mm": 19.05,
+      "thickness_mm": 1.5
+    }
+  },
+  "meta": {
+    "atomc_version": "0.1.0",
+    "created_at": "2026-11-04T00:00:00Z",
+    "description": "48-key 4x12 ortholinear QMK keyboard on STM32F411CEU6",
+    "modified_at": "2026-11-04T00:00:00Z",
+    "name": "atomc-keeb",
+    "project_id": "proj:atomc-keeb",
+    "rev": 1
+  },
+  "schema_version": "0.1.0",
+  "sourcing": {
+    "_meta": {
+      "rev": 1
+    },
+    "bom": [],
+    "budget": {
+      "per_unit_minor": 4500,
+      "total_minor": 22500
+    },
+    "build_qty": 5,
+    "currency": "USD"
+  }
+}
