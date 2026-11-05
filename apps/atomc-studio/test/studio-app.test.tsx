@@ -69,7 +69,9 @@ describe("Atomc Studio workspace", () => {
     const dialog = screen.getByRole("dialog", { name: "Matrix scan pin map" });
     expect(within(dialog).getByText(/Column pin C13/)).toBeInTheDocument();
     expect(within(dialog).getByText("Firmware")).toBeInTheDocument();
-    expect(within(dialog).getByRole("button", { name: /wake specialist/i })).toBeDisabled();
+    expect(
+      within(dialog).getByRole("button", { name: /wake specialist.*planned/i }),
+    ).toBeDisabled();
     fireEvent.click(within(dialog).getByRole("button", { name: /close gate details/i }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
@@ -178,12 +180,12 @@ describe("Atomc Studio workspace", () => {
     const built = await api.runBuild();
     expect(built.lastBuild).toBe("just now");
     expect(built.activity[0]?.title).toBe("Build queued");
-    expect(built.activity[0]?.time).toBe("4:30:00 AM");
+    expect(built.activity[0]?.time).toBe("12:30:00 PM");
     expect(built.activity[0]?.id).toBe("build-1793795400000");
     expect((await api.load()).activity[0]?.title).toBe("Build queued");
   });
 
-  it("renders an unowned gate under the explicit unknown-owner fallback", async () => {
+  it("renders an unowned gate with the documented electrical-owner fallback", async () => {
     const snapshot = createDemoSnapshot();
     const firstGate = snapshot.gates[0];
     if (!firstGate) throw new Error("demo fixture must contain a gate");
@@ -191,7 +193,7 @@ describe("Atomc Studio workspace", () => {
     await openStudio(fixtureApi(snapshot));
     fireEvent.click(screen.getAllByRole("button", { name: /gate results/i })[0] as HTMLElement);
     expect(screen.getAllByRole("heading", { name: /gate results/i }).length).toBeGreaterThan(0);
-    expect(screen.getByText("?")).toBeInTheDocument();
+    expect(screen.getByText("EE")).toBeInTheDocument();
   });
 
   it("shows a graceful loading state before project data arrives", () => {

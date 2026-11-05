@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "Local-first hardware engineering dashboard for atomc",
+  "readme": "README.md",
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
@@ -15,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check src test vite.config.ts vitest.config.ts",
     "e2e": "playwright test",
-    "e2e:install": "playwright install chromium"
+    "e2e:install": "playwright install --with-deps chromium"
   },
   "dependencies": {
     "@atomc/daemon-client": "workspace:*",

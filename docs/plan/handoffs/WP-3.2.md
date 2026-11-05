@@ -65,4 +65,4 @@ Fixtures are in `test/fakes.ts`; no test file imports another test module.
 
 ## Root integration
 
-This WP did not edit root files. The orchestrator integrated the workspace importer and lockfile with the Phase 3 CLI/Studio workspaces. `pnpm install --frozen-lockfile`, root Turbo build/test/typecheck and CI are part of integration verification.
+This WP did not edit root files. The orchestrator integrated the workspace importer and lockfile with the Phase 3 CLI/Studio workspaces. The deterministic core CI should build dependency workspaces before coverage, so `@atomc/daemon-client` and `@atomc/core-ir` export entries exist in clean runners. `pnpm install --frozen-lockfile`, root Turbo build/test/typecheck and CI are part of integration verification.

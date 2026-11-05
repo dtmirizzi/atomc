@@ -157,12 +157,22 @@ jobs:
         if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json') != '' }}
         run: pnpm exec turbo run build test typecheck
 
-      - name: Install Playwright Chromium
-        if: ${{ hashFiles('apps/atomc-studio/package.json') != '' }}
+  studio-e2e:
+    name: studio-e2e (Chromium + axe)
+    if: ${{ hashFiles('apps/atomc-studio/package.json') != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium and OS dependencies
         run: pnpm --filter @atomc/studio e2e:install
-
-      - name: Studio browser + axe accessibility tests
-        if: ${{ hashFiles('apps/atomc-studio/package.json') != '' }}
+      - name: Run browser, mobile, and axe WCAG checks
         run: pnpm --filter @atomc/studio e2e
 
   contract:
@@ -221,6 +231,8 @@ jobs:
           cache: pnpm
       - name: Install JS deps
         run: pnpm install --frozen-lockfile
+      - name: Build workspace packages needed by coverage tests
+        run: pnpm exec turbo run build
       - name: Enforced workspace coverage thresholds
         run: |
           pnpm --filter @atomc/core-ir test:coverage

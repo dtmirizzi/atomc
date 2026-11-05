@@ -98,6 +98,11 @@ export function createDaemonStudioApi(options: StudioDaemonOptions): StudioApi {
   let clientPromise: Promise<StudioRpcClient> | undefined;
   const getClient = () => {
     if (clientPromise === undefined) {
+      const parsed = new URL(url);
+      const isLoopback = ["localhost", "127.0.0.1", "[::1]"].includes(parsed.hostname);
+      if (!isLoopback || !["ws:", "wss:"].includes(parsed.protocol)) {
+        return Promise.reject(new Error("Studio daemon RPC must use ws/wss on a loopback host."));
+      }
       const pending = factory(url);
       const tracked = pending.catch((error: unknown) => {
         if (clientPromise === tracked) clientPromise = undefined;

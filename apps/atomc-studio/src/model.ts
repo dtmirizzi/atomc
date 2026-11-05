@@ -234,7 +234,7 @@ export function createDemoApi(now: () => Date = () => new Date()): StudioApi {
         activity: [
           {
             id: `build-${now().getTime()}`,
-            time: now().toLocaleTimeString(),
+            time: now().toLocaleTimeString("en-US", { timeZone: "UTC" }),
             title: "Build queued",
             detail: "DAG run requested from Studio",
             tone: "info",

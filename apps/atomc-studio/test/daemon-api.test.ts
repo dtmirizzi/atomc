@@ -71,9 +71,18 @@ describe("createDaemonStudioApi", () => {
         { id: "gate:erc.clean", status: "PASS" },
         { id: "gate:bad", status: "FAIL" },
       ],
+      activity: [
+        expect.objectContaining({
+          title: "Live daemon snapshot loaded",
+          detail: expect.stringContaining("1 passing gates"),
+          tone: "success",
+        }),
+      ],
     });
     expect(snapshot.agents).toHaveLength(4);
     expect(snapshot.activity[0]?.detail).toContain("1 passing gates");
+    expect(snapshot.activity[0]?.tone).toBe("success");
+    expect(snapshot.lastBuild).toBe("daemon connected");
   });
 
   it("reuses one client and returns independent snapshots", async () => {
@@ -133,6 +142,18 @@ describe("createDaemonStudioApi", () => {
     await expect(api.load()).rejects.toThrow("connect failed");
     await expect(api.load()).resolves.toMatchObject({ connection: "connected", revision: 42 });
     expect(factory).toHaveBeenCalledTimes(2);
+  });
+
+  it("rejects a non-loopback target before invoking the trusted host bridge", async () => {
+    const factory = vi.fn(async () => fakeClient());
+    const api = createDaemonStudioApi({
+      projectName: "fixture-board",
+      projectPath: ".",
+      url: "ws://192.0.2.9:9001/rpc",
+      clientFactory: factory,
+    });
+    await expect(api.load()).rejects.toThrow(/loopback/);
+    expect(factory).not.toHaveBeenCalled();
   });
 
   it("connects through the configured loopback URL via the trusted host bridge", async () => {

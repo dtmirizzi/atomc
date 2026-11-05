@@ -339,7 +339,7 @@ function GateTable({
 }
 
 function agentFor(id: string | null): AgentCard {
-  const idOrDefault = id ?? "unknown-agent";
+  const idOrDefault = id ?? "ee-agent";
   const details: Record<string, { label: string; initials: string; tint: string }> = {
     "ee-agent": { label: "Electrical", initials: "EE", tint: "violet" },
     "fw-agent": { label: "Firmware", initials: "FW", tint: "cyan" },
@@ -422,11 +422,11 @@ function GateDetail({
           <button
             type="button"
             className="button button--primary"
-            onClick={() => close()}
-            disabled={isDemo}
+            disabled
+            title="Agent wake controls will be enabled with WP-3.4 convergence orchestration."
           >
             <Sparkles size={15} />
-            Wake specialist
+            Wake specialist (planned)
           </button>
           <button type="button" className="button button--quiet" onClick={close}>
             Close
@@ -1206,7 +1206,13 @@ export function StudioApp(props: StudioAppProps) {
                     <p>{filteredCount} deterministic checks evaluate the current IR revision.</p>
                   </div>
                   <span className="badge badge--danger">
-                    <AlertTriangle size={13} />1 blocker
+                    <AlertTriangle size={13} />
+                    {
+                      snapshot.gates.filter(
+                        (gate) => gate.status === "FAIL" && gate.severity === "blocking",
+                      ).length
+                    }{" "}
+                    blockers
                   </span>
                 </div>
                 <GateTable

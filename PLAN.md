@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 2 complete; Phase 3 (swarm harness, CLI, and Studio) is next.** Phase 0, all Phase 1 work, and all planned Phase 2 packages (plugin SDKs, daemon core, typed client, kernel adapters, and live RPC contract tests) are merged to `main`. CI is green on Python 3.14 (Linux/macOS) and Node 22/25.
+Status: **Phase 2 is merged; Phase 3 implementation is in PR #9 and awaiting its full CI rerun/review.** Phase 0, all Phase 1 work, and all planned Phase 2 packages (plugin SDKs, daemon core, typed client, kernel adapters, and live RPC contract tests) are merged to `main`. Phase 3 now includes the CLI, hardened deterministic harness core, Studio shell, workspace lockfile, and browser/coverage CI gates.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -368,12 +368,12 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 
 ### Phase 3 — Swarm Harness & CLI
 
-**WP-3.1 `cli`** — commander 15 app: `init, build, sim, jig, quote, orders, converge, doctor, daemon {start,stop,status}, plugin {new,list}`; pretty TTY output; `--json`; config loader for `atomc.config.ts` (via `tsx`/`jiti`).
-**WP-3.2 `harness-core`** — state machine (`IDLE → PLAN → CLAIM_LOCK → ACT → VERIFY → RELEASE → (FAIL? ESCALATE)`), agent registry, pi-ai `Agent` wrappers with tool bridges to daemon `tools.call`, budget/turn caps, transcript persistence (`.atomc/sessions/*.jsonl`).
+**WP-3.1 `cli`** — commander 15 app: `init, build, sim, jig, quote, orders, converge, doctor, daemon {start,stop,status}, plugin {new,list}`; pretty TTY output; `--json`; config loader for `atomc.config.ts` (via `tsx`/`jiti`). **Implemented** in PR #9 with 52 unit tests; hardware-dependent commands remain honest structured stubs until their plugins/converger land.
+**WP-3.2 `harness-core`** — state machine (`IDLE → PLAN → CLAIM_LOCK → ACT → VERIFY → RELEASE → (FAIL? ESCALATE)`), agent registry, provider/daemon ports, budget/turn caps, transcript persistence (`.atomc/sessions/*.jsonl`). **Implemented** in PR #9 with 44 distinct fake-provider tests. Real pi-ai adapter is a follow-up; writes enforce both lock and `produces` scopes, tool calls validate advertised JSON Schema.
 **WP-3.3 `harness-agents`** — `@ee-agent`, `@fw-agent`, `@mech-agent`, `@ops-agent` system prompts, tool allow-lists, lock scopes (`electrical.*`, `firmware.*`, `mechanical.*`, `sourcing.*|orders.*`), multimodal datasheet/3D-render inspection tools.
 **WP-3.4 `harness-converge`** — gate-failure → agent wake routing, parallel scheduling respecting lock graph, conflict rollback, convergence criteria, human-in-the-loop checkpoints, `atomc converge --max-cost`.
 **WP-3.5 `harness-tests`** — scripted fake provider, recorded sessions, nightly live run with cost cap.
-**WP-3.6 `studio-shell`** (Vite+React, WS to daemon, 4-pane layout) · **WP-3.7 `studio-3d`** (R3F PCB + plate + case + jig from GLB, test-pad overlay) · **WP-3.8 `studio-telemetry`** (WaveDrom matrix scan, Renode/QMK console stream) · **WP-3.9 `studio-gates-orders`** (gate board, BOM/quote/order table).
+**WP-3.6 `studio-shell`** (Vite+React, WS to daemon, 4-pane layout). The local-first responsive dashboard shell, DAG, gate, agent and artifact views are **implemented in PR #9** with 23 unit tests and 4 Playwright/axe tests. Live browser connection requires a trusted embedding host bridge; no bearer tokens are stored in URL parameters. · **WP-3.7 `studio-3d`** (R3F PCB + plate + case + jig from GLB, test-pad overlay) · **WP-3.8 `studio-telemetry`** (WaveDrom matrix scan, Renode/QMK console stream) · **WP-3.9 `studio-gates-orders`** (gate board, BOM/quote/order table).
 
 ### Phase 4 — Core hardware plugins (vertical slice on example)
 
@@ -454,12 +454,15 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-2.3 daemon-core | pi / DeepSeek Flash | `wp/2.3-daemon-core` | merged in PR #6; authenticated RPC, IR store, DAG, gates and daemon tests |
 | WP-2.4 daemon-kernels | pi / DeepSeek Flash | `wp/2.4-daemon-kernels` | merged (PR #7); 72 kernel tests pass, 1 opt-in hardware smoke skipped; zero hardware deps required in CI |
 | WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | merged in PR #6; 54 Vitest tests and 92.8% statement coverage |
-| WP-3.1 CLI | queued | `wp/3.1-cli` | ready to start; daemon client and daemon are merged |
-| WP-3.2 harness-core | queued | `wp/3.2-harness-core` | ready to start; use fake-provider tests |
+| WP-3.1 CLI | pi / DeepSeek Flash | `wp/3.1-cli` | implemented in PR #9; 52 Vitest tests, 95.55% statements; required CI pending |
+| WP-3.2 harness-core | pi / DeepSeek Flash | `wp/3.2-harness-core` | implemented and hardened in PR #9; 44 distinct Vitest tests, 95.14% statements, 100% functions; required CI pending |
 | WP-3.3 harness-agents | queued | `wp/3.3-harness-agents` | follows harness-core protocol |
 | WP-3.4 harness-converge | queued | `wp/3.4-harness-converge` | follows gate and lock integrations |
 | WP-3.5 harness-tests | queued | `wp/3.5-harness-tests` | follows harness runtime |
-| WP-3.6–3.9 Studio | queued | `wp/3.6-studio` | parallel panes after daemon WS/client stable |
+| WP-3.6 Studio shell | orchestrator | `integration/phase3` | responsive local-first overview/pipeline/gates/agents/artifacts UI in PR #9; 23 unit tests, 4 Playwright/axe tests, ~87% statements; CI pending |
+| WP-3.7 Studio 3D | queued | `wp/3.7-studio-3d` | R3F board, plate/case/jig GLB viewer and test-pad overlay |
+| WP-3.8 Studio telemetry | queued | `wp/3.8-studio-telemetry` | WaveDrom scan and Renode/QMK console stream |
+| WP-3.9 Studio gates/orders | queued | `wp/3.9-studio-gates-orders` | full gate board, BOM/quote/order table |
 | WP-2.6 rpc-contract-tests | pi / DeepSeek Flash | `wp/2.6-rpc-contract-tests` | merged (PR #8); 34 real-daemon/client RPC tests pass on CI |
 
 ---
