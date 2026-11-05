@@ -44,12 +44,16 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
+      - name: Version lock-step (scripts/release/VERSION)
+        run: python3 scripts/release/sync-versions.py --check
       - name: Ruff check
         if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
         run: uv run ruff check .
       - name: Ruff format check
         if: ${{ hashFiles('packages/*/python/pyproject.toml', 'plugins/*/python/pyproject.toml', 'apps/*/python/pyproject.toml') != '' }}
-        run: uv run ruff format --check .
+        # ruff 0.17 also formats code fences in Markdown; those are docs-owned
+        # and are excluded from the CI gate.
+        run: uv run ruff format --check --exclude '*.md' .
 
   typecheck:
     name: typecheck
