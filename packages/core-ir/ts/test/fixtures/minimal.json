@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1.0",
+  "meta": {
+    "project_id": "proj:minimal",
+    "name": "minimal",
+    "created_at": "2026-11-04T23:00:00Z",
+    "modified_at": "2026-11-04T23:00:00Z",
+    "rev": 0,
+    "atomc_version": "0.1.0"
+  },
+  "electrical": null,
+  "keyboard": null,
+  "ext": {}
+}
