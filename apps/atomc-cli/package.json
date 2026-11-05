@@ -1,0 +1,48 @@
+{
+  "name": "@atomc/cli",
+  "version": "0.0.1",
+  "description": "atomc — compile declarative hardware descriptions into verified physical systems",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "atomc": "./dist/index.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src test tsup.config.ts vitest.config.ts"
+  },
+  "dependencies": {
+    "@atomc/core-ir": "workspace:*",
+    "@atomc/daemon-client": "workspace:*",
+    "@atomc/plugin-sdk": "workspace:*",
+    "commander": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsup": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "^5.9.0",
+    "vitest": "catalog:"
+  }
+}
