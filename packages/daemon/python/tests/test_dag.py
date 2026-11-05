@@ -11,7 +11,7 @@ from atomcd.dag import CycleError, DagScheduler
 from atomcd.events import EventBus
 from atomcd.ir_store import IRStore
 from atomcd.plugins.registry import PluginRegistry
-from fakes import make_plugin
+from atomcd.testing import make_plugin
 
 ELECTRICAL_NODE: dict[str, Any] = {
     "_meta": {"rev": 0, "lock": None},

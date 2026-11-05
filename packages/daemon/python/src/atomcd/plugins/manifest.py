@@ -211,21 +211,38 @@ def _validate_pointer(pointer: str, *, where: str) -> None:
         raise ValueError(f"{where}: JSON pointer {pointer!r} must start with '/'")
 
 
+def _coerce_manifest(value: Any) -> Manifest:
+    """Convert an SDK validation result into the daemon's local :class:`Manifest`.
+
+    ``atomc_plugin_sdk.validate_manifest`` returns the SDK's own ``PluginManifest`` class, which
+    is a *different* Pydantic model. Feeding that instance straight into
+    ``Manifest.model_validate`` fails, so dump it back to contract JSON first and validate the
+    JSON against the local models (single wire contract, two class definitions).
+    """
+    if isinstance(value, Manifest):
+        return value
+    if isinstance(value, BaseModel):
+        return Manifest.model_validate(value.model_dump(mode="json", by_alias=True))
+    if isinstance(value, dict):
+        return Manifest.model_validate(value)
+    if hasattr(value, "model_dump"):
+        dumped = value.model_dump(mode="json", by_alias=True)
+        if isinstance(dumped, dict):
+            return Manifest.model_validate(dumped)
+    raise ManifestError(f"SDK validate_manifest returned unsupported value {type(value).__name__}")
+
+
 def validate_manifest(data: dict[str, Any]) -> Manifest:
     """Validate raw manifest data into a :class:`Manifest`.
 
     Prefers ``atomc_plugin_sdk.validate_manifest`` when that package is importable so the daemon
-    and SDK never disagree; falls back to the local contract models.
+    and SDK never disagree; the SDK result is coerced back to the local models via contract JSON.
+    Falls back to the local contract models when the SDK is absent.
     """
     sdk = _load_sdk_validator()
-    if sdk is not None:
-        parsed = sdk(data)
-        if isinstance(parsed, Manifest):
-            return parsed
-        if isinstance(parsed, dict):
-            return Manifest.model_validate(parsed)
-        return Manifest.model_validate(parsed)
     try:
+        if sdk is not None:
+            return _coerce_manifest(sdk(data))
         return Manifest.model_validate(data)
     except ValidationError as exc:
         errors = [

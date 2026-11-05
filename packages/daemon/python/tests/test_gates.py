@@ -9,7 +9,7 @@ from atomcd.events import EventBus
 from atomcd.gates import GateRunner
 from atomcd.ir_store import IRStore
 from atomcd.plugins.registry import PluginRegistry
-from fakes import make_plugin
+from atomcd.testing import make_plugin
 
 GATE = {
     "id": "gate:demo.stock",

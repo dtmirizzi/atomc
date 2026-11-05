@@ -14,7 +14,7 @@ from atomcd.gates import GateRunner
 from atomcd.ir_store import IRStore
 from atomcd.plugins.registry import PluginRegistry
 from atomcd.runtime import RuntimeState
-from fakes import make_plugin
+from atomcd.testing import make_plugin
 from fastapi.testclient import TestClient
 
 

@@ -12,9 +12,9 @@ from atomcd.events import EventBus
 from atomcd.ir_store import IRStore
 from atomcd.plugins.context import ScopeError, pointer_allowed
 from atomcd.plugins.discovery import build_registry, discover_from_project, load_plugin
-from atomcd.plugins.manifest import ManifestError, load_manifest, validate_manifest
+from atomcd.plugins.manifest import Manifest, ManifestError, load_manifest, validate_manifest
 from atomcd.plugins.registry import PluginRegistry
-from fakes import make_manifest, make_plugin, manifest_dict
+from atomcd.testing import make_manifest, make_plugin, manifest_dict
 
 
 def store_for(root: Path) -> IRStore:
@@ -77,6 +77,32 @@ def test_manifest_version_mismatch() -> None:
     data["manifest_version"] = "9.9.9"
     with pytest.raises(ManifestError):
         validate_manifest(data)
+
+
+def test_validate_manifest_consumes_sdk_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    """When the SDK is installed, its foreign ``PluginManifest`` must be coerced, not rejected."""
+    import sys
+    import types
+
+    from pydantic import BaseModel, ConfigDict
+
+    class SDKPluginManifest(BaseModel):
+        model_config = ConfigDict(extra="allow")
+
+    captured: dict[str, Any] = {}
+
+    def sdk_validate(data: dict[str, Any]) -> SDKPluginManifest:
+        captured.update(data)
+        return SDKPluginManifest(**data)
+
+    module = types.ModuleType("atomc_plugin_sdk")
+    module.__dict__["validate_manifest"] = sdk_validate
+    monkeypatch.setitem(sys.modules, "atomc_plugin_sdk", module)
+
+    result = validate_manifest(manifest_dict(name="sdk-demo"))
+    assert isinstance(result, Manifest)
+    assert result.name == "sdk-demo"
+    assert captured["name"] == "sdk-demo"
 
 
 def test_pointer_allowed_boundaries() -> None:
