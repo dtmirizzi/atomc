@@ -190,7 +190,9 @@ so `0.0.1` is the correct *pre-gate* dev version. If the orchestrator prefers th
 
 ## CI result
 
-Draft PR #1, latest run: **all checks pass** —
+Draft PR #1: **all 9 checks pass** on commit `23dccd4` (scoped Python lint + biome fix) —
 `build image`, `contract`, `docs`, `lint`, `test-py (ubuntu-latest)`, `test-py (macos-latest)`,
 `test-ts (node 22)`, `test-ts (node 25)`, `typecheck`.
+CI: <https://github.com/dtmirizzi/atomc/actions/runs/41939241222> ·
+Docker: <https://github.com/dtmirizzi/atomc/actions/runs/41939241357> ·
 <https://github.com/dtmirizzi/atomc/pull/1/checks>
