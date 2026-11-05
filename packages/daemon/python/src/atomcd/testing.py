@@ -1,11 +1,19 @@
-"""Shared fake plugins/manifests for daemon tests (no hardware engines)."""
+"""Reusable fake plugins/manifests for daemon and integration tests.
+
+Kept in the importable package (not ``tests/``) so cross-package tests (e.g. WP-2.6 RPC
+contract tests) can construct deterministic plugins without duplicating helpers::
+
+    from atomcd.testing import make_plugin
+
+No hardware engines are imported.
+"""
 
 from __future__ import annotations
 
 from typing import Any
 
-from atomcd.plugins.manifest import Manifest
-from atomcd.plugins.registry import LoadedPlugin
+from .plugins.manifest import Manifest
+from .plugins.registry import LoadedPlugin
 
 
 def manifest_dict(
@@ -20,6 +28,7 @@ def manifest_dict(
     version: str = "0.1.0",
     python: str = "fake:plugin",
 ) -> dict[str, Any]:
+    """Build raw ``atomc-plugin.json`` data for a fake plugin."""
     return {
         "manifest_version": "0.1.0",
         "name": name,
@@ -37,6 +46,7 @@ def manifest_dict(
 
 
 def make_manifest(name: str = "demo", **kwargs: Any) -> Manifest:
+    """Validate and return a fake :class:`Manifest`."""
     return Manifest.model_validate(manifest_dict(name, **kwargs))
 
 
@@ -48,6 +58,7 @@ def make_plugin(
     error: str | None = None,
     **kwargs: Any,
 ) -> LoadedPlugin:
+    """Build a :class:`LoadedPlugin` around a fake manifest/object."""
     return LoadedPlugin(
         manifest=make_manifest(name, **kwargs),
         plugin=obj,
