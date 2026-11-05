@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 0 (environment) + Phase 1 (monorepo + core IR) are the active phases.**
+Status: **Phase 1 nearing completion; Phase 2 is next after contract tests merge.** Phase 0, core IR, CI/release plumbing, docs site, and keyboard example are merged.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -351,7 +351,7 @@ Each WP maps to one herdr worktree workspace + one `pi` agent, briefed from `doc
 - Hand-written `system_ir.json` for each, validated by WP-1.1 models (golden for Phase 4).
 - Done when: `ato build` succeeds for both, `qmk compile -kb atomc/pad -km default` and `atomc/keeb` succeed, IR fixtures validate.
 
-Phase 1 fan-out: WP-1.1, WP-1.2, WP-1.4, WP-1.5 are active in parallel; WP-1.6 starts once WP-0.1 has installed QMK and the WP-1.1 schema exists (≤5 agents). WP-1.2 can scaffold from the contract doc while WP-1.1 implements, then validates against the committed schema. WP-1.3 starts when 1.1 and 1.2 land.
+Phase 1 execution record: WP-1.0 contracts, WP-0.1 environment, WP-1.1/1.2 IR, WP-1.4 CI/release, WP-1.5 docs, and WP-1.6 keyboard examples are merged. WP-1.3 is the remaining Phase 1 task: deterministic Python↔TypeScript validation/patch round-trips. WP-1.3 starts after WP-1.1/1.2 and CI are in main (now satisfied).
 
 ### Phase 2 — Plugin SDK & Daemon
 
@@ -441,10 +441,10 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-1.0 contracts | orchestrator | main | merged; contracts + uv/pnpm workspaces pushed |
 | WP-1.1 core-ir-py | pi / DeepSeek Flash | `wp/1.1-core-ir-py` | merged; 56 pytest tests, 98% coverage; strict mypy/ruff clean |
 | WP-1.2 core-ir-ts | pi / DeepSeek Flash | `wp/1.2-core-ir-ts` | merged; 34 Vitest tests, schema generation/typecheck/build pass (uses local TS 5.9 for tsup DTS) |
-| WP-1.3 contract-tests | queued | — | next: cross-language round-trip / JSON Patch contract harness |
-| WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | PR #1 open; Docker + all CI jobs passed on latest run; awaiting merge |
+| WP-1.3 contract-tests | pi / DeepSeek Flash | `wp/1.3-contract-tests` | in progress |
+| WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | merged (PR #1); CI + Docker checks green |
 | WP-1.5 docs-site | pi / DeepSeek Flash | `wp/1.5-docs-site` | merged; VitePress build passes; GitHub Pages enabled at https://dtmirizzi.github.io/atomc/ |
-| WP-1.6 example-seed | pi / DeepSeek Flash | `wp/1.6-example-seed` | active; QMK pad build underway; circuit + keeb scaffold still in progress |
+| WP-1.6 example-seed | pi / DeepSeek Flash | `wp/1.6-example-seed` | merged (PR #2); both ato builds, four QMK builds and both IR validations pass |
 
 ---
 
