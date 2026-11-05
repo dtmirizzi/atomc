@@ -105,6 +105,29 @@ def test_validate_manifest_consumes_sdk_model(monkeypatch: pytest.MonkeyPatch) -
     assert captured["name"] == "sdk-demo"
 
 
+def test_installed_sdk_manifest_errors_become_daemon_errors() -> None:
+    """With atomc-plugin-sdk installed, its PluginManifest is coerced and its errors translated."""
+    sdk = pytest.importorskip("atomc_plugin_sdk")
+    from atomcd.plugins import manifest as manifest_module
+
+    # The SDK path must actually be active (not the local fallback).
+    assert manifest_module._load_sdk_validator() is not None
+
+    valid = validate_manifest(
+        manifest_dict(name="sdk-real", watches=[{"id": "sdk-real:w", "ir": ["/electrical"]}])
+    )
+    assert isinstance(valid, Manifest)
+    assert valid.name == "sdk-real"
+    assert valid.runtime.python == "fake:plugin"
+
+    with pytest.raises(ManifestError) as excinfo:
+        validate_manifest(manifest_dict(name="Bad Name"))
+    assert excinfo.value.errors
+    assert all(set(detail) >= {"path", "message"} for detail in excinfo.value.errors)
+    # The daemon translates the SDK's own validation error rather than leaking it.
+    assert not isinstance(excinfo.value, sdk.ManifestValidationError)
+
+
 def test_pointer_allowed_boundaries() -> None:
     assert pointer_allowed(["/sourcing"], "/sourcing")
     assert pointer_allowed(["/sourcing"], "/sourcing/bom")
