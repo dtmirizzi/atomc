@@ -222,11 +222,11 @@ def _coerce_manifest(value: Any) -> Manifest:
     if isinstance(value, Manifest):
         return value
     if isinstance(value, BaseModel):
-        return Manifest.model_validate(value.model_dump(mode="json", by_alias=True))
+        return Manifest.model_validate(value.model_dump(mode="python"))
     if isinstance(value, dict):
         return Manifest.model_validate(value)
     if hasattr(value, "model_dump"):
-        dumped = value.model_dump(mode="json", by_alias=True)
+        dumped = value.model_dump(mode="python")
         if isinstance(dumped, dict):
             return Manifest.model_validate(dumped)
     raise ManifestError(f"SDK validate_manifest returned unsupported value {type(value).__name__}")
@@ -248,6 +248,18 @@ def validate_manifest(data: dict[str, Any]) -> Manifest:
         errors = [
             {"path": "/".join(str(p) for p in err["loc"]), "message": err["msg"]}
             for err in exc.errors()
+        ]
+        raise ManifestError(f"invalid plugin manifest: {errors}", errors) from exc
+    except Exception as exc:
+        sdk_error = _load_sdk_manifest_error()
+        if sdk_error is None or not isinstance(exc, sdk_error):
+            raise
+        errors = [
+            {
+                "path": getattr(detail, "path", "") or "",
+                "message": getattr(detail, "message", str(detail)),
+            }
+            for detail in getattr(exc, "errors", [])
         ]
         raise ManifestError(f"invalid plugin manifest: {errors}", errors) from exc
 
@@ -272,6 +284,17 @@ def _load_sdk_validator() -> Any | None:  # pragma: no cover - optional integrat
     except ImportError:
         return None
     return sdk_validate
+
+
+def _load_sdk_manifest_error() -> type[Exception] | None:  # pragma: no cover - optional
+    """Return the SDK's manifest error class so its failures become daemon ``ManifestError``s."""
+    try:
+        from atomc_plugin_sdk.errors import (  # type: ignore[import-not-found,unused-ignore]
+            ManifestValidationError,
+        )
+    except ImportError:
+        return None
+    return ManifestValidationError
 
 
 __all__ = [
