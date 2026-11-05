@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 1 nearing completion; Phase 2 is next after contract tests merge.** Phase 0, core IR, CI/release plumbing, docs site, and keyboard example are merged.
+Status: **Phase 2 active.** Phase 0 + all Phase 1 work (including cross-language contract tests) is merged. Phase 2 begins with the Plugin SDK, daemon core, and typed daemon client.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -351,16 +351,20 @@ Each WP maps to one herdr worktree workspace + one `pi` agent, briefed from `doc
 - Hand-written `system_ir.json` for each, validated by WP-1.1 models (golden for Phase 4).
 - Done when: `ato build` succeeds for both, `qmk compile -kb atomc/pad -km default` and `atomc/keeb` succeed, IR fixtures validate.
 
-Phase 1 execution record: WP-1.0 contracts, WP-0.1 environment, WP-1.1/1.2 IR, WP-1.4 CI/release, WP-1.5 docs, and WP-1.6 keyboard examples are merged. WP-1.3 is the remaining Phase 1 task: deterministic Python↔TypeScript validation/patch round-trips. WP-1.3 starts after WP-1.1/1.2 and CI are in main (now satisfied).
+Phase 1 execution record: WP-1.0 contracts, WP-0.1 environment, WP-1.1/1.2 IR, WP-1.3 cross-language conformance, WP-1.4 CI/release, WP-1.5 docs, and WP-1.6 keyboard examples are all merged. Phase 1 gates passed on PR CI (Python 3.14/Linux+macOS, Node 22+25, schema/type drift, docs, plugin-ready contract harness).
 
 ### Phase 2 — Plugin SDK & Daemon
 
-**WP-2.1 `plugin-sdk-ts`** — `defineAtomcPlugin()`, manifest zod schema, `watches` glob/JSON-pointer matcher, `gates`/`tools` typing, tool JSON-schema export for pi-ai, conformance test kit, template generator `atomc plugin new`.
-**WP-2.2 `plugin-sdk-py`** — Python mirror: `@atomc_plugin` decorator, `PluginHost` protocol (ir read/transact, artifacts dir, logger, cache), conformance pytest plugin.
-**WP-2.3 `daemon-core`** — FastAPI + WS JSON-RPC per contract; IR store (in-memory + atomic write to disk + rev counter + per-subtree locks with TTL); plugin discovery (entry points `atomc.plugins` + `atomc-plugin.json` scan); DAG built from `watches` (networkx), incremental scheduling with content hashing; gate runner; event bus; `atomcd serve/status/stop`; structlog.
-**WP-2.4 `daemon-kernels`** — warm-kernel registry: lazy singletons for atopile/faebryk, OCP, pyrenode3, kiutils with health checks and reload; thread/process isolation for OCP (not thread-safe); crash recovery.
-**WP-2.5 `daemon-client-ts`** — `@atomc/daemon-client`: spawn/attach daemon (`~/.atomc/venv`, uv bootstrap), typed RPC client, event stream, retry; used by CLI and harness.
-**WP-2.6 `rpc-contract-tests`** — golden RPC tests, lock contention tests (two clients, conflicting patches), DAG incremental rebuild tests with a fake plugin.
+**Phase 2 contract freeze (orchestrator, completed before agent fan-out):** `docs/architecture/contracts/plugin-manifest.md` and `rpc.md` are normative v0.1 contracts. Important integration rule: RPC `ir.transact.ops` are relative to the supplied `path`, matching Python `apply_patch`; the TS `patch(base)` helper emits absolute pointers, so the daemon client must strip/validate the base before sending (see WP-1.3 handoff). Python and TypeScript SDKs must expose identical manifest semantics; TS Zod schema generates the shared JSON Schema consumed/packaged by Python.
+
+**WP-2.1 `plugin-sdk-ts`** — `packages/plugin-sdk/ts`: `defineAtomcPlugin()`, strict Zod 4 manifest schema, manifest JSON Schema generation, watches glob/JSON-pointer matcher, gates/tools typing, pi-ai tool-schema adapter, TS conformance test kit, CLI plugin-template data.
+**WP-2.2 `plugin-sdk-py`** — `packages/plugin-sdk/python`: Python mirror (`@atomc_plugin` decorator / `define_plugin` factory), strict manifest parsing against the shared JSON Schema, `PluginHost` protocol (IR read/transact, artifact dir, logger, cache), Python conformance pytest helpers. Consumes WP-2.1 schema; may scaffold from the frozen manifest contract and add schema once WP-2.1 publishes it.
+**WP-2.3 `daemon-core`** — `packages/daemon/python`: FastAPI + authenticated WS JSON-RPC per contract; IR store (in-memory + canonical atomic disk persistence + rev counter + per-subtree locks/TTL), plugin discovery from `atomc.plugins` entry points + `atomc-plugin.json`, DAG from `watches`/`produces`/`after` (networkx), content-hash incremental scheduling, gate runner, event bus, `atomcd serve/status/stop`, structured logs. Daemon core must keep kernel execution behind an interface so WP-2.4 can implement it independently.
+**WP-2.4 `daemon-kernels`** — `packages/daemon/python/atomcd/kernels`: warm-kernel registry, lazy singletons for atopile/faebryk, OCP, pyrenode3, kiutils with health checks/reload; CAD in an isolated worker process (OCP not thread-safe); kernel crash recovery. Starts after WP-2.3 publishes its registry protocol.
+**WP-2.5 `daemon-client-ts`** — `packages/daemon-client/ts`: typed JSON-RPC client, WebSocket event stream, bounded retries only for safe reads, `ensureDaemon()` pid/token discovery + uv spawn into `~/.atomc/venv`. Includes `toRelativePatch(path, ops)` to reconcile core TS absolute-pointer patch builder with RPC relative-ops contract; mock-server tests.
+**WP-2.6 `rpc-contract-tests`** — `tests/rpc`: daemon/client golden tests, auth, status/health, lock contention, conflict/rollback, event subscription, DAG incremental build with fake plugins. Depends on WP-2.3 and WP-2.5.
+
+Phase 2 fan-out: WP-2.1, WP-2.2, WP-2.3, WP-2.5 have exclusive directories and start in parallel (≤5 agents); WP-2.2 consumes WP-2.1's published schema before final conformance. WP-2.4 starts when WP-2.3's kernel protocol is committed. WP-2.6 starts after daemon and client endpoints exist.
 
 ### Phase 3 — Swarm Harness & CLI
 
@@ -441,10 +445,10 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-1.0 contracts | orchestrator | main | merged; contracts + uv/pnpm workspaces pushed |
 | WP-1.1 core-ir-py | pi / DeepSeek Flash | `wp/1.1-core-ir-py` | merged; 56 pytest tests, 98% coverage; strict mypy/ruff clean |
 | WP-1.2 core-ir-ts | pi / DeepSeek Flash | `wp/1.2-core-ir-ts` | merged; 34 Vitest tests, schema generation/typecheck/build pass (uses local TS 5.9 for tsup DTS) |
-| WP-1.3 contract-tests | pi / DeepSeek Flash | `wp/1.3-contract-tests` | in progress |
+| WP-1.3 contract-tests | pi / DeepSeek Flash | `wp/1.3-contract-tests` | merged (PR #3); 30 contract tests pass; CI green including Node 22/25 |
 | WP-1.4 ci-release | pi / DeepSeek Flash | `wp/1.4-ci-release` | merged (PR #1); CI + Docker checks green |
 | WP-1.5 docs-site | pi / DeepSeek Flash | `wp/1.5-docs-site` | merged; VitePress build passes; GitHub Pages enabled at https://dtmirizzi.github.io/atomc/ |
-| WP-1.6 example-seed | pi / DeepSeek Flash | `wp/1.6-example-seed` | merged (PR #2); both ato builds, four QMK builds and both IR validations pass |
+| WP-1.6 example-seed | pi / DeepSeek Flash | `wp/1.6-example-seed` | merged (PR #2); both ato builds, four QMK builds and both IR validations pass |\n| WP-2.1 plugin-sdk-ts | pi / DeepSeek Flash | `wp/2.1-plugin-sdk-ts` | queued for kickoff |\n| WP-2.2 plugin-sdk-py | pi / DeepSeek Flash | `wp/2.2-plugin-sdk-py` | queued for kickoff |\n| WP-2.3 daemon-core | pi / DeepSeek Flash | `wp/2.3-daemon-core` | queued for kickoff |\n| WP-2.4 daemon-kernels | — | `wp/2.4-daemon-kernels` | blocked on WP-2.3 kernel protocol |\n| WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | queued for kickoff |\n| WP-2.6 rpc-contract-tests | — | `wp/2.6-rpc-contract-tests` | blocked on daemon + client
 
 ---
 
