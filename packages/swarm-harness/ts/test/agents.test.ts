@@ -126,11 +126,14 @@ describe("AgentRegistry", () => {
     expect(registry.require("ee-agent").id).toBe("ee-agent");
   });
 
-  it("replaces an existing definition on re-register", () => {
+  it("rejects a duplicate agent id", () => {
     const registry = defaultAgentRegistry();
-    registry.register(definition({ model: { provider: "openrouter", model: "other" } }));
-    expect(registry.require("ee-agent").model.model).toBe("other");
-    expect(registry.list()).toHaveLength(4);
+    expect(() =>
+      registry.register(definition({ model: { provider: "openrouter", model: "other" } })),
+    ).toThrow(/already registered/);
+    const seeded = new AgentRegistry([definition()]);
+    expect(() => seeded.register(definition())).toThrow(/already registered/);
+    expect(seeded.list()).toHaveLength(1);
   });
 
   it("resolves agents for a gate", () => {
@@ -160,5 +163,39 @@ describe("AgentRegistry", () => {
     expect(() => registry.register(definition({ model: { provider: "", model: "x" } }))).toThrow(
       /incomplete model/,
     );
+  });
+
+  it("rejects invalid tool grants", () => {
+    const registry = new AgentRegistry([]);
+    expect(() => registry.register(definition({ permittedTools: ["not-a-grant"] }))).toThrow(
+      /invalid tool grant/,
+    );
+    expect(() => registry.register(definition({ permittedTools: ["Plugin:*"] }))).toThrow(
+      /invalid tool grant/,
+    );
+    expect(() => registry.register(definition({ permittedTools: [""] }))).toThrow(
+      /invalid tool grant/,
+    );
+    expect(() =>
+      registry.register(definition({ permittedTools: ["atopile:*", "cad-jig:render", "*"] })),
+    ).not.toThrow();
+  });
+
+  it("rejects invalid budget caps and empty gate/DAG ids", () => {
+    const registry = new AgentRegistry([]);
+    expect(() =>
+      registry.register(definition({ budget: { maxTurns: 0, maxCostMinor: 10 } })),
+    ).toThrow(/maxTurns/);
+    expect(() =>
+      registry.register(definition({ budget: { maxTurns: 1.5, maxCostMinor: 10 } })),
+    ).toThrow(/maxTurns/);
+    expect(() =>
+      registry.register(definition({ budget: { maxTurns: 1, maxCostMinor: -1 } })),
+    ).toThrow(/maxCostMinor/);
+    expect(() =>
+      registry.register(definition({ budget: { maxTurns: 1, maxCostMinor: 1, maxTokens: 0 } })),
+    ).toThrow(/maxTokens/);
+    expect(() => registry.register(definition({ gates: ["  "] }))).toThrow(/empty gate id/);
+    expect(() => registry.register(definition({ dagTargets: [""] }))).toThrow(/empty DAG target/);
   });
 });

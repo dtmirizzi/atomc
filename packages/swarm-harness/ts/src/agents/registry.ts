@@ -20,6 +20,23 @@ export class AgentDefinitionError extends Error {
 
 const AGENT_NAME_SET: ReadonlySet<string> = new Set(AGENT_NAMES);
 
+/** Allowed tool-grant syntax: `*`, `plugin:*` or `plugin:tool`. */
+const TOOL_GRANT = /^(\*|[a-z][a-z0-9-]*:(?:\*|[a-z0-9][a-z0-9_.-]*))$/;
+
+function assertPositiveInt(value: number | undefined, label: string): void {
+  if (value === undefined) return;
+  if (!Number.isInteger(value) || value < 1) {
+    throw new AgentDefinitionError(`${label} must be a positive integer, got ${value}`);
+  }
+}
+
+function assertNonNegativeInt(value: number | undefined, label: string): void {
+  if (value === undefined) return;
+  if (!Number.isInteger(value) || value < 0) {
+    throw new AgentDefinitionError(`${label} must be a non-negative integer, got ${value}`);
+  }
+}
+
 function assertValid(def: AgentDefinition): void {
   if (!AGENT_NAME_SET.has(def.id)) {
     throw new AgentDefinitionError(
@@ -50,6 +67,27 @@ function assertValid(def: AgentDefinition): void {
   if (def.model.provider.trim().length === 0 || def.model.model.trim().length === 0) {
     throw new AgentDefinitionError(`agent "${def.id}" has an incomplete model config`);
   }
+  for (const grant of def.permittedTools) {
+    if (!TOOL_GRANT.test(grant)) {
+      throw new AgentDefinitionError(
+        `agent "${def.id}" has an invalid tool grant "${grant}" (expected "*", "plugin:*" or "plugin:tool")`,
+      );
+    }
+  }
+  for (const gate of def.gates ?? []) {
+    if (gate.trim().length === 0) {
+      throw new AgentDefinitionError(`agent "${def.id}" has an empty gate id`);
+    }
+  }
+  for (const target of def.dagTargets ?? []) {
+    if (target.trim().length === 0) {
+      throw new AgentDefinitionError(`agent "${def.id}" has an empty DAG target`);
+    }
+  }
+  const budget = def.budget;
+  assertPositiveInt(budget?.maxTurns, `agent "${def.id}" budget.maxTurns`);
+  assertNonNegativeInt(budget?.maxCostMinor, `agent "${def.id}" budget.maxCostMinor`);
+  assertPositiveInt(budget?.maxTokens, `agent "${def.id}" budget.maxTokens`);
 }
 
 /** Registry keyed by agent id; seeded with the four contract agents. */
@@ -60,8 +98,11 @@ export class AgentRegistry {
     for (const definition of definitions) this.register(definition);
   }
 
-  /** Validate and insert (or replace) a definition. */
+  /** Validate and insert a definition; rejects a duplicate agent id. */
   register(definition: AgentDefinition): void {
+    if (this.#definitions.has(definition.id)) {
+      throw new AgentDefinitionError(`agent "${definition.id}" is already registered`);
+    }
     assertValid(definition);
     this.#definitions.set(definition.id, definition);
   }
