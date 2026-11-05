@@ -1,6 +1,6 @@
 # WP-3.2 — `harness-core` handoff
 
-Status: **complete for the deterministic core**. The package passes 44 distinct fake-provider tests. Coverage: 95.14% statements, 88.46% branches, 100% functions, 94.8% lines. Tests use no live provider, sockets, API keys, or hardware. A real pi-ai/OpenRouter provider adapter is not included; see follow-up notes.
+Status: **complete for the deterministic core**. The package passes 45 distinct fake-provider tests. Coverage: 95.14% statements, 88.46% branches, 100% functions, 94.8% lines. Tests use no live provider, sockets, API keys, or hardware. A real pi-ai/OpenRouter provider adapter is not included; see follow-up notes.
 
 ## What was built
 
@@ -42,7 +42,7 @@ pnpm exec biome check packages/swarm-harness/ts
 
 The brief's literal `pnpm --filter @atomc/swarm-harness test typecheck lint build` passes extra argv to Vitest; use the package `verify` script or separate invocations.
 
-## Test inventory — 44 distinct tests, 7 files
+## Test inventory — 45 distinct tests, 7 files
 
 Fixtures are in `test/fakes.ts`; no test file imports another test module.
 
@@ -51,7 +51,7 @@ Fixtures are in `test/fakes.ts`; no test file imports another test module.
 - `runner-pass.test.ts` (2): gate-driven PASS and all-lock release; model give-up escalates.
 - `tools.test.ts` (4): disallowed tool; schema-invalid args; permitted-but-undiscovered tool; valid permitted invocation.
 - `runner-failure.test.ts` (3): bounded RETRY then ESCALATE; crashed gate; exhausted cost budget.
-- `runner-edges.test.ts` (17): scope boundaries; tool grant matching; malformed patch/tool decisions; tool failure; server conflict recovery; over/exact cost cap; over/exact token cap; invalid usage; budget before next turn; manifest `produces` boundary; throwing observer; advisory/skip gates; targeted DAG/gate routing; missing optional tool discovery.
+- `runner-edges.test.ts` (18): scope boundaries; tool grants; malformed decisions; tool and server-conflict recovery; exact/over cost/token budgets; invalid usage; run-id/path safety; `produces` scopes; observer failure; advisory/SKIP gates; targeted DAG/gate routing; absent optional tool discovery.
 - `runner-locks.test.ts` (7): complete lock lifetime; unlock failure cleanup; provider throw; pre-lock abort; lock contention; stale revision replanning; current revision and write-scope enforcement.
 
 ## Design decisions and limitations

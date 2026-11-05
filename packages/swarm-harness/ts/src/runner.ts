@@ -129,7 +129,11 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
   const lockTtlS = options.lockTtlS ?? 120;
   const holder = `agent:${definition.id}#${options.sessionSeq ?? 1}`;
   const requestedRunId = options.runId ?? `run-${now().getTime()}`;
-  const runId = requestedRunId.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 128) || "run";
+  const runId =
+    requestedRunId
+      .replace(/[^A-Za-z0-9._-]/g, "_")
+      .replace(/^[^A-Za-z0-9]+/, "")
+      .slice(0, 128) || "run";
   const session: AgentSession = {
     id: `${runId}:${definition.id}`,
     runId,

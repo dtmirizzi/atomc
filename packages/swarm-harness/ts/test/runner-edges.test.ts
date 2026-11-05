@@ -232,6 +232,21 @@ describe("runAgent — defensive edges", () => {
     expect(result.reason).toContain("token");
   });
 
+  it("bounds unsafe run ids before building transcript file paths", async () => {
+    const daemon = new FakeDaemon();
+    const result = await runAgent({
+      definition: definition(),
+      failure,
+      daemon,
+      provider: new FakeProvider([{ kind: "give_up", reason: "done" }]),
+      projectRoot: await projectRoot(),
+      runId: "../../bad\\u0000session\\u0000with-a-very-long-name".repeat(5),
+    });
+    expect(result.outcome).toBe("ESCALATE");
+    expect(result.session.runId).toMatch(/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/);
+    expect(result.transcriptPath).not.toContain("../");
+  });
+
   it("rejects a transaction path that is within locks but outside manifest produces", async () => {
     const daemon = new FakeDaemon();
     const result = await runAgent({

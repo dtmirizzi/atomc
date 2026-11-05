@@ -369,7 +369,7 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 ### Phase 3 — Swarm Harness & CLI
 
 **WP-3.1 `cli`** — commander 15 app: `init, build, sim, jig, quote, orders, converge, doctor, daemon {start,stop,status}, plugin {new,list}`; pretty TTY output; `--json`; config loader for `atomc.config.ts` (via `tsx`/`jiti`). **Implemented** in PR #9 with 52 unit tests; hardware-dependent commands remain honest structured stubs until their plugins/converger land.
-**WP-3.2 `harness-core`** — state machine (`IDLE → PLAN → CLAIM_LOCK → ACT → VERIFY → RELEASE → (FAIL? ESCALATE)`), agent registry, provider/daemon ports, budget/turn caps, transcript persistence (`.atomc/sessions/*.jsonl`). **Implemented** in PR #9 with 44 distinct fake-provider tests. Real pi-ai adapter is a follow-up; writes enforce both lock and `produces` scopes, tool calls validate advertised JSON Schema.
+**WP-3.2 `harness-core`** — state machine (`IDLE → PLAN → CLAIM_LOCK → ACT → VERIFY → RELEASE → (FAIL? ESCALATE)`), agent registry, provider/daemon ports, budget/turn caps, transcript persistence (`.atomc/sessions/*.jsonl`). **Implemented** in PR #9 with 45 distinct fake-provider tests. Real pi-ai adapter is a follow-up; writes enforce both lock and `produces` scopes, tool calls validate advertised JSON Schema.
 **WP-3.3 `harness-agents`** — `@ee-agent`, `@fw-agent`, `@mech-agent`, `@ops-agent` system prompts, tool allow-lists, lock scopes (`electrical.*`, `firmware.*`, `mechanical.*`, `sourcing.*|orders.*`), multimodal datasheet/3D-render inspection tools.
 **WP-3.4 `harness-converge`** — gate-failure → agent wake routing, parallel scheduling respecting lock graph, conflict rollback, convergence criteria, human-in-the-loop checkpoints, `atomc converge --max-cost`.
 **WP-3.5 `harness-tests`** — scripted fake provider, recorded sessions, nightly live run with cost cap.
@@ -455,7 +455,7 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-2.4 daemon-kernels | pi / DeepSeek Flash | `wp/2.4-daemon-kernels` | merged (PR #7); 72 kernel tests pass, 1 opt-in hardware smoke skipped; zero hardware deps required in CI |
 | WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | merged in PR #6; 54 Vitest tests and 92.8% statement coverage |
 | WP-3.1 CLI | pi / DeepSeek Flash | `wp/3.1-cli` | implemented in PR #9; 52 Vitest tests, 95.55% statements; required CI pending |
-| WP-3.2 harness-core | pi / DeepSeek Flash | `wp/3.2-harness-core` | implemented and hardened in PR #9; 44 distinct Vitest tests, 95.14% statements, 100% functions; required CI pending |
+| WP-3.2 harness-core | pi / DeepSeek Flash | `wp/3.2-harness-core` | implemented and hardened in PR #9; 45 distinct Vitest tests, 95.14% statements, 100% functions; required CI pending |
 | WP-3.3 harness-agents | queued | `wp/3.3-harness-agents` | follows harness-core protocol |
 | WP-3.4 harness-converge | queued | `wp/3.4-harness-converge` | follows gate and lock integrations |
 | WP-3.5 harness-tests | queued | `wp/3.5-harness-tests` | follows harness runtime |
