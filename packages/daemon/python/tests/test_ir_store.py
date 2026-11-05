@@ -117,6 +117,43 @@ async def test_locked_node_reports_holder(project_root: Path) -> None:
     assert datetime.fromisoformat(expires.replace("Z", "+00:00")) > datetime.now(UTC)
 
 
+async def test_map_upsert_creates_and_updates_node(project_root: Path) -> None:
+    store = IRStore(project_root)
+    store.load()
+    first = await store.map_upsert(
+        "/provenance",
+        "nodes",
+        "demo:watch",
+        {
+            "producer": "plugin:demo",
+            "inputs_hash": "sha256:" + "a" * 64,
+            "outputs_hash": "sha256:" + "b" * 64,
+            "ran_at": "2026-11-04T00:00:00Z",
+            "duration_ms": 1,
+        },
+    )
+    assert first.new_rev == 1
+    _rev, value = store.read("/provenance")
+    assert value["nodes"]["demo:watch"]["producer"] == "plugin:demo"
+
+    second = await store.map_upsert(
+        "/provenance",
+        "nodes",
+        "demo:watch",
+        {
+            "producer": "plugin:demo",
+            "inputs_hash": "sha256:" + "c" * 64,
+            "outputs_hash": "sha256:" + "d" * 64,
+            "ran_at": "2026-11-04T00:00:01Z",
+            "duration_ms": 2,
+        },
+    )
+    assert second.new_rev == 2
+    _rev, value = store.read("/provenance")
+    assert value["nodes"]["demo:watch"]["inputs_hash"].endswith("c" * 64)
+    assert store.node_rev("/provenance") == 2
+
+
 async def test_parallel_transactions_only_one_base_rev_wins(project_root: Path) -> None:
     store = IRStore(project_root)
     store.load()

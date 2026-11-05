@@ -181,6 +181,42 @@ class IRStore:
             return False
         return node_obj.get("_meta", {}).get("lock") is not None
 
+    async def map_upsert(
+        self,
+        node: str,
+        container: str,
+        key: str,
+        value: dict[str, Any],
+        holder: str | None = None,
+    ) -> TxResult:
+        """Insert/replace ``container[key] = value`` under a top-level mapping node.
+
+        Creates the top-level node (with a fresh ``_meta``) when absent, otherwise patches the
+        existing node. The current node revision is read under the write lock, so callers do
+        not need to track it. Used for ``/gates/results`` and ``/provenance/nodes``.
+        """
+        name = node.strip("/").split("/")[0]
+        escaped = key.replace("~", "~0").replace("/", "~1")
+        async with self._write_lock:
+            ir = self.snapshot
+            node_obj = ir.model_dump(mode="json", by_alias=True).get(name)
+            if node_obj is None:
+                base = 0
+                ops: list[dict[str, Any]] = [
+                    {
+                        "op": "add",
+                        "path": "",
+                        "value": {"_meta": {"rev": 0, "lock": None}, container: {key: value}},
+                    }
+                ]
+            else:
+                base = int(node_obj.get("_meta", {}).get("rev", 0))
+                ops = [{"op": "add", "path": f"/{container}/{escaped}", "value": value}]
+            new_ir, result = core_apply_patch(ir, f"/{name}", base, ops, holder=holder)
+            atomic_write_text(self.path, new_ir.dump())
+            self._ir = new_ir
+            return result
+
     # -- convenience --------------------------------------------------------
 
     def utcnow(self) -> datetime:

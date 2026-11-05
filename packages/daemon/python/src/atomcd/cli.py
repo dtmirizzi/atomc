@@ -17,8 +17,12 @@ import uvicorn
 from . import VERSION
 from .app import Services, create_app
 from .config import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_STATE_DIR, DaemonConfig
+from .dag import CycleError, DagScheduler
 from .events import EventBus
+from .gates import GateRunner
 from .ir_store import IRStore
+from .logging import configure_logging, get_logger
+from .plugins.discovery import build_registry
 from .runtime import RuntimeState, load_state_file, pid_alive
 
 app = typer.Typer(
@@ -52,12 +56,29 @@ def _build_services(config: DaemonConfig) -> Services:
     runtime.clear_if_stale()
     store = IRStore(config.project_root)
     store.load()
+    logger = get_logger("atomcd")
+    events = EventBus()
+    events.set_logger(logger)
+    registry = build_registry(config.project_root, store=store, events=events, logger=logger)
+    gates = GateRunner(registry=registry, store=store, events=events, logger=logger)
+    dag: DagScheduler | None
+    try:
+        dag = DagScheduler(
+            registry=registry, store=store, events=events, gate_runner=gates, logger=logger
+        )
+    except CycleError as exc:
+        logger.error("dag_cycle_detected", error=str(exc))
+        dag = None
     return Services(
         config=config,
         store=store,
         runtime_state=runtime,
-        events=EventBus(),
+        events=events,
         version=VERSION,
+        dag=dag,
+        gates=gates,
+        plugins=registry,
+        logger=logger,
     )
 
 
@@ -70,6 +91,7 @@ def serve(
     json_output: JsonOption = False,
 ) -> None:
     """Start the daemon in the foreground."""
+    configure_logging()
     config = DaemonConfig(host=host, port=port, state_dir=state_dir).with_project(project)
     existing = RuntimeState(config.state_dir).read()
     if existing is not None and pid_alive(existing.pid) and existing.pid != os.getpid():

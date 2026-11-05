@@ -309,6 +309,8 @@ class Dispatcher:
                 **({"holder": params.holder} if params.holder else {}),
             },
         )
+        if self.dag is not None:
+            self.dag.notify_ir_changed(list(result.changed_paths))
         return {"new_rev": result.new_rev, "changed_paths": result.changed_paths}
 
     async def _m_ir_lock(self, params: Any) -> dict[str, Any]:
