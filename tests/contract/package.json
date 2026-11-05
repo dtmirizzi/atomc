@@ -1,0 +1,23 @@
+{
+  "name": "@atomc/contract-tests",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Cross-language (Python <-> TypeScript) conformance tests for the atomc system IR",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "contract": "vitest run",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check ts vitest.config.ts"
+  },
+  "dependencies": {
+    "@atomc/core-ir": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
