@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 2 integration merged; WP-2.4 kernel adapters and WP-2.6 RPC contract tests are now active.** Phase 0, all Phase 1 work, and Phase 2 SDKs, daemon core, and typed client are merged to `main`. PR #6 CI passed on Python 3.14 (Linux/macOS) and Node 22/25.
+Status: **Phase 2 complete; Phase 3 (swarm harness, CLI, and Studio) is next.** Phase 0, all Phase 1 work, and all planned Phase 2 packages (plugin SDKs, daemon core, typed client, kernel adapters, and live RPC contract tests) are merged to `main`. CI is green on Python 3.14 (Linux/macOS) and Node 22/25.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -364,7 +364,7 @@ Phase 1 execution record: WP-1.0 contracts, WP-0.1 environment, WP-1.1/1.2 IR, W
 **WP-2.5 `daemon-client-ts`** — `packages/daemon-client/ts`: typed JSON-RPC client, WebSocket event stream, bounded retries only for safe reads, `ensureDaemon()` pid/token discovery + uv spawn into `~/.atomc/venv`. Includes `toRelativePatch(path, ops)` to reconcile core TS absolute-pointer patch builder with RPC relative-ops contract; mock-server tests.
 **WP-2.6 `rpc-contract-tests`** — `tests/rpc`: daemon/client golden tests, auth, status/health, lock contention, conflict/rollback, event subscription, DAG incremental build with fake plugins. Depends on WP-2.3 and WP-2.5.
 
-Phase 2 execution record: WP-2.1, WP-2.2, WP-2.3, and WP-2.5 were integrated together in PR #6 after integration testing exposed and fixed missing workspace lock importers, SDK-to-daemon manifest error translation, pytest test-module collisions, mypy scoping, and a daemon doctor false-negative. WP-2.4 (warm hardware kernels) and WP-2.6 (RPC contract tests) are now unblocked and remain the Phase 2 work.
+Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 after integration testing fixed missing lock importers, SDK-to-daemon manifest error translation, pytest module collisions, mypy scope, and a daemon doctor false-negative. WP-2.4 kernel adapters merged in PR #7 and WP-2.6 real daemon/client RPC tests merged in PR #8. Combined CI passed.
 
 ### Phase 3 — Swarm Harness & CLI
 
@@ -452,9 +452,15 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-2.1 plugin-sdk-ts | pi / DeepSeek Flash | `wp/2.1-plugin-sdk-ts` | merged in PR #6; shared manifest schema and 97 Vitest tests |
 | WP-2.2 plugin-sdk-py | pi / DeepSeek Flash | `wp/2.2-plugin-sdk-py` | merged in PR #6; 93 pytest tests against WP-2.1 shared schema |
 | WP-2.3 daemon-core | pi / DeepSeek Flash | `wp/2.3-daemon-core` | merged in PR #6; authenticated RPC, IR store, DAG, gates and daemon tests |
-| WP-2.4 daemon-kernels | pi / DeepSeek Flash | `wp/2.4-daemon-kernels` | active; implement optional/lazy adapters against merged kernel protocol |
+| WP-2.4 daemon-kernels | pi / DeepSeek Flash | `wp/2.4-daemon-kernels` | merged (PR #7); 72 kernel tests pass, 1 opt-in hardware smoke skipped; zero hardware deps required in CI |
 | WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | merged in PR #6; 54 Vitest tests and 92.8% statement coverage |
-| WP-2.6 rpc-contract-tests | pi / DeepSeek Flash | `wp/2.6-rpc-contract-tests` | active; real daemon/client tests with fake project plugin
+| WP-3.1 CLI | queued | `wp/3.1-cli` | ready to start; daemon client and daemon are merged |
+| WP-3.2 harness-core | queued | `wp/3.2-harness-core` | ready to start; use fake-provider tests |
+| WP-3.3 harness-agents | queued | `wp/3.3-harness-agents` | follows harness-core protocol |
+| WP-3.4 harness-converge | queued | `wp/3.4-harness-converge` | follows gate and lock integrations |
+| WP-3.5 harness-tests | queued | `wp/3.5-harness-tests` | follows harness runtime |
+| WP-3.6–3.9 Studio | queued | `wp/3.6-studio` | parallel panes after daemon WS/client stable |
+| WP-2.6 rpc-contract-tests | pi / DeepSeek Flash | `wp/2.6-rpc-contract-tests` | merged (PR #8); 34 real-daemon/client RPC tests pass on CI |
 
 ---
 
