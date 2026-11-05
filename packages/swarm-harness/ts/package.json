@@ -1,0 +1,40 @@
+{
+  "name": "@atomc/swarm-harness",
+  "version": "0.0.1",
+  "description": "Transactional swarm state machine for atomc: agent registry, lock lifecycle, gate-driven verification, transcripts",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src test tsup.config.ts vitest.config.ts",
+    "verify": "pnpm test && pnpm typecheck && pnpm lint && pnpm build"
+  },
+  "dependencies": {
+    "@atomc/core-ir": "workspace:*",
+    "@atomc/daemon-client": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "^5.9.0",
+    "vitest": "catalog:"
+  }
+}
