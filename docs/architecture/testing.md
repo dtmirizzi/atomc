@@ -13,7 +13,7 @@ kernels and a multi-agent loop, the test strategy is layered and each layer has 
 | **Plugin conformance** | `conformance()` loads a manifest and checks watches/gates/tools are registered and callable | plugin dirs | required |
 | **Golden artifacts** | `.repl`, `.resc`, BOM CSV, jig `.step` bbox/volume/pogo coordinates vs committed goldens | `tests/e2e` | required (Linux) |
 | **Hardware kernel smoke** | atopile compile; build123d jig; Renode boots firmware and asserts UART banner | `tests/e2e`, Docker | required Linux; nightly macOS |
-| **Swarm harness** | deterministic fake LLM provider; recorded sessions replayed; live run nightly with cap | `packages/swarm-harness` | required (fake), nightly (live) |
+| **Swarm harness** | deterministic fake provider + versioned recorded-session fixtures replayed by a `ReplayProvider`; fixture daemon E2E of the `runAgent` loop; seeded budget invariants; secret-free session report; live run nightly with cap | `packages/swarm-harness` | required (fake/replay), nightly (live) |
 | **Vendor adapters** | `httpx` + recorded cassettes (`respx`) | `plugins/plugin-sourcing` | required (cassettes) |
 | **Mutation/fuzz** | hypothesis on IR patches + JSON-patch transactions | core-ir, daemon | required |
 | **Perf budget** | warm-kernel example build < 10 s; IR transact p99 < 20 ms | nightly | advisory |
