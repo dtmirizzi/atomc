@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 2 integration merged; kernel adapters and RPC contract tests remain.** Phase 0, all Phase 1 work, and Phase 2 plugin SDKs, daemon core, and typed client are merged to `main`. CI is green on Python 3.14 (Linux/macOS) and Node 22/25.
+Status: **Phase 2 integration merged; WP-2.4 kernel adapters and WP-2.6 RPC contract tests are now active.** Phase 0, all Phase 1 work, and Phase 2 SDKs, daemon core, and typed client are merged to `main`. PR #6 CI passed on Python 3.14 (Linux/macOS) and Node 22/25.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -452,9 +452,9 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-2.1 plugin-sdk-ts | pi / DeepSeek Flash | `wp/2.1-plugin-sdk-ts` | merged in PR #6; shared manifest schema and 97 Vitest tests |
 | WP-2.2 plugin-sdk-py | pi / DeepSeek Flash | `wp/2.2-plugin-sdk-py` | merged in PR #6; 93 pytest tests against WP-2.1 shared schema |
 | WP-2.3 daemon-core | pi / DeepSeek Flash | `wp/2.3-daemon-core` | merged in PR #6; authenticated RPC, IR store, DAG, gates and daemon tests |
-| WP-2.4 daemon-kernels | queued | `wp/2.4-daemon-kernels` | ready: kernel protocol is in merged daemon package |
+| WP-2.4 daemon-kernels | pi / DeepSeek Flash | `wp/2.4-daemon-kernels` | active; implement optional/lazy adapters against merged kernel protocol |
 | WP-2.5 daemon-client-ts | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts` | merged in PR #6; 54 Vitest tests and 92.8% statement coverage |
-| WP-2.6 rpc-contract-tests | queued | `wp/2.6-rpc-contract-tests` | ready to start against merged daemon and client
+| WP-2.6 rpc-contract-tests | pi / DeepSeek Flash | `wp/2.6-rpc-contract-tests` | active; real daemon/client tests with fake project plugin
 
 ---
 
