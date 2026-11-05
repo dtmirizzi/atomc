@@ -39,10 +39,11 @@ All ten brief deliverables, plus the WP-2.4 kernel boundary:
 9. **`atomcd` CLI** (`cli.py`): `serve`, `status`, `stop`, `doctor`; `--project`, `--host`,
    `--port`, `--state-dir`, `--json`; `serve` handles SIGINT/SIGTERM via uvicorn and removes the
    pid file.
-10. **Tests**: 128 daemon tests (HTTP, WS, golden JSON-RPC, store, plugins, DAG, gates, CLI,
+10. **Tests**: 130 daemon tests (HTTP, WS, golden JSON-RPC, store, plugins, DAG, gates, CLI,
     runtime, events, invoke, context, kernel protocol, logging) — **88 % line coverage**.
-    Two extra SDK-only tests use `pytest.importorskip("atomc_plugin_sdk")` so they run in the
-    combined Phase-2 checkout and skip here. Fake plugin builders live in the importable
+    Two SDK-only tests (valid manifest, invalid manifest rejected by the real SDK) use
+    `pytest.importorskip("atomc_plugin_sdk")` so they run in the combined Phase-2 checkout and
+    skip here. Fake plugin builders live in the importable
     `atomcd.testing` module (not `tests/fakes.py`), and every daemon test module is uniquely
     prefixed `test_daemon_*` so repo-root collection cannot hit pytest's duplicate-basename
     "import file mismatch" across packages; `uv run pytest packages/daemon/python/tests` from the
@@ -57,7 +58,7 @@ are imported lazily by WP-2.4 under `atomcd/kernels/`.
 
 ```bash
 uv sync --all-packages                       # after orchestrator regenerates uv.lock
-uv run pytest packages/daemon/python/tests -q   # 128 passed, 2 skipped (SDK-only), from repo root
+uv run pytest packages/daemon/python/tests -q   # 130 passed, 2 skipped (real-SDK), from repo root
 uv run pytest packages/daemon/python --cov=atomcd --cov-report=term-missing -q   # 88%
 uv run ruff check packages/daemon/python
 uv run ruff format --check packages/daemon/python
@@ -67,9 +68,15 @@ pnpm exec turbo run contract                 # 30 cross-language tests, green
 uv run python packages/daemon/python/examples/demo.py   # end-to-end transcript below
 ```
 
-Repo-wide at handoff: `uv run pytest -q` → **184 passed, 2 skipped** (56 core-ir + 128 daemon);
-`uv run pytest packages/daemon/python/tests` from the repo root → **128 passed, 2 skipped**;
+Repo-wide at handoff: `uv run pytest -q` → **186 passed, 2 skipped** (56 core-ir + 130 daemon),
+identical under `--import-mode=importlib`; `uv run pytest packages/daemon/python/tests` from the
+repo root → **130 passed, 2 skipped**;
 `turbo run contract` → **30 passed**.
+
+**Verified against the real SDK.** Installing `atomc-plugin-sdk` from `origin/wp/2.2-plugin-sdk-py`
+with the shared schema from `origin/wp/2.1-plugin-sdk-ts` (via `ATOMC_PLUGIN_SCHEMA`, editable
+`uv pip install`) and running the daemon suite yields **132 passed** — the SDK
+`ManifestValidationError` path is translated and the two real-SDK regression tests execute.
 
 ## Demo transcript
 
@@ -161,7 +168,14 @@ as written.
 2. **No `pyproject.toml` / CI / workspace-file edits were made.** CI already globs
    `packages/*/python`, so `packages/daemon/python` is picked up automatically once the lock is
    regenerated.
-3. **Cross-package dependency not yet declared:** the brief asked to add `atomc-plugin-sdk` as a
+3. **Cross-package test rename (done at orchestrator request).** `packages/core-ir/python/tests/`
+   `test_schema.py` was renamed to `test_core_ir_schema.py` (content unchanged) because it
+   collided by basename with `packages/plugin-sdk/python/tests/test_schema.py` under repo-root
+   pytest's default import mode. Alternative single-line fix if preferred: add
+   `--import-mode=importlib` to the root `[tool.pytest.ini_options] addopts`. Daemon test modules
+   are already uniquely named `test_daemon_*`. This is the only change outside
+   `packages/daemon/**` on this branch.
+4. **Cross-package dependency not yet declared:** the brief asked to add `atomc-plugin-sdk` as a
    workspace dependency, but that package does not exist on this branch. It is currently an
    optional import (guarded, `# type: ignore[import-not-found]`). After WP-2.2 merges, add
    `atomc-plugin-sdk` to `packages/daemon/python/pyproject.toml` dependencies and remove the

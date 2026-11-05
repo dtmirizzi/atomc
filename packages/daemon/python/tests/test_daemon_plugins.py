@@ -123,6 +123,47 @@ def test_validate_manifest_translates_sdk_failure(monkeypatch: pytest.MonkeyPatc
         validate_manifest(manifest_dict(name="broken"))
 
 
+def test_validate_manifest_translates_sdk_structured_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """An SDK ``ManifestValidationError``-style payload keeps its path-oriented errors."""
+
+    class SDKManifestError:
+        def __init__(self, path: str, message: str) -> None:
+            self.path = path
+            self.message = message
+
+    class SDKValidationError(ValueError):
+        def __init__(self) -> None:
+            self.errors = [SDKManifestError("/name", "name must be kebab-case")]
+            super().__init__("invalid atomc plugin manifest")
+
+    def sdk_validate(data: dict[str, Any]) -> Any:
+        raise SDKValidationError()
+
+    _inject_fake_sdk(monkeypatch, sdk_validate)
+    with pytest.raises(ManifestError) as exc_info:
+        validate_manifest(manifest_dict(name="broken"))
+    assert exc_info.value.errors == [{"path": "/name", "message": "name must be kebab-case"}]
+
+
+def test_validate_manifest_translates_sdk_coercion_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """An SDK result that cannot be coerced still surfaces as :class:`ManifestError`."""
+
+    class Uncoercible:
+        def model_dump(self, **kwargs: Any) -> dict[str, Any]:
+            return {"name": "only-a-name"}  # missing required fields -> all candidates fail
+
+    def sdk_validate(data: dict[str, Any]) -> Any:
+        return Uncoercible()
+
+    _inject_fake_sdk(monkeypatch, sdk_validate)
+    with pytest.raises(ManifestError, match="could not coerce"):
+        validate_manifest(manifest_dict(name="broken"))
+
+
 def test_validate_manifest_translates_sdk_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """An SDK result carrying issues (instead of raising) is normalised too."""
 
@@ -149,12 +190,15 @@ def test_validate_manifest_with_real_sdk_if_installed() -> None:
 
 
 def test_invalid_manifest_with_real_sdk_if_installed() -> None:
-    """Regression: the real SDK rejecting a manifest surfaces as :class:`ManifestError`."""
+    """Regression: the real SDK's ManifestValidationError becomes a daemon ManifestError."""
     pytest.importorskip("atomc_plugin_sdk")
     data = manifest_dict()
     data["name"] = "Bad Name"
-    with pytest.raises(ManifestError):
+    with pytest.raises(ManifestError) as exc_info:
         validate_manifest(data)
+    # The SDK's structured, path-oriented findings are preserved.
+    assert exc_info.value.errors
+    assert any(item["path"] for item in exc_info.value.errors)
 
 
 def test_pointer_allowed_boundaries() -> None:

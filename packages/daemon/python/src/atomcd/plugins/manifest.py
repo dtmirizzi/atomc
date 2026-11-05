@@ -283,23 +283,57 @@ def _local_validation_errors(exc: ValidationError) -> list[dict[str, str]]:
     ]
 
 
+def _structured_sdk_errors(exc: BaseException) -> list[dict[str, str]]:
+    """Normalise an SDK error's ``errors``/``issues``/``findings`` list to daemon errors."""
+    raw = getattr(exc, "errors", None) or getattr(exc, "issues", None)
+    if raw is None:
+        raw = getattr(exc, "findings", None)
+    if not isinstance(raw, list):
+        return []
+    errors: list[dict[str, str]] = []
+    for item in raw:
+        path = getattr(item, "path", None)
+        message = getattr(item, "message", None)
+        errors.append(
+            {
+                "path": "" if path is None else str(path),
+                "message": str(item) if message is None else str(message),
+            }
+        )
+    return errors
+
+
+def _translate_sdk_error(exc: BaseException) -> ManifestError:
+    """Map any SDK validation failure to the daemon's :class:`ManifestError`.
+
+    The Python SDK raises ``ManifestValidationError`` (a ``ValueError``) whose ``errors``
+    attribute holds path-oriented findings; those are surfaced in the daemon error's ``errors``
+    payload so callers get stable diagnostics regardless of which validator ran.
+    """
+    errors = _structured_sdk_errors(exc)
+    if errors:
+        return ManifestError(f"invalid plugin manifest: {errors}", errors)
+    return ManifestError(f"plugin manifest rejected by SDK: {exc}")
+
+
 def validate_manifest(data: dict[str, Any]) -> Manifest:
     """Validate raw manifest data into a :class:`Manifest`.
 
     Prefers ``atomc_plugin_sdk.validate_manifest`` when that package is importable so the daemon
-    and SDK never disagree. The SDK may return its own ``PluginManifest`` model or raise its own
-    validation error; both are normalised to the local models / :class:`ManifestError`. Falls
-    back to the local contract models when the SDK is absent.
+    and SDK never disagree. Both the SDK call **and** the coercion of its result are wrapped, so
+    an SDK ``ManifestValidationError`` (or any other SDK failure) is always translated to the
+    daemon's :class:`ManifestError` with its structured ``errors`` preserved. Falls back to the
+    local contract models when the SDK is absent.
     """
     sdk = _load_sdk_validator()
     if sdk is not None:
         try:
             parsed = sdk(data)
+            return _coerce_manifest(parsed)
         except ManifestError:
             raise
         except Exception as exc:
-            raise ManifestError(f"plugin manifest rejected by SDK: {exc}") from exc
-        return _coerce_manifest(parsed)
+            raise _translate_sdk_error(exc) from exc
     try:
         return Manifest.model_validate(data)
     except ValidationError as exc:
