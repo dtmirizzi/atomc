@@ -1,0 +1,268 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://atomc.dev/schemas/atomc-plugin.schema.json",
+  "title": "atomc-plugin.json",
+  "description": "atomc-plugin.json manifest contract v0.1.0. Generated from @atomc/plugin-sdk's zod schema; do not edit by hand.",
+  "x-manifest-version": "0.1.0",
+  "type": "object",
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "atomc": {
+      "type": "string",
+      "pattern": "^(?:(?:v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?\\s+-\\s+v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?|(?:>=|<=|>|<|=|~|\\^)?\\s*v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\s+(?:>=|<=|>|<|=|~|\\^)?\\s*v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?)*))(?:\\s*\\|\\|\\s*(?:v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?\\s+-\\s+v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?|(?:>=|<=|>|<|=|~|\\^)?\\s*v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\s+(?:>=|<=|>|<|=|~|\\^)?\\s*v?(?:0|[1-9]\\d*|[xX*])(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:\\.(?:0|[1-9]\\d*|[xX*]))?(?:-(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:\\d+|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?)*))*$"
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*$"
+        },
+        "ts": {
+          "type": "string",
+          "pattern": "^\\.\\/[A-Za-z0-9._/-]+$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "watches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9](?:[a-z0-9._:-]*[a-z0-9])?$"
+          },
+          "ir": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^(?:\\/(?:[^~/]|~[01])*)*$"
+            }
+          },
+          "files": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "debounce_ms": {
+            "default": 250,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60000
+          }
+        },
+        "required": [
+          "id",
+          "ir"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "produces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\/(?!meta(?:\\/|$))(?:electrical|layout|keyboard|firmware|simulation|mechanical|sourcing|fabrication|orders|gates|provenance|ext)(?:\\/|$)"
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^gate:[a-z0-9](?:[a-z0-9._:-]*[a-z0-9])?$"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "blocking",
+              "advisory"
+            ]
+          },
+          "owner_agent": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ee-agent",
+                  "fw-agent",
+                  "mech-agent",
+                  "ops-agent"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9](?:[a-z0-9._:-]*[a-z0-9])?$"
+            }
+          },
+          "handler": {
+            "type": "string",
+            "pattern": "^(?:[A-Za-z_$][A-Za-z0-9_$]*|[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*|\\.\\/[A-Za-z0-9._/-]+(?:#[A-Za-z_$][A-Za-z0-9_$]*)?)$"
+          }
+        },
+        "required": [
+          "id",
+          "severity",
+          "owner_agent",
+          "after",
+          "handler"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input_schema": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            ]
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ee-agent",
+                "fw-agent",
+                "mech-agent",
+                "ops-agent"
+              ]
+            }
+          },
+          "mutates": {
+            "type": "boolean"
+          },
+          "handler": {
+            "type": "string",
+            "pattern": "^(?:[A-Za-z_$][A-Za-z0-9_$]*|[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*|\\.\\/[A-Za-z0-9._/-]+(?:#[A-Za-z_$][A-Za-z0-9_$]*)?)$"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "input_schema",
+          "agents",
+          "mutates",
+          "handler"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cli": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "handler": {
+            "type": "string",
+            "pattern": "^(?:[A-Za-z_$][A-Za-z0-9_$]*|[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_$][A-Za-z0-9_$]*|\\.\\/[A-Za-z0-9._/-]+(?:#[A-Za-z_$][A-Za-z0-9_$]*)?)$"
+          }
+        },
+        "required": [
+          "command",
+          "description",
+          "handler"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "ui": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "panel": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "entry": {
+            "type": "string",
+            "pattern": "^\\.\\/[A-Za-z0-9._/-]+$"
+          }
+        },
+        "required": [
+          "panel",
+          "title",
+          "entry"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "manifest_version",
+    "name",
+    "version",
+    "description",
+    "atomc",
+    "runtime",
+    "watches",
+    "produces",
+    "gates",
+    "tools",
+    "cli",
+    "ui"
+  ],
+  "additionalProperties": false
+}

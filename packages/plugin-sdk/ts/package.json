@@ -1,0 +1,43 @@
+{
+  "name": "@atomc/plugin-sdk",
+  "version": "0.1.0",
+  "description": "TypeScript plugin SDK for atomc: manifest schema, defineAtomcPlugin, watch matcher, and conformance kit",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src test scripts tsup.config.ts vitest.config.ts",
+    "schema:generate": "tsx scripts/generate-schema.ts",
+    "schema:check": "tsx scripts/generate-schema.ts --check",
+    "contract": "vitest run test/contract.test.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsup": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "^5.9.0",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
