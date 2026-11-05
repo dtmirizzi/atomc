@@ -99,13 +99,23 @@ Documents must be rasterised by the producing plugin first; only `image/png|jpeg
 8 MiB are accepted.
 
 ```ts
-import { HarnessInspectionDaemon, MultimodalInspector } from "@atomc/swarm-harness";
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
+import { HarnessInspectionDaemon, MultimodalInspector, ProjectImageReader } from "@atomc/swarm-harness";
 
-const inspector = new MultimodalInspector({ readFile: async (p) => new Uint8Array(await readFile(p)) });
-const daemon = new HarnessInspectionDaemon(daemonClientAdapter, inspector);
+// Root-confined reader: rejects absolute paths, `..` traversal and symlink escapes,
+// and caps the byte size before returning data.
+const reader = new ProjectImageReader(process.cwd(), {
+  readFile: async (p) => new Uint8Array(await readFile(p)),
+  realpath,
+});
+const daemon = new HarnessInspectionDaemon(daemonClientAdapter, new MultimodalInspector(reader));
 // pass `daemon` to runAgent: inspection calls are served locally, everything else is forwarded.
 ```
+
+`ProjectImageReader` only accepts project-relative paths; absolute paths (`/etc/...`, `C:\...`),
+`..` traversal and symlinks that resolve outside the root are rejected before any bytes are read.
+`MultimodalInspector` also accepts any custom `ArtifactReader`, so non-Node hosts can supply their
+own safely scoped reader as long as it enforces the same containment rules.
 
 ## Providers and model routing
 
@@ -124,27 +134,41 @@ or `give_up`. Tool calls are checked against the agent allow-list (`"*"`, `"plug
 scope and at the current `_meta.rev`.
 
 Adapters (real LLM, recorded replay) live outside the deterministic core and are injected. The
-package ships a structural `PiAiProvider` for `@mariozechner/pi-ai` that never imports the vendor SDK
-— integrators pass `getModel(...)` and `completeSimple` in:
+package ships a real `PiAiProvider` typed against `@mariozechner/pi-ai` v0.73.x; `complete` and the
+model are injected so tests never touch the network:
 
 ```ts
-import { PiAiProvider } from "@atomc/swarm-harness";
 import { completeSimple, getModel } from "@mariozechner/pi-ai";
+import { AGENT_DEFINITIONS, createPiAiProvider } from "@atomc/swarm-harness";
 
-const provider = new PiAiProvider({
-  systemPrompt: AGENT_DEFINITIONS["ee-agent"].systemPrompt,
-  model: getModel("openrouter", "deepseek/deepseek-v4-flash"),
-  complete: completeSimple,
-  apiKey: process.env.OPENROUTER_API_KEY,
-  reasoning: "medium",
-});
+// pi-ai's catalog may not pin every OpenRouter id; override `id` on a known model.
+const model = {
+  ...getModel("openrouter", "deepseek/deepseek-v4-flash"),
+  id: "deepseek/deepseek-v4.1-flash",
+};
+
+const provider = createPiAiProvider(
+  {
+    systemPrompt: AGENT_DEFINITIONS["ee-agent"].systemPrompt,
+    model,
+    apiKeyEnv: "OPENROUTER_API_KEY", // read from env, never stored on the config
+    reasoning: "medium",
+  },
+  { env: process.env, complete: completeSimple },
+);
 ```
 
-`toPiAiContext` (pure) turns a `ModelRequest` — failure summary, scoped IR reads, tool descriptors and
-attachments — into a pi-ai `Context`; `toModelDecision` maps the reply back to a `ModelDecision`
-(tool call, `patch`, `verify`, `give_up`) and converts usage to integer-USD-minor accounting. Tool
-names are encoded as `"<plugin>__<tool>"`. Tests inject a fake `complete` and never touch the network
-or the SDK.
+The injected `complete` seam is exactly pi-ai's `completeSimple` (compile-checked via
+`DEFAULT_PI_AI_COMPLETE`), so no cast is needed. Keys are resolved from `env[apiKeyEnv]` and are never
+written to `AgentDefinition`s, config objects or browser URLs; transport errors have the key redacted
+before they reach logs or transcripts. `nextTurn` forwards a per-request `request.signal` (falling back
+to the provider default) to pi-ai, and `runAgent` accumulates actual model/tool turns plus inspection
+image attachments into subsequent `ModelRequest`s.
+
+`toPiAiContext` turns a `ModelRequest` — failure summary, scoped IR reads, tool descriptors, prior
+tool turns and attachments — into a pi-ai `Context`; `toModelDecision` maps the reply back to a
+`ModelDecision` (tool call, `patch`, `verify`, `give_up`) and converts usage to integer-USD-minor
+accounting. Tool names are encoded as `"<plugin>__<tool>"`.
 
 ## Spend and turn caps
 

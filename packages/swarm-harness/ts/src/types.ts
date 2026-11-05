@@ -165,6 +165,8 @@ export interface ModelRequest {
   tools: readonly ToolDescriptor[];
   /** Optional multimodal attachments (datasheet/render images) for this turn. */
   attachments?: readonly ModelAttachment[];
+  /** Cancellation signal forwarded to the model provider. */
+  signal?: AbortSignal;
   turn: number;
   remainingCostMinor: number;
 }

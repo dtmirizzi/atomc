@@ -5,9 +5,12 @@ import {
   HarnessInspectionDaemon,
   INSPECTION_TOOLS,
   inspectionToolGrants,
+  isPathContained,
   loadImageAttachment,
   MAX_ATTACHMENT_BYTES,
   MultimodalInspector,
+  normalizeProjectPath,
+  ProjectImageReader,
   sniffImageMimeType,
 } from "../src/index.js";
 import { FakeDaemon } from "./fakes.js";
@@ -220,5 +223,86 @@ describe("HarnessInspectionDaemon", () => {
     expect(base.unlockCalls).toBe(1);
     expect(base.runDagCalls).toBe(1);
     expect(base.runGateCalls).toBe(1);
+  });
+});
+
+describe("project-relative path safety", () => {
+  it("normalizes safe relative paths", () => {
+    expect(normalizeProjectPath("renders/plate.png")).toBe("renders/plate.png");
+    expect(normalizeProjectPath("./renders/./plate.png")).toBe("renders/plate.png");
+    expect(normalizeProjectPath("renders\\\\plate.png")).toBe("renders/plate.png");
+  });
+
+  it("rejects empty, absolute and traversal paths", () => {
+    expect(() => normalizeProjectPath("")).toThrow(/empty/);
+    expect(() => normalizeProjectPath("/etc/passwd")).toThrow(/project-relative/);
+    expect(() => normalizeProjectPath("C:\\Windows\\system32")).toThrow(/project-relative/);
+    expect(() => normalizeProjectPath("../secrets.png")).toThrow(/traverse/);
+    expect(() => normalizeProjectPath("renders/../../secrets.png")).toThrow(/traverse/);
+    expect(() => normalizeProjectPath("./")).toThrow(/does not name a file/);
+  });
+
+  it("checks containment", () => {
+    expect(isPathContained("/root/proj", "/root/proj/a.png")).toBe(true);
+    expect(isPathContained("/root/proj", "/root/proj")).toBe(true);
+    expect(isPathContained("/root/proj", "/root/proj-evil/a.png")).toBe(false);
+    expect(isPathContained("/root/proj", "/root/other/a.png")).toBe(false);
+  });
+});
+
+describe("ProjectImageReader", () => {
+  function fsFor(
+    files: Record<string, Uint8Array>,
+    realpaths: Record<string, string> = {},
+  ): { readFile: (p: string) => Promise<Uint8Array>; realpath: (p: string) => Promise<string> } {
+    return {
+      readFile: async (p: string) => {
+        const bytes = files[p];
+        if (bytes === undefined) throw new Error(`missing ${p}`);
+        return bytes;
+      },
+      realpath: async (p: string) => realpaths[p] ?? p,
+    };
+  }
+
+  it("reads an in-project image through the realpath check", async () => {
+    const reader = new ProjectImageReader("/proj", fsFor({ "/proj/renders/a.png": PNG }));
+    expect(await reader.readFile("renders/a.png")).toBe(PNG);
+  });
+
+  it("rejects absolute paths and traversal before touching the filesystem", async () => {
+    let called = false;
+    const reader = new ProjectImageReader("/proj", {
+      readFile: async () => {
+        called = true;
+        return PNG;
+      },
+      realpath: async (p) => p,
+    });
+    await expect(reader.readFile("/etc/passwd")).rejects.toThrow(/project-relative/);
+    await expect(reader.readFile("../../etc/passwd")).rejects.toThrow(/traverse/);
+    expect(called).toBe(false);
+  });
+
+  it("blocks symlink escapes via realpath containment", async () => {
+    const reader = new ProjectImageReader(
+      "/proj",
+      fsFor(
+        { "/outside/secret.png": PNG },
+        {
+          "/proj": "/proj",
+          "/proj/link.png": "/outside/secret.png",
+        },
+      ),
+    );
+    await expect(reader.readFile("link.png")).rejects.toThrow(/symlink escape blocked/);
+  });
+
+  it("enforces the byte cap", async () => {
+    const big = new Uint8Array(64).fill(1);
+    const reader = new ProjectImageReader("/proj", fsFor({ "/proj/big.png": big }), {
+      maxBytes: 8,
+    });
+    await expect(reader.readFile("big.png")).rejects.toThrow(/exceeding/);
   });
 });

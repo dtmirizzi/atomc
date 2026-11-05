@@ -7,7 +7,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json-summary"],
       include: ["src/**/*.ts"],
-      exclude: ["src/index.ts", "src/daemon-adapter.ts", "src/pi-ai-provider.ts"],
+      exclude: ["src/index.ts", "src/daemon-adapter.ts", "src/providers/index.ts"],
       thresholds: {
         lines: 85,
         functions: 85,

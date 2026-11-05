@@ -13,6 +13,7 @@
  * module intentionally renders only images so behavior is identical across
  * providers.
  */
+import { isAbsolute, relative, resolve } from "node:path";
 import type { HarnessDaemon, ModelAttachment, ToolDescriptor } from "./types.js";
 
 /** Hard cap on a single inline attachment (8 MiB). */
@@ -79,6 +80,82 @@ export interface ArtifactReader {
   readFile(path: string): Promise<Uint8Array>;
 }
 
+/**
+ * Filesystem primitives used by {@link ProjectImageReader}. Injecting `realpath`
+ * lets tests exercise symlink containment without touching the real filesystem.
+ */
+export interface BoundedFileSystem {
+  readFile(path: string): Promise<Uint8Array>;
+  realpath(path: string): Promise<string>;
+}
+
+/**
+ * Normalize a project-relative inspection path, rejecting absolute paths and any
+ * `..` traversal. Throws for empty input.
+ */
+export function normalizeProjectPath(input: string): string {
+  if (input.length === 0) {
+    throw new Error("inspection path must not be empty");
+  }
+  if (isAbsolute(input) || /^[A-Za-z]:[\\/]/.test(input)) {
+    throw new Error(`inspection path must be project-relative, got absolute path "${input}"`);
+  }
+  const parts = input.split(/[\\/]+/);
+  for (const part of parts) {
+    if (part === "..") {
+      throw new Error(`inspection path must not traverse outside the project: "${input}"`);
+    }
+  }
+  const cleaned = parts.filter((part) => part !== "" && part !== ".").join("/");
+  if (cleaned.length === 0) {
+    throw new Error(`inspection path does not name a file: "${input}"`);
+  }
+  return cleaned;
+}
+
+/** True when `target` is the project root or a descendant of it. */
+export function isPathContained(root: string, target: string): boolean {
+  const rel = relative(root, target);
+  return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
+}
+
+/**
+ * Root-confined {@link ArtifactReader} for inspection tools.
+ *
+ * Rejects absolute paths and `..` traversal, then resolves symlinks (via the
+ * injected `realpath`) and rejects any target that escapes the project root. A
+ * hard byte cap is applied before the data is returned.
+ */
+export class ProjectImageReader implements ArtifactReader {
+  constructor(
+    private readonly root: string,
+    private readonly fs: BoundedFileSystem,
+    private readonly limits: AttachmentLimits = {},
+  ) {}
+
+  async readFile(path: string): Promise<Uint8Array> {
+    const rel = normalizeProjectPath(path);
+    const target = resolve(this.root, rel);
+    const [realRoot, realTarget] = await Promise.all([
+      this.fs.realpath(this.root),
+      this.fs.realpath(target),
+    ]);
+    if (!isPathContained(realRoot, realTarget)) {
+      throw new Error(
+        `inspection path "${path}" resolves outside the project root (symlink escape blocked)`,
+      );
+    }
+    const maxBytes = this.limits.maxBytes ?? MAX_ATTACHMENT_BYTES;
+    const bytes = await this.fs.readFile(realTarget);
+    if (bytes.length > maxBytes) {
+      throw new Error(
+        `attachment ${path} is ${bytes.length} bytes, exceeding the ${maxBytes} byte limit`,
+      );
+    }
+    return bytes;
+  }
+}
+
 /** Where an attachment comes from. */
 export interface AttachmentSource {
   /** Project-relative or absolute path to the image. */
@@ -137,6 +214,17 @@ export function sniffImageMimeType(
 
 function isAllowedMime(mimeType: string, allowed: readonly string[]): boolean {
   return allowed.includes(mimeType);
+}
+
+/** Structural guard used by the runner to collect inspection results as attachments. */
+export function isModelAttachment(value: unknown): value is ModelAttachment {
+  if (typeof value !== "object" || value === null) return false;
+  const record = value as Record<string, unknown>;
+  return (
+    record.kind === "image" &&
+    typeof record.mimeType === "string" &&
+    typeof record.data === "string"
+  );
 }
 
 /** Build and validate an attachment from already-encoded base64 data. */
