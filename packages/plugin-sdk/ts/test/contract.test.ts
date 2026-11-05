@@ -47,7 +47,7 @@ describe("generated schema artifact", () => {
     const doc = JSON.parse(committedSchemaText()) as Record<string, unknown>;
     expect(doc.$id).toBe(MANIFEST_SCHEMA_ID);
     expect(doc.title).toBe("atomc-plugin.json");
-    expect(doc["$schema"]).toBe("https://json-schema.org/draft/2020-12/schema");
+    expect(doc.$schema).toBe("https://json-schema.org/draft/2020-12/schema");
     expect(doc["x-manifest-version"]).toBe("0.1.0");
     expect((doc.properties as Record<string, { const?: string }>).manifest_version?.const).toBe(
       "0.1.0",
