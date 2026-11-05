@@ -250,6 +250,14 @@ def validate_manifest(data: dict[str, Any]) -> Manifest:
             for err in exc.errors()
         ]
         raise ManifestError(f"invalid plugin manifest: {errors}", errors) from exc
+    except Exception as exc:
+        # The shared SDK raises ManifestValidationError (not Pydantic ValidationError).
+        # Translate its structured issues into the daemon's stable error surface.
+        details = getattr(exc, "issues", None)
+        if details is not None:
+            errors = [{"path": issue.path, "message": issue.message} for issue in details]
+            raise ManifestError(f"invalid plugin manifest: {errors}", errors) from exc
+        raise ManifestError(f"invalid plugin manifest: {exc}") from exc
 
 
 def load_manifest(path: str | Path) -> Manifest:
