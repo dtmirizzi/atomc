@@ -1,0 +1,403 @@
+"""
+atomc-keeb — 48-key 4x12 ortholinear QMK keyboard.
+
+STM32F411CEU6 (blackpill-compatible), USB-C with 5.1k CC pull-downs and a
+USBLC6-2SC6 ESD array, 3.3 V LDO from VBUS, 25 MHz HSE, SWD/UART/BOOT0/NRST
+breakout, a 4x12 COL2ROW key matrix (one 1N4148W per Kailh MX hot-swap
+socket) and bottom-side test pads for the pogo jig. See README.md for pins.
+
+Parts under `parts/` are hand-authored atomic seeds; real LCSC/EasyEDA parts
+come from `ato create part` / `ato add` when the registry is reachable.
+"""
+
+import ElectricPower
+
+from "parts/STM32F411CEU6/STM32F411CEU6.ato" import STM32F411CEU6_part
+from "parts/USB_C_Receptacle/USB_C_Receptacle.ato" import USB_C_Receptacle_part
+from "parts/LDO_AP2112K/LDO_AP2112K.ato" import LDO_AP2112K_part
+from "parts/USBLC6_2SC6/USBLC6_2SC6.ato" import USBLC6_2SC6_part
+from "parts/Crystal_25MHz/Crystal_25MHz.ato" import Crystal_25MHz_part
+from "parts/PushButton/PushButton.ato" import PushButton_part
+from "parts/Resistor_0402/Resistor_0402.ato" import Resistor_0402_part
+from "parts/Capacitor_0402/Capacitor_0402.ato" import Capacitor_0402_part
+from "parts/Diode_1N4148W/Diode_1N4148W.ato" import Diode_1N4148W_part
+from "parts/Switch_Kailh_MX/Switch_Kailh_MX.ato" import Switch_Kailh_MX_part
+from "parts/TestPoint/TestPoint.ato" import TestPoint_part
+
+
+module App:
+    """atomc-keeb top-level design."""
+
+    mcu = new STM32F411CEU6_part
+    usb = new USB_C_Receptacle_part
+    ldo = new LDO_AP2112K_part
+    esd = new USBLC6_2SC6_part
+    xtal = new Crystal_25MHz_part
+    boot = new PushButton_part
+    reset = new PushButton_part
+
+    r_cc1 = new Resistor_0402_part
+    r_cc2 = new Resistor_0402_part
+    r_boot = new Resistor_0402_part
+    c_vbus = new Capacitor_0402_part
+    c_out1 = new Capacitor_0402_part
+    c_out2 = new Capacitor_0402_part
+    c_out3 = new Capacitor_0402_part
+    c_out4 = new Capacitor_0402_part
+
+    vbus = new ElectricPower
+    v3v3 = new ElectricPower
+
+    # --- USB-C: VBUS, ground, CC pull-downs, ESD-protected data -----------
+    vbus.hv ~ usb.1
+    vbus.lv ~ usb.2
+    vbus.lv ~ usb.7
+    vbus.lv ~ usb.8
+    usb.3 ~ r_cc1.1
+    r_cc1.2 ~ vbus.lv
+    usb.4 ~ r_cc2.1
+    r_cc2.2 ~ vbus.lv
+    usb.5 ~ esd.1
+    esd.6 ~ mcu.10
+    usb.6 ~ esd.2
+    esd.4 ~ mcu.9
+    esd.5 ~ vbus.hv
+    esd.3 ~ vbus.lv
+
+    # --- LDO: VBUS -> 3V3 --------------------------------------------------
+    ldo.1 ~ vbus.hv
+    ldo.2 ~ vbus.lv
+    ldo.3 ~ vbus.hv
+    ldo.5 ~ v3v3.hv
+    v3v3.lv ~ vbus.lv
+    vbus.hv ~ c_vbus.1
+    c_vbus.2 ~ vbus.lv
+    v3v3.hv ~ c_out1.1
+    c_out1.2 ~ vbus.lv
+    v3v3.hv ~ c_out2.1
+    c_out2.2 ~ vbus.lv
+    v3v3.hv ~ c_out3.1
+    c_out3.2 ~ vbus.lv
+    v3v3.hv ~ c_out4.1
+    c_out4.2 ~ vbus.lv
+    mcu.2 ~ v3v3.hv
+    mcu.1 ~ vbus.hv
+
+    # --- HSE 25 MHz --------------------------------------------------------
+    xtal.1 ~ mcu.11
+    xtal.3 ~ mcu.12
+    xtal.2 ~ vbus.lv
+    xtal.4 ~ vbus.lv
+
+    # --- Reset / boot ------------------------------------------------------
+    mcu.3 ~ r_boot.1
+    r_boot.2 ~ vbus.lv
+    mcu.3 ~ boot.1
+    boot.2 ~ vbus.lv
+    mcu.4 ~ reset.1
+    reset.2 ~ vbus.lv
+
+    # --- Debug / UART breakout --------------------------------------------
+    tp_swdio = new TestPoint_part
+    mcu.5 ~ tp_swdio.1
+    tp_swclk = new TestPoint_part
+    mcu.6 ~ tp_swclk.1
+    tp_nrst = new TestPoint_part
+    mcu.4 ~ tp_nrst.1
+    tp_boot0 = new TestPoint_part
+    mcu.3 ~ tp_boot0.1
+    tp_tx = new TestPoint_part
+    mcu.7 ~ tp_tx.1
+    tp_rx = new TestPoint_part
+    mcu.8 ~ tp_rx.1
+
+    # --- 4x12 COL2ROW key matrix ------------------------------------------
+    sw1 = new Switch_Kailh_MX_part
+    d1 = new Diode_1N4148W_part
+    sw2 = new Switch_Kailh_MX_part
+    d2 = new Diode_1N4148W_part
+    sw3 = new Switch_Kailh_MX_part
+    d3 = new Diode_1N4148W_part
+    sw4 = new Switch_Kailh_MX_part
+    d4 = new Diode_1N4148W_part
+    sw5 = new Switch_Kailh_MX_part
+    d5 = new Diode_1N4148W_part
+    sw6 = new Switch_Kailh_MX_part
+    d6 = new Diode_1N4148W_part
+    sw7 = new Switch_Kailh_MX_part
+    d7 = new Diode_1N4148W_part
+    sw8 = new Switch_Kailh_MX_part
+    d8 = new Diode_1N4148W_part
+    sw9 = new Switch_Kailh_MX_part
+    d9 = new Diode_1N4148W_part
+    sw10 = new Switch_Kailh_MX_part
+    d10 = new Diode_1N4148W_part
+    sw11 = new Switch_Kailh_MX_part
+    d11 = new Diode_1N4148W_part
+    sw12 = new Switch_Kailh_MX_part
+    d12 = new Diode_1N4148W_part
+    sw13 = new Switch_Kailh_MX_part
+    d13 = new Diode_1N4148W_part
+    sw14 = new Switch_Kailh_MX_part
+    d14 = new Diode_1N4148W_part
+    sw15 = new Switch_Kailh_MX_part
+    d15 = new Diode_1N4148W_part
+    sw16 = new Switch_Kailh_MX_part
+    d16 = new Diode_1N4148W_part
+    sw17 = new Switch_Kailh_MX_part
+    d17 = new Diode_1N4148W_part
+    sw18 = new Switch_Kailh_MX_part
+    d18 = new Diode_1N4148W_part
+    sw19 = new Switch_Kailh_MX_part
+    d19 = new Diode_1N4148W_part
+    sw20 = new Switch_Kailh_MX_part
+    d20 = new Diode_1N4148W_part
+    sw21 = new Switch_Kailh_MX_part
+    d21 = new Diode_1N4148W_part
+    sw22 = new Switch_Kailh_MX_part
+    d22 = new Diode_1N4148W_part
+    sw23 = new Switch_Kailh_MX_part
+    d23 = new Diode_1N4148W_part
+    sw24 = new Switch_Kailh_MX_part
+    d24 = new Diode_1N4148W_part
+    sw25 = new Switch_Kailh_MX_part
+    d25 = new Diode_1N4148W_part
+    sw26 = new Switch_Kailh_MX_part
+    d26 = new Diode_1N4148W_part
+    sw27 = new Switch_Kailh_MX_part
+    d27 = new Diode_1N4148W_part
+    sw28 = new Switch_Kailh_MX_part
+    d28 = new Diode_1N4148W_part
+    sw29 = new Switch_Kailh_MX_part
+    d29 = new Diode_1N4148W_part
+    sw30 = new Switch_Kailh_MX_part
+    d30 = new Diode_1N4148W_part
+    sw31 = new Switch_Kailh_MX_part
+    d31 = new Diode_1N4148W_part
+    sw32 = new Switch_Kailh_MX_part
+    d32 = new Diode_1N4148W_part
+    sw33 = new Switch_Kailh_MX_part
+    d33 = new Diode_1N4148W_part
+    sw34 = new Switch_Kailh_MX_part
+    d34 = new Diode_1N4148W_part
+    sw35 = new Switch_Kailh_MX_part
+    d35 = new Diode_1N4148W_part
+    sw36 = new Switch_Kailh_MX_part
+    d36 = new Diode_1N4148W_part
+    sw37 = new Switch_Kailh_MX_part
+    d37 = new Diode_1N4148W_part
+    sw38 = new Switch_Kailh_MX_part
+    d38 = new Diode_1N4148W_part
+    sw39 = new Switch_Kailh_MX_part
+    d39 = new Diode_1N4148W_part
+    sw40 = new Switch_Kailh_MX_part
+    d40 = new Diode_1N4148W_part
+    sw41 = new Switch_Kailh_MX_part
+    d41 = new Diode_1N4148W_part
+    sw42 = new Switch_Kailh_MX_part
+    d42 = new Diode_1N4148W_part
+    sw43 = new Switch_Kailh_MX_part
+    d43 = new Diode_1N4148W_part
+    sw44 = new Switch_Kailh_MX_part
+    d44 = new Diode_1N4148W_part
+    sw45 = new Switch_Kailh_MX_part
+    d45 = new Diode_1N4148W_part
+    sw46 = new Switch_Kailh_MX_part
+    d46 = new Diode_1N4148W_part
+    sw47 = new Switch_Kailh_MX_part
+    d47 = new Diode_1N4148W_part
+    sw48 = new Switch_Kailh_MX_part
+    d48 = new Diode_1N4148W_part
+
+    # Row 0
+    sw1.1 ~ mcu.17
+    sw1.2 ~ d1.1
+    d1.2 ~ mcu.13
+    sw2.1 ~ mcu.18
+    sw2.2 ~ d2.1
+    d2.2 ~ mcu.13
+    sw3.1 ~ mcu.19
+    sw3.2 ~ d3.1
+    d3.2 ~ mcu.13
+    sw4.1 ~ mcu.20
+    sw4.2 ~ d4.1
+    d4.2 ~ mcu.13
+    sw5.1 ~ mcu.21
+    sw5.2 ~ d5.1
+    d5.2 ~ mcu.13
+    sw6.1 ~ mcu.22
+    sw6.2 ~ d6.1
+    d6.2 ~ mcu.13
+    sw7.1 ~ mcu.23
+    sw7.2 ~ d7.1
+    d7.2 ~ mcu.13
+    sw8.1 ~ mcu.24
+    sw8.2 ~ d8.1
+    d8.2 ~ mcu.13
+    sw9.1 ~ mcu.25
+    sw9.2 ~ d9.1
+    d9.2 ~ mcu.13
+    sw10.1 ~ mcu.26
+    sw10.2 ~ d10.1
+    d10.2 ~ mcu.13
+    sw11.1 ~ mcu.27
+    sw11.2 ~ d11.1
+    d11.2 ~ mcu.13
+    sw12.1 ~ mcu.28
+    sw12.2 ~ d12.1
+    d12.2 ~ mcu.13
+    # Row 1
+    sw13.1 ~ mcu.17
+    sw13.2 ~ d13.1
+    d13.2 ~ mcu.14
+    sw14.1 ~ mcu.18
+    sw14.2 ~ d14.1
+    d14.2 ~ mcu.14
+    sw15.1 ~ mcu.19
+    sw15.2 ~ d15.1
+    d15.2 ~ mcu.14
+    sw16.1 ~ mcu.20
+    sw16.2 ~ d16.1
+    d16.2 ~ mcu.14
+    sw17.1 ~ mcu.21
+    sw17.2 ~ d17.1
+    d17.2 ~ mcu.14
+    sw18.1 ~ mcu.22
+    sw18.2 ~ d18.1
+    d18.2 ~ mcu.14
+    sw19.1 ~ mcu.23
+    sw19.2 ~ d19.1
+    d19.2 ~ mcu.14
+    sw20.1 ~ mcu.24
+    sw20.2 ~ d20.1
+    d20.2 ~ mcu.14
+    sw21.1 ~ mcu.25
+    sw21.2 ~ d21.1
+    d21.2 ~ mcu.14
+    sw22.1 ~ mcu.26
+    sw22.2 ~ d22.1
+    d22.2 ~ mcu.14
+    sw23.1 ~ mcu.27
+    sw23.2 ~ d23.1
+    d23.2 ~ mcu.14
+    sw24.1 ~ mcu.28
+    sw24.2 ~ d24.1
+    d24.2 ~ mcu.14
+    # Row 2
+    sw25.1 ~ mcu.17
+    sw25.2 ~ d25.1
+    d25.2 ~ mcu.15
+    sw26.1 ~ mcu.18
+    sw26.2 ~ d26.1
+    d26.2 ~ mcu.15
+    sw27.1 ~ mcu.19
+    sw27.2 ~ d27.1
+    d27.2 ~ mcu.15
+    sw28.1 ~ mcu.20
+    sw28.2 ~ d28.1
+    d28.2 ~ mcu.15
+    sw29.1 ~ mcu.21
+    sw29.2 ~ d29.1
+    d29.2 ~ mcu.15
+    sw30.1 ~ mcu.22
+    sw30.2 ~ d30.1
+    d30.2 ~ mcu.15
+    sw31.1 ~ mcu.23
+    sw31.2 ~ d31.1
+    d31.2 ~ mcu.15
+    sw32.1 ~ mcu.24
+    sw32.2 ~ d32.1
+    d32.2 ~ mcu.15
+    sw33.1 ~ mcu.25
+    sw33.2 ~ d33.1
+    d33.2 ~ mcu.15
+    sw34.1 ~ mcu.26
+    sw34.2 ~ d34.1
+    d34.2 ~ mcu.15
+    sw35.1 ~ mcu.27
+    sw35.2 ~ d35.1
+    d35.2 ~ mcu.15
+    sw36.1 ~ mcu.28
+    sw36.2 ~ d36.1
+    d36.2 ~ mcu.15
+    # Row 3
+    sw37.1 ~ mcu.17
+    sw37.2 ~ d37.1
+    d37.2 ~ mcu.16
+    sw38.1 ~ mcu.18
+    sw38.2 ~ d38.1
+    d38.2 ~ mcu.16
+    sw39.1 ~ mcu.19
+    sw39.2 ~ d39.1
+    d39.2 ~ mcu.16
+    sw40.1 ~ mcu.20
+    sw40.2 ~ d40.1
+    d40.2 ~ mcu.16
+    sw41.1 ~ mcu.21
+    sw41.2 ~ d41.1
+    d41.2 ~ mcu.16
+    sw42.1 ~ mcu.22
+    sw42.2 ~ d42.1
+    d42.2 ~ mcu.16
+    sw43.1 ~ mcu.23
+    sw43.2 ~ d43.1
+    d43.2 ~ mcu.16
+    sw44.1 ~ mcu.24
+    sw44.2 ~ d44.1
+    d44.2 ~ mcu.16
+    sw45.1 ~ mcu.25
+    sw45.2 ~ d45.1
+    d45.2 ~ mcu.16
+    sw46.1 ~ mcu.26
+    sw46.2 ~ d46.1
+    d46.2 ~ mcu.16
+    sw47.1 ~ mcu.27
+    sw47.2 ~ d47.1
+    d47.2 ~ mcu.16
+    sw48.1 ~ mcu.28
+    sw48.2 ~ d48.1
+    d48.2 ~ mcu.16
+
+    # --- Bottom-side pogo test pads ---------------------------------------
+    tp_vbus = new TestPoint_part
+    vbus.hv ~ tp_vbus.1
+    tp_3v3 = new TestPoint_part
+    v3v3.hv ~ tp_3v3.1
+    tp_gnd = new TestPoint_part
+    vbus.lv ~ tp_gnd.1
+    tp_row0 = new TestPoint_part
+    mcu.13 ~ tp_row0.1
+    tp_row1 = new TestPoint_part
+    mcu.14 ~ tp_row1.1
+    tp_row2 = new TestPoint_part
+    mcu.15 ~ tp_row2.1
+    tp_row3 = new TestPoint_part
+    mcu.16 ~ tp_row3.1
+    tp_col0 = new TestPoint_part
+    mcu.17 ~ tp_col0.1
+    tp_col1 = new TestPoint_part
+    mcu.18 ~ tp_col1.1
+    tp_col2 = new TestPoint_part
+    mcu.19 ~ tp_col2.1
+    tp_col3 = new TestPoint_part
+    mcu.20 ~ tp_col3.1
+    tp_col4 = new TestPoint_part
+    mcu.21 ~ tp_col4.1
+    tp_col5 = new TestPoint_part
+    mcu.22 ~ tp_col5.1
+    tp_col6 = new TestPoint_part
+    mcu.23 ~ tp_col6.1
+    tp_col7 = new TestPoint_part
+    mcu.24 ~ tp_col7.1
+    tp_col8 = new TestPoint_part
+    mcu.25 ~ tp_col8.1
+    tp_col9 = new TestPoint_part
+    mcu.26 ~ tp_col9.1
+    tp_col10 = new TestPoint_part
+    mcu.27 ~ tp_col10.1
+    tp_col11 = new TestPoint_part
+    mcu.28 ~ tp_col11.1
+
+    # --- Design intent assertions -----------------------------------------
+    assert v3v3.voltage within 3.3V +/- 5%
+    assert vbus.voltage within 5V +/- 5%

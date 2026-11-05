@@ -1,0 +1,14 @@
+import has_designator_prefix
+import is_atomic_part
+import is_auto_generated
+import has_part_picked
+
+component Resistor_0402_part:
+    """Hand-authored atomic part seed (RC0402FR-0710KL)."""
+    trait is_auto_generated<system="ato_part", source="handwritten", date="2026-11-04T00:00:00Z">
+    trait is_atomic_part<manufacturer="atomc", partnumber="RC0402FR-0710KL", footprint="PACKAGE.kicad_mod", symbol="PACKAGE.kicad_sym">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C119049", manufacturer="atomc", partno="RC0402FR-0710KL">
+    trait has_designator_prefix<prefix="R">
+
+    pin 1
+    pin 2

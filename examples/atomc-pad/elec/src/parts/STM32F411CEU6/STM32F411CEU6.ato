@@ -1,0 +1,61 @@
+import has_designator_prefix
+import is_atomic_part
+import is_auto_generated
+import has_part_picked
+
+component STM32F411CEU6_part:
+    """Hand-authored atomic part seed (STM32F411CEU6)."""
+    trait is_auto_generated<system="ato_part", source="handwritten", date="2026-11-04T00:00:00Z">
+    trait is_atomic_part<manufacturer="atomc", partnumber="STM32F411CEU6", footprint="PACKAGE.kicad_mod", symbol="PACKAGE.kicad_sym">
+    trait has_part_picked::by_supplier<supplier_id="lcsc", supplier_partno="C60442", manufacturer="atomc", partno="STM32F411CEU6">
+    trait has_designator_prefix<prefix="U">
+
+    pin 1
+    pin 2
+    pin 3
+    pin 4
+    pin 5
+    pin 6
+    pin 7
+    pin 8
+    pin 9
+    pin 10
+    pin 11
+    pin 12
+    pin 13
+    pin 14
+    pin 15
+    pin 16
+    pin 17
+    pin 18
+    pin 19
+    pin 20
+    pin 21
+    pin 22
+    pin 23
+    pin 24
+    pin 25
+    pin 26
+    pin 27
+    pin 28
+    pin 29
+    pin 30
+    pin 31
+    pin 32
+    pin 33
+    pin 34
+    pin 35
+    pin 36
+    pin 37
+    pin 38
+    pin 39
+    pin 40
+    pin 41
+    pin 42
+    pin 43
+    pin 44
+    pin 45
+    pin 46
+    pin 47
+    pin 48
+    pin 49
