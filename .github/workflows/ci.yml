@@ -35,11 +35,18 @@ jobs:
       - name: Biome (TS/JS/JSON)
         if: ${{ hashFiles('packages/*/ts/package.json', 'plugins/*/ts/package.json', 'apps/*/package.json', 'tests/contract/package.json', 'docs/package.json') != '' }}
         run: |
-          dirs=()
-          for p in packages/*/ts apps/* plugins/*/ts tests/contract docs/.vitepress; do
-            if [ -d "$p" ]; then dirs+=("$p"); fi
-          done
-          pnpm exec biome check "${dirs[@]}"
+          # Only code/JSON: biome 2.6 also formats Markdown, and docs-owned
+          # READMEs are not part of the CI format gate.
+          mapfile -t files < <(git ls-files -- \
+            'packages/*/ts/**' 'apps/**' 'plugins/*/ts/**' \
+            'tests/contract/**' 'docs/.vitepress/**' \
+            | grep -E '\.(ts|tsx|js|jsx|mjs|cjs|json)$' \
+            | grep -vE '(^|/)generated/')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "no TS/JS sources yet - skipping biome"
+            exit 0
+          fi
+          pnpm exec biome check "${files[@]}"
       - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
