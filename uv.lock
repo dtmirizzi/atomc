@@ -172,7 +172,7 @@ provides-extras = ["test"]
 
 [[package]]
 name = "atomc-plugin-atopile"
-version = "0.1.0"
+version = "0.0.1"
 source = { editable = "plugins/plugin-atopile/python" }
 dependencies = [
     { name = "atomc-core-ir" },
