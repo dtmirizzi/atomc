@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phases 2–4 are complete (PRs #9–#16): CLI, swarm harness (specialists, replay, convergence), Studio (3D/telemetry/gate-board, honest data labeling), real-daemon RPC E2E, four hardware plugins (atopile, renode, qmk, cad-jig), fixture firmware with real QMK compiles, and the atomc-pad vertical slice E2E.** Phase 5 (sourcing/fab/orders) requires vendor adapters and credentials; Phase 6 requires physical prototyping — both remain open.
+Status: **Phases 2–4 are complete (PRs #9–#16). Phase 5's plugin layer is merged (PRs #17/#18): vendor sourcing adapters with synthetic cassettes, the pure offer optimizer with bom.* gates, JLCPCB fab quotes with the fab gate, and the draft-only orders ledger with mock carrier tracking.** WP-5.5 (CLI quote/orders UX) is in flight. Live vendor calls require credentials that do not exist — adapters fail closed honestly; Phase 6 requires physical prototyping.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -393,11 +393,11 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 
 ### Phase 5 — Supply chain & logistics
 
-**WP-5.1 `sourcing-adapters`** — adapter interface; LCSC (JLCPCB parts mirror / unofficial), Mouser, DigiKey, Nexar; httpx + cassettes; normalization to IR offers; caching with TTL.
-**WP-5.2 `sourcing-optimizer`** — pick offers under constraints (cost, stock, lead time, vendor count, MOQ); alternates; `bom.*` gates; wake `@ee-agent` with swap proposals.
-**WP-5.3 `fab-quotes`** — JLCPCB quote (PCB + assembly) from layout spec; `fab.*` gate.
-**WP-5.4 `plugin-orders`** — cart builder (vendor CSV/BOM upload formats), order records, mock carrier webhook + polling, `atomc orders` TUI table.
-**WP-5.5 `cli-quote-orders`** — `atomc quote`/`atomc orders` UX + docs.
+**WP-5.1 `sourcing-adapters`** — **merged in PR #17:** adapter interface; LCSC, Mouser, DigiKey, Nexar against documented response shapes; synthetic cassettes (no live call ever made); normalization to the frozen Offer model; TTL cache; honest UNAVAILABLE without credentials. 51 tests.
+**WP-5.2 `sourcing-optimizer`** — **merged in PR #18:** pure selection under cost/stock/MOQ/lead-time/vendor constraints with deterministic tie-breaks and infeasibility reasons; `bom.*` gates always runnable against IR.
+**WP-5.3 `fab-quotes`** — **merged in PR #18:** JLCPCB quote adapter + `quote_pcb` tool writing `/fabrication/quotes`; `fab.quote_under_budget` SKIPs honestly with no quotes fetched.
+**WP-5.4 `plugin-orders`** — **merged in PR #17:** per-vendor cart CSV writers, a draft-only order ledger with validated transitions, mock carrier tracking labeled `mock` — no tool can place a real order. 80 tests.
+**WP-5.5 `cli-quote-orders`** (in flight) — `atomc quote`/`atomc orders` UX + docs.
 
 ### Phase 6 — Hardening & 1.0
 
