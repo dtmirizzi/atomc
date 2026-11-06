@@ -1,0 +1,123 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "orders",
+  "version": "0.1.0",
+  "description": "Cart builder, draft-only order ledger and mock carrier tracking",
+  "atomc": ">=0.0.1 <0.2.0",
+  "runtime": {
+    "python": "atomc_plugin_orders:plugin"
+  },
+  "watches": [
+    {
+      "id": "orders:sourcing",
+      "ir": ["/sourcing"]
+    },
+    {
+      "id": "orders:ledger",
+      "ir": ["/orders"]
+    }
+  ],
+  "produces": ["/orders"],
+  "gates": [],
+  "tools": [
+    {
+      "name": "build_cart",
+      "description": "Turn chosen /sourcing offers into per-vendor cart files and draft /orders records. Never contacts a vendor.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "build_qty": {"type": "integer", "minimum": 1},
+          "kind": {"type": "string", "enum": ["parts", "pcb", "pcba"]},
+          "dry_run": {"type": "boolean", "default": false}
+        },
+        "additionalProperties": false
+      },
+      "agents": ["ops-agent"],
+      "mutates": true,
+      "handler": "build_cart"
+    },
+    {
+      "name": "place",
+      "description": "Record a DRAFT order in /orders for a human to place manually. Never contacts a vendor or places a real order.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "vendor": {"type": "string", "minLength": 1},
+          "kind": {"type": "string", "enum": ["parts", "pcb", "pcba"]},
+          "build_qty": {"type": "integer", "minimum": 1},
+          "external_id": {"type": "string"},
+          "note": {"type": "string"},
+          "order_id": {"type": "string"},
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sku": {"type": "string", "minLength": 1},
+                "qty": {"type": "integer", "minimum": 1},
+                "unit_price_minor": {"type": "integer", "minimum": 0, "default": 0}
+              },
+              "required": ["sku", "qty"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["vendor"],
+        "additionalProperties": false
+      },
+      "agents": ["ops-agent"],
+      "mutates": true,
+      "handler": "place"
+    },
+    {
+      "name": "poll",
+      "description": "Ask the configured carrier for tracking updates. Only the mock carrier ships; results are labeled mock.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "order_id": {"type": "string"},
+          "tracking_number": {"type": "string"},
+          "carrier": {"type": "string", "default": "mock"}
+        },
+        "additionalProperties": false
+      },
+      "agents": ["ops-agent"],
+      "mutates": true,
+      "handler": "poll"
+    },
+    {
+      "name": "webhook",
+      "description": "Accept a mock carrier webhook payload and append tracking/history. Real carrier webhooks are not implemented.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "carrier": {"type": "string", "default": "mock"},
+              "mock": {"type": "boolean", "default": true},
+              "order_id": {"type": "string"},
+              "tracking_number": {"type": "string"},
+              "status": {
+                "type": "string",
+                "enum": ["placed", "paid", "shipped", "delivered", "cancelled"]
+              },
+              "at": {"type": "string"},
+              "note": {"type": "string"},
+              "url": {"type": "string"}
+            },
+            "required": ["tracking_number", "status"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["payload"],
+        "additionalProperties": false
+      },
+      "agents": ["ops-agent"],
+      "mutates": true,
+      "handler": "webhook"
+    }
+  ],
+  "cli": [],
+  "ui": []
+}
