@@ -6,7 +6,9 @@ import { convergeCommand } from "./commands/converge.js";
 import { daemonStart, daemonStatus, daemonStop } from "./commands/daemon.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { initCommand } from "./commands/init.js";
+import { ordersBuildCart, ordersCommand } from "./commands/orders.js";
 import { pluginList, pluginNew } from "./commands/plugin.js";
+import { quoteCommand } from "./commands/quote.js";
 import type { CliDeps } from "./deps.js";
 import { CliError, CliExit } from "./errors.js";
 
@@ -22,18 +24,6 @@ const CAPABILITIES: Record<string, CapabilitySpec> = {
     plugin: "cad-jig",
     summary: "generate the pogo-pin test jig, switch plate and case from the IR",
     hint: "track CAD generation in plugin-cad-jig (Phase 4)",
-  },
-  quote: {
-    command: "quote",
-    plugin: "sourcing",
-    summary: "refresh BOM offers and fabrication quotes against a budget",
-    hint: "track sourcing in plugin-sourcing (Phase 5)",
-  },
-  orders: {
-    command: "orders",
-    plugin: "orders",
-    summary: "place and track part/PCB/PCBA orders",
-    hint: "track order placement in plugin-orders (Phase 5)",
   },
 };
 
@@ -90,6 +80,47 @@ export function buildProgram(deps: CliDeps): Command {
           target: string | undefined,
           options: { json?: boolean; project?: string; force?: boolean; timeout?: string },
         ) => buildCommand(deps, target, options),
+      ),
+    );
+
+  program
+    .command("quote")
+    .description(
+      "refresh fabrication quotes through the sourcing plugin and report the budget gate",
+    )
+    .option("--project <dir>", "project root", ".")
+    .option("--refresh", "force a fresh vendor quote fetch")
+    .option("--json", "emit machine-readable JSON")
+    .action(
+      action((options: { json?: boolean; project?: string; refresh?: boolean }) =>
+        quoteCommand(deps, options),
+      ),
+    );
+
+  const orders = program
+    .command("orders")
+    .description("print the /orders ledger and build vendor cart files");
+  orders
+    .command("list", { isDefault: true })
+    .description("print the order ledger")
+    .option("--project <dir>", "project root", ".")
+    .option("--status <status>", "filter the ledger by order status")
+    .option("--json", "emit machine-readable JSON")
+    .action(
+      action((options: { json?: boolean; project?: string; status?: string }) =>
+        ordersCommand(deps, options),
+      ),
+    );
+  orders
+    .command("build-cart")
+    .description("call the orders plugin to render vendor cart files")
+    .option("--project <dir>", "project root", ".")
+    .option("--vendor <vendor>", "only report carts for a single vendor")
+    .option("--out <dir>", "copy the written cart files into this directory")
+    .option("--json", "emit machine-readable JSON")
+    .action(
+      action((options: { json?: boolean; project?: string; vendor?: string; out?: string }) =>
+        ordersBuildCart(deps, options),
       ),
     );
 
