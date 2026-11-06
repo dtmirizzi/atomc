@@ -1,40 +1,32 @@
 # CLI
 
-::: info Planned
-The `atomc` CLI is **planned** for Phase 3 (WP-3.1). The command surface below is the target from
-[PLAN §8](/plan/master). It will be built with `commander` 15 and support `--json` for scripting.
-:::
+The `atomc` CLI is implemented in `apps/atomc-cli` with Commander 15. `init`, `build`, `doctor`, daemon management and plugin scaffolding/listing have handlers. Hardware-dependent commands are structured stubs until their plugins land; they return status/error information and never a fake PASS. The CLI is not published on npm yet.
 
 ```bash
-npx @atomc/cli <command> [options]
+pnpm --filter @atomc/cli build
+node apps/atomc-cli/dist/index.js <command> [options]
 ```
 
 ## Commands
 
-| Command | Purpose |
-| ------- | ------- |
-| `init <name>` | Scaffold a new project: `system_ir.json`, `atomc.config.ts`, example sources |
-| `build` | Start/attach the daemon and run the hardware DAG |
-| `sim` | Run Renode emulation and test suites |
-| `jig` | Generate the pogo-pin test jig and enclosure |
-| `quote` | Fetch fab + assembly quotes for the current layout |
-| `orders` | Inspect and manage the orders ledger |
-| `converge` | Run the swarm until all blocking gates pass (`--max-cost`) |
-| `doctor` | Verify CLI/daemon/plugin versions and that kernels + external tools are present |
-| `daemon start\|stop\|status` | Manage the background `atomcd` process |
-| `plugin new\|list` | Scaffold or list plugins |
+| Command                         | Current behavior                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `init <dir>`                    | Copy the atomc-pad template, update project identity and guard existing files.                                      |
+| `build [target]`                | Start/attach to daemon, request DAG run, wait for status and report actual gates. Hardware outputs require plugins. |
+| `doctor`                        | Report CLI, daemon/schema and local toolchain checks.                                                               |
+| `daemon start\|status\|stop`    | Ensure, inspect or shut down the daemon.                                                                            |
+| `plugin list`                   | List daemon-discovered plugins.                                                                                     |
+| `plugin new <name>`             | Scaffold a manifest and entrypoints validated by the SDK.                                                           |
+| `sim`, `jig`, `quote`, `orders` | Structured capability stubs; exit 3 and never report PASS.                                                          |
+| `converge`                      | Implemented on `wp/3.4-harness-converge` (under review): runs an injected convergence runtime; honest `unavailable` (exit 3) without one. |
 
-## Global options
+## Options
 
-| Option | Meaning |
-| ------ | ------- |
-| `--json` | Emit machine-readable JSON instead of TTY output |
-| `--verbose` | Increase log detail |
-| `--config <path>` | Path to `atomc.config.ts` (defaults to the project root) |
+Implemented commands expose their own options. Common examples are `--json`, `--project <dir>`, `--force`, build `--timeout <ms>`, and `plugin new --runtime ts|python|both`. Run `atomc <command> --help` for exact syntax. There is no global `--verbose` or typed project-config loader yet.
 
-## Config
+## Project configuration
 
-`atomc.config.ts` is loaded with `tsx`/`jiti` and holds project defaults such as budget gates:
+`atomc.config.ts` is included in project templates, but the CLI does not yet load it as typed runtime configuration. A target shape is:
 
 ```ts
 export default {
@@ -44,4 +36,4 @@ export default {
 };
 ```
 
-The full CLI reference is generated from `commander` once WP-3.1 lands.
+The package README documents current limitations. In particular, plugin-dependent commands remain explicit stubs until their backends are implemented.

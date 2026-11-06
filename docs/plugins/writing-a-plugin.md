@@ -1,9 +1,6 @@
 # Writing a plugin
 
-::: info Planned
-The plugin SDK (`defineAtomcPlugin`, the `PluginHost` protocol) is **planned** for Phase 2 (WP-2.1,
-WP-2.2). This page describes the shape from the [manifest contract](/architecture/contracts/plugin-manifest).
-:::
+The plugin SDK (`defineAtomcPlugin` and the `PluginHost` protocol) is implemented in the TypeScript and Python packages. This page follows the [manifest contract](/architecture/contracts/plugin-manifest).
 
 A plugin is a package with an `atomc-plugin.json` manifest at its root, plus a Python entrypoint
 and/or a TypeScript entrypoint.
@@ -17,9 +14,7 @@ export default defineAtomcPlugin({
   name: "plugin-sourcing",
   watches: [{ id: "bom-refresh", ir: ["/electrical/components"], debounceMs: 500 }],
   produces: ["/sourcing", "/fabrication"],
-  gates: [
-    { id: "gate:bom.all_in_stock", severity: "blocking", ownerAgent: "ops-agent" },
-  ],
+  gates: [{ id: "gate:bom.all_in_stock", severity: "blocking", ownerAgent: "ops-agent" }],
   tools: [
     {
       name: "search_parts",
@@ -52,13 +47,13 @@ class SourcingPlugin:
 
 ## What the host gives you
 
-| Capability | Purpose |
-| ---------- | ------- |
-| `ir.get(path)` | Read a subtree at the current revision |
-| `ir.transact(path, base_rev, ops)` | Write through a transaction, with conflict/lock semantics |
-| `artifacts` | A directory for this plugin's outputs, recorded in `/provenance` |
-| `logger` | `structlog`-aware logger, surfaced over the `log` event topic |
-| `cache` | Content-addressed cache for expensive kernel calls |
+| Capability                         | Purpose                                                          |
+| ---------------------------------- | ---------------------------------------------------------------- |
+| `ir.get(path)`                     | Read a subtree at the current revision                           |
+| `ir.transact(path, base_rev, ops)` | Write through a transaction, with conflict/lock semantics        |
+| `artifacts`                        | A directory for this plugin's outputs, recorded in `/provenance` |
+| `logger`                           | `structlog`-aware logger, surfaced over the `log` event topic    |
+| `cache`                            | Content-addressed cache for expensive kernel calls               |
 
 ## Rules
 
@@ -70,4 +65,4 @@ class SourcingPlugin:
 
 ## Conformance
 
-Every plugin must pass the shared conformance kit — see [Conformance](/plugins/conformance).
+New plugin packages should add conformance tests using the SDK helpers; see [Conformance](/plugins/conformance).

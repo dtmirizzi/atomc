@@ -1,12 +1,10 @@
 # atomc-pad (3×3 macropad)
 
-::: info Planned
-`examples/atomc-pad` is seeded in Phase 1 (WP-1.6). This page describes the target.
+::: info Current status
+`examples/atomc-pad` is checked in with hand-written IR and QMK scaffolding. The atomc hardware plugins and full daemon build pipeline are not implemented yet.
 :::
 
-`atomc-pad` is the fast development fixture: a 3×3 macropad small enough to build and emulate in
-seconds, used to validate the whole pipeline in Phase 4 before scaling to the 48-key
-[atomc-keeb](/examples/atomc-keeb).
+`atomc-pad` is the small development fixture: a 3×3 macropad used for source-level builds and planned atomc pipeline tests before scaling to the 48-key [atomc-keeb](/examples/atomc-keeb).
 
 ## Hardware
 
@@ -39,5 +37,4 @@ ato build                          # atopile compile
 qmk compile -kb atomc/pad -km default
 ```
 
-The [QMK compile gate](/architecture/dag-gates) (`fw.qmk_compile`) verifies the firmware builds
-against the user's `qmk_firmware` checkout via `QMK_HOME`.
+For a direct QMK build, set `QMK_HOME` to your local `qmk_firmware` checkout. Atomc does not yet run that command through a `fw.qmk_compile` plugin gate.

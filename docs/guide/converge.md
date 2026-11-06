@@ -1,12 +1,10 @@
 # Converge with the swarm
 
-::: info Planned
-`atomc converge` and the swarm harness are **planned** for Phase 3. This page describes the target
-behaviour defined by the [agent protocol contract](/architecture/contracts/agent-protocol) and
-[PLAN §3](/plan/master).
+::: info Current status
+The deterministic harness core is implemented with an injected provider port, scoped locks, transactions, budgets and gate-driven verification. Specialist definitions and a pi-ai adapter are pushed on WP-3.3 for review; the `converge` CLI command remains a structured stub while WP-3.4 implements the coordinator. This page describes the intended workflow defined by the [agent protocol contract](/architecture/contracts/agent-protocol) and [PLAN §3](/plan/master).
 :::
 
-A build tells you what failed. **Convergence** is the loop that fixes it.
+The intended convergence loop routes each failed gate to a bounded, transactional specialist run.
 
 ```bash
 atomc converge --max-cost 2.00
@@ -14,37 +12,33 @@ atomc converge --max-cost 2.00
 
 ## The loop
 
-Each swarm agent runs an in-process state machine:
+The harness core implements one provider-injected transactional agent state machine:
 
 ```
 IDLE → PLAN → CLAIM_LOCK → ACT → VERIFY → RELEASE → (FAIL? ESCALATE)
 ```
 
-1. **Wake.** A gate returns `FAIL` with an `owner_agent`. That agent is woken with the failure.
-2. **Read.** The agent reads the IR subtree it owns at the current revision.
-3. **Lock.** It calls `ir.lock(scope, holder, ttl_s, reason)` to claim the subtree exclusively.
-4. **Act.** It makes changes through `tools.call` and `ir.transact(path, base_rev, ops)`.
-5. **Verify.** It re-runs the affected DAG nodes and its own gates.
-6. **Release.** On `PASS`, it unlocks and reports. On `FAIL`, it retries within its turn and budget
-   caps, then escalates to the coordinator.
+1. **Route (planned).** A gate can identify its `owner_agent`; the specialist registry/router that wakes it has not landed.
+2. **Read.** The harness reads the declared IR scopes at their current revisions.
+3. **Lock.** The harness calls `ir.lock(scope, holder, ttl_s, reason)` before any work.
+4. **Act.** An injected provider may propose a schema-checked tool call or scoped patch; the harness sends it through `tools.call` or `ir.transact(path, base_rev, ops).`
+5. **Verify.** The harness re-runs the configured DAG targets and owned gates.
+6. **Release.** Locks are released on every terminal path. Actual gate results determine `PASS`; bounded blockers yield `RETRY` or `ESCALATE`. `atomc converge` does not yet schedule these runs.
 
-Conflicts (`ConflictError`) are handled by re-reading, rebasing, and retrying. A change that crosses
-lock scopes becomes a `request` to the coordinator, which wakes the owning agent.
+Conflicts (`ConflictError`) trigger a fresh scoped read and model turn, never a stale patch resend. Cross-scope request routing belongs to the future convergence coordinator.
 
 ## Who owns what
 
-| Agent | Lock scope | Fixes |
-| ----- | ---------- | ----- |
-| `ee-agent` | `/electrical`, `/layout`, `/keyboard` | ERC, assertions, test pads, matrix wiring, USB CC pulldowns |
-| `fw-agent` | `/firmware`, `/simulation` | QMK compile, boot banner, matrix scan |
-| `mech-agent` | `/mechanical` | plate cutouts, case USB cutout, pogo spacing, collisions |
-| `ops-agent` | `/sourcing`, `/fabrication`, `/orders` | BOM stock, cost, lead time, fab quotes |
+| Specialist (planned registry) | Intended lock scope                    | Intended domain               |
+| ----------------------------- | -------------------------------------- | ----------------------------- |
+| `ee-agent`                    | `/electrical`, `/layout`, `/keyboard`  | ERC, test pads, matrix wiring |
+| `fw-agent`                    | `/firmware`, `/simulation`             | QMK build and firmware checks |
+| `mech-agent`                  | `/mechanical`                          | case, plate and jig checks    |
+| `ops-agent`                   | `/sourcing`, `/fabrication`, `/orders` | BOM availability and quotes   |
 
 ## Guards
 
-- **Budget cap** — `--max-cost` caps model spend; the harness stops when it is hit.
-- **Turn caps** — each agent has a bounded number of attempts before escalating.
+- **Budget cap** — the core accepts per-run cost/token/turn caps; the CLI `converge --max-cost` integration is not implemented yet.
+- **Turn caps** — each run has a bounded number of provider decisions before escalation.
 - **Transcripts** — every session is written to `.atomc/sessions/<run>/<agent>.jsonl`.
-- **Fake provider in CI** — a scripted pi-ai provider proves the loop converges deterministically;
-  recorded real-model sessions replay nightly with a hard cost cap. See
-  [Testing](/architecture/testing).
+- **Fake provider in CI** — a scripted provider exercises the transaction/verification core without network calls. A real pi-ai adapter, recorded-session replay and capped live-model tests have not landed yet. See [Testing](/architecture/testing).

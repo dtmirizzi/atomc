@@ -1,34 +1,22 @@
 # Conformance
 
-::: info Planned
-The conformance kit ships with the plugin SDK in Phase 2 (WP-2.1/WP-2.2). Every built-in plugin will
-run it in CI.
-:::
-
-`@atomc/plugin-sdk` and `atomc-plugin-sdk` will ship a `conformance()` helper that loads a manifest
-and checks the plugin is well-formed and callable before it ever touches real hardware.
+The TypeScript SDK provides `conformance()` and input-schema validation helpers; the Python SDK provides manifest/conformance test helpers. Both operate against fixture manifests or a fake host. Built-in hardware plugins have not landed yet, so the project does not claim plugin conformance for atopile/Renode/CAD/sourcing adapters.
 
 ## What the kit checks
 
 - **Manifest validity** against the [manifest schema](/plugins/manifest).
-- **Runtime resolvable** — the `runtime.python` / `runtime.ts` entrypoint actually exports a plugin.
-- **Registration complete** — every `watches[].id`, `gates[].id` and `tools[].name` declared in the
-  manifest is registered at runtime, and nothing is registered that the manifest does not declare.
-- **Write scope respected** — the plugin declares `produces[]`, and a static check flags writes
-  outside it.
-- **Tools callable** — each tool's `input_schema` validates a canonical happy-path input and the
-  handler runs against a fake host.
-- **Gates deterministic** — a gate run twice on the same `(IR rev, artifacts, cache)` yields the same
-  `status`, and emits a schema-valid [`GateResult`](/architecture/contracts/gate-result).
+- **Tool input validation** against each declared JSON Schema.
+- **Registration/runtime checks** when tests supply the plugin implementation and fake host.
+- **Gate repeatability** when plugin tests run the same gate twice against the same revision/artifacts/cache.
 
 ## Running it
 
 ```bash
-# TypeScript plugins
-pnpm test        # includes conformance()
+# TypeScript plugin package
+pnpm --filter @atomc/plugin-sdk test
 
-# Python plugins
-uv run pytest    # the plugin-sdk registers conformance as a pytest plugin
+# Python plugin SDK
+uv run pytest packages/plugin-sdk/python/tests
 ```
 
-Built-in plugins are required to run conformance in CI; third-party plugins are encouraged to.
+The SDK helper tests run in CI. When built-in hardware plugins land, each plugin package must add its own conformance tests. The current suite does not test hardware plugins that are not present.

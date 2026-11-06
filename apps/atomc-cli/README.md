@@ -1,10 +1,6 @@
-# @atomc/cli — the `atomc` command-line interface
+# `@atomc/cli` — the `atomc` command-line client
 
-The `atomc` CLI drives the atomc hardware compiler: it bootstraps projects, talks to the
-`atomcd` daemon over its authenticated JSON-RPC socket, and reports DAG/gate results. It is
-built on [Commander 15](https://github.com/tj/commander.js) and reuses the merged
-`@atomc/daemon-client`, `@atomc/core-ir`, and `@atomc/plugin-sdk` packages — it does **not**
-re-implement the RPC client or the Python daemon.
+The CLI scaffolds projects and talks to `atomcd` through the authenticated JSON-RPC client. It uses Commander 15 and the shared `@atomc/daemon-client`, `@atomc/core-ir` and `@atomc/plugin-sdk` packages. This is a pre-alpha source package; it has not been published to npm.
 
 ## Install
 
@@ -15,7 +11,7 @@ pnpm --filter @atomc/cli build
 node apps/atomc-cli/dist/index.js --help
 ```
 
-The binary name is `atomc`.
+The binary name is `atomc` when invoked from the built package. Until publication, run the repository build shown above.
 
 ## Commands
 
@@ -26,29 +22,26 @@ The binary name is `atomc`.
 | `atomc daemon start\|status\|stop` | working | manage the `atomcd` daemon via `@atomc/daemon-client`                                                              |
 | `atomc plugin list`                | working | list plugins loaded by the daemon (`--json`)                                                                       |
 | `atomc plugin new <name>`          | working | scaffold a manifest + entrypoint + test, validated by `@atomc/plugin-sdk`                                          |
-| `atomc build [target]`             | working | run the daemon DAG, poll to completion, print node + gate summary                                                  |
-| `atomc sim`                        | planned | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                            |
-| `atomc jig`                        | planned | pogo jig / plate / case generation — reports status, never PASS                                                    |
-| `atomc quote`                      | planned | BOM + fab quotes — reports status, never PASS                                                                      |
-| `atomc orders`                     | planned | order placement — reports status, never PASS                                                                       |
-| `atomc converge`                   | planned | multi-agent swarm until gates pass — reports status, never PASS                                                    |
+| `atomc build [target]`             | working | start/attach to daemon, run DAG, poll, print node and gate summary. Hardware output requires plugins.              |
+| `atomc sim`                        | stub    | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                            |
+| `atomc jig`                        | stub    | pogo jig / plate / case generation — reports status, never PASS                                                    |
+| `atomc quote`                      | stub    | BOM + fab quotes — reports status, never PASS                                                                      |
+| `atomc orders`                     | stub    | order placement — reports status, never PASS                                                                       |
+| `atomc converge`                   | stub    | multi-agent convergence coordinator has not landed; reports status, never PASS                                     |
 
-Every command supports `--json`. With `--json`, stdout contains exactly one JSON object and
-all diagnostics go to stderr.
+Implemented commands support `--json`. They emit one JSON object on stdout; diagnostics go to stderr. Stub commands return structured status and exit 3.
 
 ### Exit codes
 
-| Code | Meaning                                                                          |
-| ---- | -------------------------------------------------------------------------------- |
-| `0`  | success                                                                          |
-| `1`  | error, failed build, or doctor `FAIL`                                            |
-| `3`  | capability planned but unavailable (`plugin` missing or feature not implemented) |
+| Code | Meaning                                                              |
+| ---- | -------------------------------------------------------------------- |
+| `0`  | success                                                              |
+| `1`  | error, failed build, or doctor `FAIL`                                |
+| `3`  | capability unavailable (`plugin` missing or feature not implemented) |
 
 ## Configuration
 
-Projects may carry an `atomc.config.ts` (see `examples/atomc-pad/atomc.config.ts`) describing
-the project name, daemon host/port, enabled plugins, and budget gates. Commands that need the
-daemon use the current working directory (or `--project <dir>`) as the project root.
+Project templates include `atomc.config.ts`, but this CLI version does not load typed project configuration into command behavior. Daemon commands use the current working directory or an explicit `--project <dir>` where supported.
 
 ## Development
 
@@ -69,6 +62,5 @@ whole command tree with an in-memory filesystem and a scripted `DaemonApi` fake.
 - `sim`, `jig`, `quote`, `orders`, and `converge` are intentionally stubs. They report a
   structured `unavailable`/`not_implemented` result and exit `3`; they never report a fake
   `PASS`. They will be wired to plugins in Phases 4–5 and to `@atomc/swarm-harness` in WP-3.4.
-- `atomc.config.ts` is an established project convention; command-specific config loading is
-  minimal in this version (project root resolution only).
+- `atomc.config.ts` is a project convention. This CLI version does not load typed project configuration into the commands.
 - The package version must stay lock-step with `scripts/release/VERSION`.

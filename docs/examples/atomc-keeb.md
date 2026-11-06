@@ -1,12 +1,10 @@
 # atomc-keeb (4×12 ortholinear)
 
-::: info Planned
-`examples/atomc-keeb` is seeded in Phase 1 (WP-1.6); the full vertical slice lands in Phase 4 (WP-4.5).
+::: info Current status
+`examples/atomc-keeb` and its IR/QMK sources are seeded. The atomc hardware plugins and full vertical slice are still planned. Renode is a regression aid and is not evidence of USB-HID behavior.
 :::
 
-`atomc-keeb` is the flagship example: a **48-key ortholinear keyboard** that is meant to be a real,
-orderable end-to-end product. It exercises every plugin — circuits, firmware, enclosure, jig, sourcing
-and orders.
+`atomc-keeb` is the larger example fixture: a 48-key ortholinear keyboard with hardware/firmware source and IR intended to exercise the future circuits-to-fabrication pipeline.
 
 ## Hardware
 
@@ -18,12 +16,9 @@ and orders.
 
 ## Firmware
 
-QMK (latest `qmk_firmware` master, ChibiOS). The `keyboard.json` and default keymap are generated from
-the `/keyboard` and `/layout` IR nodes in Phase 4 — matrix pins, diode direction, layout geometry and
-USB VID/PID all come from the IR, which is what the `fw.matrix_pins_match_ir` gate enforces.
+The fixture contains QMK ChibiOS `keyboard.json` and a default keymap. Generating these from `/keyboard` and `/layout`, and enforcing IR-to-firmware pin agreement with `fw.matrix_pins_match_ir`, are planned plugin work.
 
-Renode tests inject matrix GPIO and assert on QMK debug UART output and the HID report buffer, so
-[`fw.matrix_scan`](/architecture/dag-gates) proves every key press maps to the right keycode.
+Renode can test CPU and supported peripheral behavior when the target path is demonstrated. It is not claimed to validate USB-HID reports or every physical key. Those checks require hardware-in-loop testing.
 
 ## Enclosure and jig
 
@@ -47,7 +42,7 @@ once the artifacts exist.
 ## Sourcing
 
 Budget gate `bom.cost_under_budget` is **4500¢** per board at qty 5, excluding switches and keycaps.
-Offers come from the public LCSC/JLCPCB catalogues, so no vendor keys are needed.
+A future sourcing adapter may use public catalogue data; no offer lookup or quote is performed by this fixture today.
 
 ## Build it
 
@@ -55,5 +50,5 @@ Offers come from the public LCSC/JLCPCB catalogues, so no vendor keys are needed
 cd examples/atomc-keeb
 ato build
 qmk compile -kb atomc/keeb -km default
-atomc build      # planned: full DAG + gates
+atomc build      # requires the not-yet-landed atomc hardware plugins
 ```

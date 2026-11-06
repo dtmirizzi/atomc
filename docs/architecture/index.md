@@ -1,29 +1,28 @@
 # Architecture
 
-atomc is a monorepo of a Python daemon, a TypeScript CLI and agent harness, and a set of dual-language
-plugins that all agree on one frozen set of contracts.
+atomc is a monorepo with a Python daemon, a TypeScript CLI, a transactional harness core, a Studio interface and dual-language plugins. They share frozen contracts.
 
 ## The system at a glance
 
 ```
                  ┌────────────────────────────────────────────────────────────┐
                  │                     apps/atomc-cli  (TS)                   │
-                 │  init · build · sim · jig · quote · orders · converge      │
+                 │  init · build · doctor · daemon · plugin · sim…             │
                  └──────────────┬───────────────────────────┬─────────────────┘
-                                │ JSON-RPC/WS               │ in-proc
+                                │ JSON-RPC/WS               │ in-process
                  ┌──────────────▼───────────────┐  ┌────────▼─────────────────┐
                  │  packages/daemon  atomcd (Py) │  │ packages/swarm-harness   │
-                 │  • owns system_ir.json        │◄─┤ (TS, pi-ai)              │
-                 │  • DAG scheduler + watchers   │  │ • state machine           │
-                 │  • gate runner                │  │ • IR subtree locks        │
-                 │  • warm kernels: atopile,     │  │ • @ee @fw @mech @ops      │
-                 │    build123d/OCP, pyrenode3,  │  │ • converge-until-PASS     │
-                 │    kiutils                    │  └──────────────────────────┘
+                 │  • owns system_ir.json        │◄─┤ (TS, provider port)      │
+                 │  • DAG scheduler + watchers   │  │ • deterministic runner    │
+                 │  • gate runner                │  │ • transactional locks     │
+                 │  • kernel registry           │  │ • gate-driven verify      │
+                 │  • optional kernel adapters   │  │ • scripted fake provider  │
+                 │                               │  └──────────────────────────┘
                  └──────────────┬───────────────┘
                                 │ plugin host API (Py) + manifest (TS/Py)
         ┌───────────┬───────────┼───────────┬────────────┐
         ▼           ▼           ▼           ▼            ▼
-  plugin-atopile plugin-renode plugin-cad-jig plugin-sourcing plugin-orders
+     planned hardware / CAD / sourcing plugin packages
         └───────────┴───────────┴───────────┴────────────┘
                                 │ read/write typed IR nodes
                  ┌──────────────▼───────────────┐
@@ -32,27 +31,30 @@ plugins that all agree on one frozen set of contracts.
                  └──────────────────────────────┘
 ```
 
+## Current implementation scope
+
+The daemon and typed IR/contracts are implemented. The CLI foundation and deterministic harness runner are also in the repository. Specialist definitions and a pi-ai provider adapter are in development, alongside the convergence scheduler. Studio starts with clearly labeled fixture data; a desktop host bridge can supply daemon reads/build requests. Hardware plugins, 3D/telemetry/orders views and physical USB-HID validation remain ahead.
+
 ## Two processes, one IR
 
-- **`atomcd` (Python daemon)** owns persistence. It holds `system_ir.json` in memory, applies
-  transactions to it, schedules the DAG, runs gates, and exposes everything over JSON-RPC. Expensive
-  kernels — atopile, OCP/build123d, pyrenode3, kiutils — are loaded once and reused (OCP in its own
-  worker process, since it is not thread-safe).
+- **`atomcd` (Python daemon)** owns persistence. It holds `system_ir.json`, applies transactions,
+  schedules the DAG, runs gates, and exposes the RPC contract. The kernel registry/loading path exists;
+  project-specific hardware compiler plugins are still to come.
 - **`@atomc/cli` (TypeScript)** is the user-facing front end. It can start or attach to a daemon and
   speaks the same RPC surface the swarm harness uses.
 
 ## Layers
 
-| Layer | Location | Language | Responsibility |
-| ----- | -------- | -------- | -------------- |
-| Contracts | `docs/architecture/contracts/` | Markdown | Frozen interfaces: IR schema, RPC, plugin manifest, gate result, agent protocol |
-| Core IR | `packages/core-ir` | Py + TS | Pydantic models ⇄ JSON Schema ⇄ TS types + zod |
-| Daemon | `packages/daemon` | Py | IR store, DAG, gate runner, plugin host, warm kernels |
-| Plugin SDK | `packages/plugin-sdk` | Py + TS | `defineAtomcPlugin`, host protocol, conformance kit |
-| Swarm harness | `packages/swarm-harness` | TS | pi-ai agent loops, locks, converge-until-PASS |
-| Plugins | `plugins/*` | Py + TS | atopile, renode, cad-jig, sourcing, orders |
-| CLI | `apps/atomc-cli` | TS | commander-based UX |
-| Studio | `apps/atomc-studio` | TS | Phase 3 Vite + React + R3F dashboard |
+| Layer         | Location                       | Language | Responsibility                                                                     |
+| ------------- | ------------------------------ | -------- | ---------------------------------------------------------------------------------- |
+| Contracts     | `docs/architecture/contracts/` | Markdown | Frozen interfaces: IR schema, RPC, plugin manifest, gate result, agent protocol    |
+| Core IR       | `packages/core-ir`             | Py + TS  | Pydantic models → JSON Schema → generated TS types + runtime validation            |
+| Daemon        | `packages/daemon`              | Py       | IR store, DAG, gate runner, plugin host, warm kernels                              |
+| Plugin SDK    | `packages/plugin-sdk`          | Py + TS  | `defineAtomcPlugin`, host protocol, conformance kit                                |
+| Swarm harness | `packages/swarm-harness`       | TS       | deterministic transactional runner, scoped locks, budgets and gate verification    |
+| Plugins       | `plugins/*`                    | Py + TS  | Plugin SDK/runtime contracts exist; hardware/sourcing/order plugins remain planned |
+| CLI           | `apps/atomc-cli`               | TS       | commander-based UX                                                                 |
+| Studio        | `apps/atomc-studio`            | TS       | responsive Vite + React dashboard; fixture mode and injected trusted host bridge   |
 
 ## Read next
 

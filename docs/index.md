@@ -4,7 +4,7 @@ layout: home
 hero:
   name: atomc
   text: The Atom Compiler
-  tagline: Compile declarative hardware descriptions into verified physical systems — circuits, firmware, enclosure, test jig, and supply chain.
+  tagline: One system IR for circuits, firmware, mechanical design, test fixtures and sourcing. The hardware compiler is being built in the open.
   actions:
     - theme: brand
       text: Get started
@@ -17,34 +17,24 @@ hero:
       link: https://github.com/dtmirizzi/atomc
 
 features:
-  - title: One IR, every domain
-    details: A single Pydantic-validated System IR holds electrical, layout, keyboard, firmware, mechanical, sourcing, fabrication and orders nodes — with revisions and subtree locks so many agents can work at once.
-  - title: Reactive hardware DAG
-    details: Plugins declare what IR subtrees and files they watch. atomc builds a content-hashed DAG, runs only what is stale, and records provenance for every node.
-  - title: Gate-driven swarm
-    details: Deterministic gates (ERC, QMK compile & matrix scan, plate cutouts, pogo spacing, BOM stock) wake the domain agent that owns the failure, until the design converges.
-  - title: Circuits → firmware → enclosure
-    details: atopile circuits, Renode-emulated QMK firmware, build123d switch plates, cases and pogo-pin bed-of-nails jigs — all generated from the same IR.
-  - title: Real example, not a toy
-    details: atomc-keeb is a 48-key ortholinear keyboard with hot-swap MX sockets, an STM32F411, USB-C, and QMK firmware — built end to end through the pipeline.
-  - title: Orderable by construction
-    details: Keyless sourcing from the public LCSC/JLCPCB catalogues, budget gates, fab quotes and an orders ledger keep cost and availability inside the loop.
+  - title: One IR, many domains
+    details: The Pydantic-validated System IR describes electrical, layout, keyboard, firmware, mechanical, sourcing, fabrication and order data. Revisions and subtree locks are part of the model.
+  - title: A daemon and DAG foundation
+    details: The daemon provides IR storage, RPC, DAG scheduling and gate-result interfaces. Project-specific hardware plugins that compile designs are still in development.
+  - title: Transactional harness core
+    details: The deterministic runner applies scoped changes and checks daemon gate results. Specialist definitions, routing and provider wiring are in progress.
+  - title: A toolchain roadmap
+    details: The planned pipeline connects atopile, QMK, Renode and build123d through the shared IR. The atomc plugins for these tools are not implemented yet.
+  - title: Concrete hardware fixtures
+    details: The repository includes 3×3 macropad and 4×12 ortholinear keyboard source/IR fixtures. Atomc does not yet build them end to end.
+  - title: Supply-chain scope
+    details: The IR and plugin contracts include BOM, quote and order data. Vendor sourcing and ordering integrations are planned; no parts are ordered.
 ---
 
-## The story in one pass
+## What is in the repository
 
-```
-atopile circuits ──▶ System IR ──▶ Renode firmware ──▶ build123d enclosure + pogo jig
-                         │
-                         ├──▶ LCSC/JLCPCB BOM + fab quotes
-                         └──▶ tracked orders
-```
+The repository has a typed IR, Python daemon, TypeScript CLI, deterministic harness core and a Studio shell. Hardware backends and the multi-agent coordinator remain future work.
 
-`atomc` is driven by a reactive hardware DAG and a transactional, gate-driven multi-agent swarm
-harness. You describe the hardware; the compiler coordinates the tools that turn it into something
-you can build, test and order.
-
-- **Status:** pre-alpha. Phase 0 (environment) and Phase 1 (monorepo + core IR) are active.
-- **Roadmap and decisions:** see the [master plan](/plan/master) and the
-  [work-package status board](/plan/).
-- **The example:** read the [atomc-keeb walkthrough](/examples/atomc-keeb).
+- **Status:** pre-alpha. Phases 0–2 and the initial Phase 3 foundation are merged. The WP-3.3, WP-3.4 and WP-3.5 implementations are pushed on their branches for review; none are merged yet. Hardware plugins and the vertical build pipeline remain.
+- **Roadmap:** see the [master plan](/plan/master) and [work-package status board](/plan/).
+- **Example:** read the [atomc-keeb fixture walkthrough](/examples/atomc-keeb).

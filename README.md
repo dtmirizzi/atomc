@@ -1,11 +1,9 @@
 # atomc — The Atom Compiler
 
-Compile declarative code into verified physical systems. `atomc` unifies
-[atopile](https://atopile.io) (circuits), [Renode](https://renode.io) (firmware emulation),
-[build123d](https://build123d.readthedocs.io) (parametric enclosures and pogo-pin test jigs) and
-automated supply chain / logistics, driven by a reactive hardware DAG and a gate-driven multi-agent
-swarm harness.
+atomc is an open-source hardware engineering project. It brings circuit descriptions, firmware, mechanical design, test fixtures and sourcing under a shared system IR and daemon.
 
-**Status:** pre-alpha, under active construction. See [`PLAN.md`](./PLAN.md).
+The repository includes the Python daemon and IR, TypeScript SDKs, CLI and a deterministic transaction runner for agent work. It also has a Studio shell and QMK keyboard fixtures. Hardware-generation plugins, model-provider wiring and the specialist/convergence coordinator remain in development. Renode regression checks do not establish real USB-HID behavior.
 
-Docs (soon): https://dtmirizzi.github.io/atomc/
+**Status:** pre-alpha. See [`PLAN.md`](./PLAN.md) for shipped work and remaining scope.
+
+Docs: https://dtmirizzi.github.io/atomc/

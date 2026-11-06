@@ -1,29 +1,28 @@
 # What is atomc?
 
-`atomc` — **The Atom Compiler** — compiles declarative hardware descriptions into *verified physical
-systems*. It takes an atopile circuit description and drives it all the way to an emulated firmware
-build, a printable enclosure and pogo-pin test jig, a real bill of materials with live pricing, and a
-tracked order.
+`atomc` means **The Atom Compiler**. The project aims to carry declarative hardware designs from
+circuit description through firmware, enclosure and test-jig design, then into sourcing and order
+tracking. The IR, daemon, CLI foundation and deterministic harness core are implemented. Hardware
+generation and the manufacturing workflows are still being built.
 
-The name is a pun: like a compiler lowers source to machine code through typed intermediate
-representations, atomc lowers a hardware description through a typed **System IR** and a set of
-verification **gates** until every domain agrees the design is buildable.
+Like a software compiler, atomc uses a typed **System IR** and verification gates to keep domain tools
+and their outputs tied to one project.
 
 ## The pipeline
 
 ```
                  ┌────────────────────────────────────────────────────────────┐
                  │                     apps/atomc-cli  (TS)                   │
-                 │  init · build · sim · jig · quote · orders · converge      │
+                 │  init · build · doctor · daemon · plugin · sim…             │
                  └──────────────┬───────────────────────────┬─────────────────┘
                                 │ JSON-RPC/WS               │ in-proc
                  ┌──────────────▼───────────────┐  ┌────────▼─────────────────┐
                  │  packages/daemon  atomcd (Py) │  │ packages/swarm-harness   │
-                 │  • owns system_ir.json        │◄─┤ (TS, pi-ai)              │
-                 │  • DAG scheduler + watchers   │  │ • state machine           │
-                 │  • gate runner                │  │ • IR subtree locks        │
-                 │  • warm kernels: atopile,     │  │ • @ee @fw @mech @ops      │
-                 │    build123d/OCP, pyrenode3,  │  │ • converge-until-PASS     │
+                 │  • owns system_ir.json        │◄─┤ (TS, provider port)      │
+                 │  • DAG scheduler + watchers   │  │ • deterministic runner    │
+                 │  • gate runner                │  │ • transactional locks     │
+                 │  • warm kernels: atopile,     │  │ • gate-driven verify      │
+                 │    build123d/OCP, pyrenode3,  │  │ • provider port (fake CI) │
                  │    kiutils                    │  └──────────────────────────┘
                  └──────────────┬───────────────┘
                                 │ plugin host API (Py) + manifest (TS/Py)
@@ -44,16 +43,15 @@ verification **gates** until every domain agrees the design is buildable.
 orders, gates and provenance are all nodes of a single `system_ir.json`. Every node carries a
 revision and an optional lock, which is what makes concurrent multi-agent editing safe.
 
-**A reactive DAG.** Each plugin declares the IR subtrees and files it watches. The daemon turns those
-declarations into a dependency graph, hashes inputs, and re-runs only the nodes that are stale.
+**A reactive DAG.** The daemon exposes DAG scheduling and the plugin watch/produces contract. The hardware plugins that compile designs and produce project artifacts are still being built.
 
-**Gates, not vibes.** A gate is a deterministic check — ERC has no unconnected nets, QMK compiles,
-every keypress injects to the right keycode, the plate has 14 mm switch cutouts, pogo pins are spaced
-at least 2.54 mm, every BOM line is in stock. A `FAIL` names the agent that owns the fix.
+**Gates are the intended verification source.** The daemon exchanges deterministic gate results, but the example hardware gates and plugins are not all implemented. A failure can identify its owner; software checks here do not prove real USB-HID behavior.
 
-**A swarm that converges.** Agents receive gate failures, claim the IR subtree they own, make a
-change through a transaction, re-run the affected DAG, and re-check their gates. Repeat until
-everything is `PASS`.
+**Verified state transitions, with orchestration still ahead.** The deterministic harness runner
+accepts injected provider decisions, claims IR scopes, applies checked transactions/tools, reruns
+DAG/gates, and releases locks. It can return `PASS`, `RETRY`, or `ESCALATE` only from real gate
+results. The real pi-ai adapter, specialist agents, and multi-agent converge scheduler are not yet
+implemented, so the dashboard/runner does not claim unattended design convergence.
 
 ## Where to go next
 
@@ -63,7 +61,7 @@ everything is `PASS`.
 - See what a real target looks like: [atomc-keeb](/examples/atomc-keeb).
 
 ::: warning Pre-alpha
-Interfaces are frozen (the contracts under `/architecture/contracts/`) but most features are not
-implemented yet. Pages mark anything still **planned**. The [master plan](/plan/master) is the source
-of truth for scope.
+The IR, daemon, CLI foundation, deterministic harness core and Studio shell are implemented. Hardware
+plugins, specialist agents, convergence orchestration, Studio 3D/telemetry/orders, and physical proof
+still remain. Renode is not evidence of USB-HID behavior. The [master plan](/plan/master) tracks scope.
 :::
