@@ -4,6 +4,7 @@ packages:
   - "plugins/*/ts"
   - "docs"
   - "tests/contract"
+  - "tests/swarm"
 
 # Single source of truth for TS dependency versions (PLAN.md §2).
 catalog:
