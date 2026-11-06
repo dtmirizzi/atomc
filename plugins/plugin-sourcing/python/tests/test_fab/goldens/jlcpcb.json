@@ -1,0 +1,29 @@
+{
+  "default": {
+    "id": "quote:jlcpcb_66530c87b0549254",
+    "fab": "jlcpcb",
+    "total_minor": 1116,
+    "currency": "USD",
+    "lead_time_days": 3,
+    "fetched_at": "2026-11-05T12:00:00Z",
+    "breakdown": {
+      "pcb": 216,
+      "shipping": 900
+    },
+    "url": "https://jlcpcb.com/quote?layers=2&length=80.0&width=80.0&qty=5"
+  },
+  "assembly": {
+    "id": "quote:jlcpcb_a77754a4aec75905",
+    "fab": "jlcpcb",
+    "total_minor": 2966,
+    "currency": "USD",
+    "lead_time_days": 5,
+    "fetched_at": "2026-11-05T12:00:00Z",
+    "breakdown": {
+      "pcb": 216,
+      "shipping": 1250,
+      "assembly": 1500
+    },
+    "url": "https://jlcpcb.com/quote?layers=2&length=80.0&width=80.0&qty=5"
+  }
+}

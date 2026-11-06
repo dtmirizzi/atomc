@@ -27,10 +27,11 @@ def test_manifest_parses_with_expected_declarations() -> None:
     manifest = load_plugin_manifest()
     assert manifest.name == "sourcing"
     assert manifest.version == "0.1.0"
-    assert {tool.name for tool in manifest.tools} == EXPECTED_TOOLS
-    assert manifest.produces == ["/sourcing"]
-    assert {watch.id for watch in manifest.watches} == {"sourcing:refresh"}
-    assert manifest.gates == []
+    # Other Phase-5 work packages (WP-5.2 optimizer, WP-5.3 fab quotes) extend the same manifest,
+    # so the WP-5.1 tools are required members, not the whole set.
+    assert {tool.name for tool in manifest.tools} >= EXPECTED_TOOLS
+    assert "/sourcing" in manifest.produces
+    assert "sourcing:refresh" in {watch.id for watch in manifest.watches}
 
 
 def test_mutating_refresh_declares_sourcing_scope() -> None:
@@ -40,7 +41,7 @@ def test_mutating_refresh_declares_sourcing_scope() -> None:
     assert refresh.mutates is True
     assert query.mutates is False
     assert refresh.agents == ["ee-agent", "ops-agent"]
-    assert manifest.produces == ["/sourcing"]
+    assert "/sourcing" in manifest.produces
 
 
 def test_conformance_accepts_plugin_and_all_handlers_are_callable() -> None:

@@ -11,10 +11,22 @@
     {
       "id": "sourcing:refresh",
       "ir": ["/sourcing"]
+    },
+    {
+      "id": "fab:quote",
+      "ir": ["/layout"]
     }
   ],
-  "produces": ["/sourcing"],
-  "gates": [],
+  "produces": ["/sourcing", "/fabrication"],
+  "gates": [
+    {
+      "id": "gate:fab.quote_under_budget",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": ["fab:quote"],
+      "handler": "check_quote_under_budget"
+    }
+  ],
   "tools": [
     {
       "name": "query",
@@ -56,6 +68,57 @@
       "agents": ["ee-agent", "ops-agent"],
       "mutates": true,
       "handler": "refresh_tool"
+    },
+    {
+      "name": "quote_pcb",
+      "description": "Fetch PCB fabrication quotes for a spec and write them into /fabrication; reports honest UNAVAILABLE/ERROR when no quotes can be trusted",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "pcb": {
+            "type": "object",
+            "properties": {
+              "layers": { "type": "integer", "minimum": 1 },
+              "width_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "height_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "thickness_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "finish": { "enum": ["HASL", "LF-HASL", "ENIG"] },
+              "color": { "type": "string" },
+              "qty": { "type": "integer", "minimum": 1 }
+            },
+            "required": [
+              "layers",
+              "width_mm",
+              "height_mm",
+              "thickness_mm",
+              "finish",
+              "color",
+              "qty"
+            ],
+            "additionalProperties": false
+          },
+          "assembly": {
+            "type": "object",
+            "properties": {
+              "side": { "enum": ["top", "bottom", "both"] },
+              "parts_count": { "type": "integer", "minimum": 0 }
+            },
+            "required": ["side", "parts_count"],
+            "additionalProperties": false
+          },
+          "fabs": {
+            "type": "array",
+            "items": { "enum": ["jlcpcb"] },
+            "minItems": 1
+          },
+          "write": { "type": "boolean", "default": true },
+          "force": { "type": "boolean", "default": false }
+        },
+        "additionalProperties": false
+      },
+      "agents": ["ops-agent"],
+      "mutates": true,
+      "handler": "quote_pcb_tool"
     }
   ],
   "cli": [],

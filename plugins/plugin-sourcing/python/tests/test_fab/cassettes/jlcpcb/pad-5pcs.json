@@ -1,0 +1,39 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "fab": "jlcpcb",
+    "note": "Synthetic fixture modelling the documented JLCPCB PCB price-calculator response shape; no live call was made."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/overseas/openapi/pcb/calculate",
+    "body_contains": "\"qty\":5,\"thickness\":1.6"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "code": 200,
+      "data": {
+        "price": 2.16,
+        "currency": "USD",
+        "unitPrice": 0.432,
+        "leadTime": "3-5 days",
+        "shippingOptions": [
+          {
+            "shippingMethod": "DHL Express",
+            "cost": 12.5,
+            "deliveryTime": "5-7 days"
+          },
+          {
+            "shippingMethod": "Global Direct",
+            "cost": 9.0,
+            "deliveryTime": "12-15 days"
+          }
+        ],
+        "totalPrice": 11.16,
+        "url": "https://jlcpcb.com/quote?layers=2&length=80.0&width=80.0&qty=5"
+      },
+      "message": "success"
+    }
+  }
+}
