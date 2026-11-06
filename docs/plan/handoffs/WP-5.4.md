@@ -1,0 +1,84 @@
+# WP-5.4 `plugin-orders` — handoff
+
+## What was built
+
+A Python-only `atomc.plugins` plugin at `plugins/plugin-orders/` (manifest
+`plugins/plugin-orders/atomc-plugin.json`, package `atomc-plugin-orders`) that builds vendor cart
+files, keeps a **draft-only** order ledger and applies deterministic mock-carrier tracking.
+
+- **Manifest** (`atomc-plugin.json`): watches `orders:sourcing` (`/sourcing`) and `orders:ledger`
+  (`/orders`), produces `/orders`, no gates.
+- **Tools** (all `mutates: true`, `ops-agent`):
+  - `build_cart` — groups the chosen offers in `/sourcing` by vendor, applies `build_qty`/MOQ and
+    price-break selection, writes `<artifact_root>/orders/<vendor>-cart.csv`, and records one
+    DRAFT `/orders` entry per vendor with the artifact `sha256` + path in its history note.
+  - `place` — records a DRAFT order (`status: "draft"`) from explicit `lines` or from the chosen
+    `/sourcing` offers for a vendor. Never contacts a vendor; the summary and `notice` say so.
+  - `poll` — asks the configured carrier (mock only) for a timeline and applies the events to the
+    matching `/orders` record.
+  - `webhook` — accepts an explicitly-mock carrier payload (`carrier="mock"`, `mock=true`) and
+    appends tracking/history; refuses anything else.
+- **Cart writers** (`src/atomc_plugin_orders/carts.py`): LCSC BOM
+  (`Comment,Designator,Footprint,LCSC Part #,Quantity`), JLCPCB SMT BOM
+  (`Comment,Designator,Footprint,LCSC Part #`), Mouser cart
+  (`Mouser Part Number,Quantity,Customer Part Number`), DigiKey list
+  (`DigiKey Part Number,Quantity,Customer Reference`) and a generic fallback
+  (`SKU,Quantity,Vendor,MPN`). Rendering is pure and byte-stable.
+- **Ledger** (`src/atomc_plugin_orders/ledger.py`): the `draft→placed→paid→shipped→delivered` /
+  `cancelled` state machine; illegal transitions raise `IllegalTransitionError` and leave
+  `/orders` unchanged. History timestamps come from an injectable `Clock`.
+- **Mock carrier** (`src/atomc_plugin_orders/carriers/`): a `Carrier` protocol plus `MockCarrier`
+  with deterministic timelines for `MOCK-TRACK-1001/2002/3003`, anchored to the injected clock.
+  Every result is labeled `mock: true`; unknown numbers return `found: false` (never a made-up
+  timeline). No real carrier adapter ships.
+- **Tests**: 80 deterministic pytest tests covering cart goldens per vendor, offer/MOQ/price
+  selection, ledger legal/illegal transitions, `build_cart`/`place`/`poll`/`webhook` with a fake
+  context + `FixedClock` + `MockCarrier`, manifest conformance and daemon entry-point discovery.
+
+## How to verify
+
+```bash
+uv sync --all-packages
+uv run pytest plugins/plugin-orders/python -q
+uv run ruff check plugins/plugin-orders
+uv run ruff format --check plugins/plugin-orders
+uv run mypy plugins/plugin-orders/python/src
+```
+
+All five commands pass locally with **no network and no credentials**.
+
+## Design decisions
+
+- **Artifact refs live in history notes.** The frozen `Order` model (`orders.py`) has no artifact
+  field, so `build_cart` records `art:orders_<vendor>_cart`, the format, path and `sha256` in the
+  draft order's `history[].note` and returns the structured artifact list from the tool result.
+- **`place` means "prepare a draft".** Per the brief, `place` writes `status: "draft"` and never
+  contacts a vendor. The tool result keeps its own `status` (`PASS`/`FAIL`) and exposes the order
+  state under `order_status`, so it can never be misread as "the order was placed".
+- **Mock-first honesty.** `poll` returns `UNAVAILABLE` for any non-mock carrier; `webhook` rejects
+  a payload unless `carrier="mock"` and `mock=true`. Every carrier result carries `mock: true`,
+  and webhook history notes end with "not a real carrier event".
+- **Python-only runtime.** Uses the established `ConformantManifest` + raw `plugin.manifest` dict
+  pattern from `plugin-atopile` so the shared manifest schema and the daemon's entry-point
+  resolver both validate cleanly.
+- **No gates.** The brief lists no gates for this plugin, so the manifest declares `gates: []`;
+  the plugin contributes two watch nodes to the DAG (`orders:sourcing → orders:ledger`).
+
+## Deviations from contract
+
+None. The `/orders` writes use only frozen `Order`/`OrderLine`/`Tracking`/`HistoryEntry` fields.
+
+## Open issues
+
+- **`tests/e2e/ts/vertical-slice.e2e.test.ts` assumes the Phase-4 four-plugin DAG** (it asserts an
+  exact watch+gate node count). Installing this plugin adds the two `orders:*` watch nodes, so
+  that test needs its expected-node list updated (outside this WP's owned paths). Same applies to
+  the real-daemon plugin inventory described in `tests/e2e/README.md`.
+- No `atomc orders` TUI table: that UX is owned by WP-5.5 (`cli-quote-orders`).
+- No real carrier adapter; the `Carrier` interface is ready for one to be injected later.
+- `Order` has no first-class artifact/attachment field; see the history-note workaround above.
+
+## Root changes needed
+
+- `uv.lock` was regenerated by `uv sync --all-packages` to add the `atomc-plugin-orders` workspace
+  member (committed on this branch, matching the WP-4.2b/4.3 precedent).
