@@ -1,0 +1,1610 @@
+{
+  "electrical": {
+    "_meta": {
+      "rev": 2
+    },
+    "assertions": [
+      {
+        "expr": "R1.value == R2.value",
+        "id": "assert:usb_cc",
+        "status": "pass"
+      }
+    ],
+    "components": [
+      {
+        "attributes": {},
+        "designator": "U1",
+        "dnp": false,
+        "footprint": "Package_DFN_QFN:QFN-48-1EP_7x7mm_P0.5mm_EP5.6x5.6mm",
+        "id": "comp:U1",
+        "lcsc": "C60442",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "STM32F411CEU6",
+        "package": "UFQFPN48",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "net_ref": "net:BOOT0",
+            "number": "3"
+          },
+          {
+            "net_ref": "net:NRST",
+            "number": "4"
+          },
+          {
+            "net_ref": "net:SWDIO",
+            "number": "5"
+          },
+          {
+            "net_ref": "net:SWCLK",
+            "number": "6"
+          },
+          {
+            "net_ref": "net:UART_TX",
+            "number": "7"
+          },
+          {
+            "net_ref": "net:UART_RX",
+            "number": "8"
+          },
+          {
+            "net_ref": "net:ROW0",
+            "number": "9"
+          },
+          {
+            "net_ref": "net:ROW1",
+            "number": "10"
+          },
+          {
+            "net_ref": "net:ROW2",
+            "number": "11"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "12"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "13"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "14"
+          },
+          {
+            "net_ref": "net:USB_DP",
+            "number": "15"
+          },
+          {
+            "net_ref": "net:USB_DM",
+            "number": "16"
+          },
+          {
+            "net_ref": "net:HSE_IN",
+            "number": "17"
+          },
+          {
+            "net_ref": "net:HSE_OUT",
+            "number": "18"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "J1",
+        "dnp": false,
+        "id": "comp:J1",
+        "manufacturer": "GCT",
+        "mpn": "USB4085-GF-A",
+        "package": "SMD",
+        "pins": [
+          {
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "net_ref": "net:CC1",
+            "number": "3"
+          },
+          {
+            "net_ref": "net:CC2",
+            "number": "4"
+          },
+          {
+            "net_ref": "net:USB_DP",
+            "number": "5"
+          },
+          {
+            "net_ref": "net:USB_DM",
+            "number": "6"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U2",
+        "dnp": false,
+        "id": "comp:U2",
+        "manufacturer": "Diodes Inc",
+        "mpn": "AP2112K-3.3TRG1",
+        "package": "SOT-25-5",
+        "pins": [
+          {
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "net_ref": "net:3V3",
+            "number": "3"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U3",
+        "dnp": false,
+        "id": "comp:U3",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "USBLC6-2SC6",
+        "package": "SOT-23-6",
+        "pins": [
+          {
+            "net_ref": "net:USB_DP",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:USB_DM",
+            "number": "2"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "3"
+          },
+          {
+            "net_ref": "net:VBUS",
+            "number": "4"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "R1",
+        "dnp": false,
+        "id": "comp:R1",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:CC1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "5.1k"
+      },
+      {
+        "attributes": {},
+        "designator": "R2",
+        "dnp": false,
+        "id": "comp:R2",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:CC2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "5.1k"
+      },
+      {
+        "attributes": {},
+        "designator": "C1",
+        "dnp": false,
+        "id": "comp:C1",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:VBUS",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "1uF"
+      },
+      {
+        "attributes": {},
+        "designator": "C2",
+        "dnp": false,
+        "id": "comp:C2",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "1uF"
+      },
+      {
+        "attributes": {},
+        "designator": "C3",
+        "dnp": false,
+        "id": "comp:C3",
+        "package": "0402",
+        "pins": [
+          {
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:GND",
+            "number": "2"
+          }
+        ],
+        "value": "100nF"
+      },
+      {
+        "attributes": {},
+        "designator": "SW1",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW1",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D1",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D1",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW2",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW2",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D2",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D2",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW3",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW3",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW0",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D3",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D3",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW4",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW4",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D4",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D4",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW5",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW5",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D5",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D5",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW6",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW6",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW1",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D6",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D6",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW7",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW7",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL0",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D7",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D7",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL0",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW8",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW8",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL1",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D8",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D8",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL1",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "SW9",
+        "dnp": false,
+        "footprint": "Switch_Keyboard:SW_Hotswap_Kailh_MX",
+        "id": "comp:SW9",
+        "mpn": "Kailh_Choc_V1",
+        "package": "switch",
+        "pins": [
+          {
+            "net_ref": "net:ROW2",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:COL2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "D9",
+        "dnp": false,
+        "footprint": "Diode_SMD:D_SOD-123",
+        "id": "comp:D9",
+        "mpn": "1N4148W",
+        "package": "SOD-123",
+        "pins": [
+          {
+            "name": "A",
+            "net_ref": "net:COL2",
+            "number": "1"
+          },
+          {
+            "name": "K",
+            "net_ref": "net:ROW2",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "Y1",
+        "dnp": false,
+        "id": "comp:Y1",
+        "manufacturer": "Abracon",
+        "mpn": "ABM8-25.000MHZ",
+        "package": "SMD3225-4",
+        "pins": [
+          {
+            "name": "XTAL1",
+            "net_ref": "net:HSE_IN",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "XTAL2",
+            "net_ref": "net:HSE_OUT",
+            "number": "3"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "4"
+          }
+        ],
+        "value": "25MHz"
+      }
+    ],
+    "erc": [],
+    "nets": [
+      {
+        "id": "net:VBUS",
+        "name": "VBUS"
+      },
+      {
+        "id": "net:GND",
+        "name": "GND"
+      },
+      {
+        "id": "net:3V3",
+        "name": "3V3"
+      },
+      {
+        "id": "net:SWDIO",
+        "name": "SWDIO"
+      },
+      {
+        "id": "net:SWCLK",
+        "name": "SWCLK"
+      },
+      {
+        "id": "net:NRST",
+        "name": "NRST"
+      },
+      {
+        "id": "net:BOOT0",
+        "name": "BOOT0"
+      },
+      {
+        "id": "net:UART_TX",
+        "name": "UART_TX"
+      },
+      {
+        "id": "net:UART_RX",
+        "name": "UART_RX"
+      },
+      {
+        "id": "net:ROW0",
+        "name": "ROW0"
+      },
+      {
+        "id": "net:ROW1",
+        "name": "ROW1"
+      },
+      {
+        "id": "net:ROW2",
+        "name": "ROW2"
+      },
+      {
+        "id": "net:COL0",
+        "name": "COL0"
+      },
+      {
+        "id": "net:COL1",
+        "name": "COL1"
+      },
+      {
+        "id": "net:COL2",
+        "name": "COL2"
+      },
+      {
+        "id": "net:USB_DP",
+        "name": "USB_DP"
+      },
+      {
+        "id": "net:USB_DM",
+        "name": "USB_DM"
+      },
+      {
+        "id": "net:CC1",
+        "name": "CC1"
+      },
+      {
+        "id": "net:CC2",
+        "name": "CC2"
+      },
+      {
+        "class": "signal",
+        "id": "net:HSE_IN",
+        "name": "HSE_IN"
+      },
+      {
+        "class": "signal",
+        "id": "net:HSE_OUT",
+        "name": "HSE_OUT"
+      }
+    ],
+    "source": {
+      "ato_version": "0.15.9",
+      "entry": "main.ato:App",
+      "kind": "atopile"
+    }
+  },
+  "ext": {},
+  "firmware": {
+    "_meta": {
+      "rev": 3
+    },
+    "peripherals": [
+      {
+        "base_address": 1073807360,
+        "id": "periph:usart1",
+        "kind": "uart",
+        "signals": [
+          {
+            "name": "TX",
+            "net_ref": "net:UART_TX",
+            "pin": "A9"
+          },
+          {
+            "name": "RX",
+            "net_ref": "net:UART_RX",
+            "pin": "A10"
+          }
+        ]
+      },
+      {
+        "base_address": 1073872896,
+        "id": "periph:gpioa",
+        "kind": "gpio",
+        "signals": [
+          {
+            "name": "LED",
+            "pin": "C13"
+          }
+        ]
+      }
+    ],
+    "suites": [
+      {
+        "framework": "pytest",
+        "id": "suite:matrix",
+        "last_result": {
+          "duration_ms": 1200,
+          "failed": 0,
+          "passed": 9,
+          "ran_at": "2026-11-04T00:00:00Z",
+          "report_path": "build/matrix.xml",
+          "skipped": 0
+        },
+        "path": "tests/test_matrix.py"
+      }
+    ],
+    "targets": [
+      {
+        "artifacts": [
+          {
+            "bytes": 51200,
+            "id": "art:fw_elf",
+            "kind": "elf",
+            "path": "build/atomc-pad.elf",
+            "produced_at": "2026-11-04T00:00:00Z",
+            "produced_by": "plugin:qmk@0.1.0",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "build_cmd": "qmk compile",
+        "core": "cortex-m4f",
+        "framework": "qmk",
+        "id": "fw:main",
+        "mcu": "STM32F411CEU6",
+        "memory": [
+          {
+            "length": 524288,
+            "name": "flash",
+            "origin": 134217728
+          },
+          {
+            "length": 131072,
+            "name": "ram",
+            "origin": 536870912
+          }
+        ],
+        "source_dir": "qmk"
+      }
+    ]
+  },
+  "gates": {
+    "_meta": {
+      "rev": 3
+    },
+    "results": {
+      "bom.all_in_stock": {
+        "duration_ms": 15,
+        "evaluated_at": "2026-11-04T00:00:00Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "all offers have stock > 0"
+          }
+        ],
+        "id": "gate:bom.all_in_stock",
+        "ir_rev": 3,
+        "owner_agent": "ops-agent",
+        "plugin": "plugin:sourcing@0.1.0",
+        "refs": ["comp:U1", "comp:U2", "comp:J1"],
+        "severity": "blocking",
+        "status": "PASS",
+        "suggestions": [],
+        "summary": "3/3 BOM lines in stock"
+      }
+    }
+  },
+  "keyboard": {
+    "_meta": {
+      "rev": 2
+    },
+    "keys": [
+      {
+        "col": 0,
+        "diode_ref": "comp:D1",
+        "h_u": 1.0,
+        "id": "key:K0_0",
+        "keycode_default": "KC_A",
+        "label": "K00",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW1",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D2",
+        "h_u": 1.0,
+        "id": "key:K0_1",
+        "keycode_default": "KC_A",
+        "label": "K01",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW2",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D3",
+        "h_u": 1.0,
+        "id": "key:K0_2",
+        "keycode_default": "KC_A",
+        "label": "K02",
+        "rotation_deg": 0.0,
+        "row": 0,
+        "switch_ref": "comp:SW3",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 0.0
+      },
+      {
+        "col": 0,
+        "diode_ref": "comp:D4",
+        "h_u": 1.0,
+        "id": "key:K1_0",
+        "keycode_default": "KC_A",
+        "label": "K10",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW4",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D5",
+        "h_u": 1.0,
+        "id": "key:K1_1",
+        "keycode_default": "KC_A",
+        "label": "K11",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW5",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D6",
+        "h_u": 1.0,
+        "id": "key:K1_2",
+        "keycode_default": "KC_A",
+        "label": "K12",
+        "rotation_deg": 0.0,
+        "row": 1,
+        "switch_ref": "comp:SW6",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 1.0
+      },
+      {
+        "col": 0,
+        "diode_ref": "comp:D7",
+        "h_u": 1.0,
+        "id": "key:K2_0",
+        "keycode_default": "KC_A",
+        "label": "K20",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW7",
+        "w_u": 1.0,
+        "x_u": 0.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 1,
+        "diode_ref": "comp:D8",
+        "h_u": 1.0,
+        "id": "key:K2_1",
+        "keycode_default": "KC_A",
+        "label": "K21",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW8",
+        "w_u": 1.0,
+        "x_u": 1.0,
+        "y_u": 2.0
+      },
+      {
+        "col": 2,
+        "diode_ref": "comp:D9",
+        "h_u": 1.0,
+        "id": "key:K2_2",
+        "keycode_default": "KC_A",
+        "label": "K22",
+        "rotation_deg": 0.0,
+        "row": 2,
+        "switch_ref": "comp:SW9",
+        "w_u": 1.0,
+        "x_u": 2.0,
+        "y_u": 2.0
+      }
+    ],
+    "matrix": {
+      "col_pins": ["A0", "A1", "A2"],
+      "cols": 3,
+      "diode_direction": "COL2ROW",
+      "row_pins": ["B12", "B13", "B14"],
+      "rows": 3
+    },
+    "qmk": {
+      "board": "BLACKPILL_STM32_F411",
+      "bootloader": "stm32-dfu",
+      "keyboard_path": "atomc/pad",
+      "processor": "STM32F411"
+    },
+    "usb": {
+      "device_version": "1.0.0",
+      "manufacturer": "atomc",
+      "pid": "0x0001",
+      "product": "atomc-pad",
+      "vid": "0xFEED"
+    }
+  },
+  "layout": {
+    "_meta": {
+      "rev": 2
+    },
+    "keepouts": [],
+    "layers": 2,
+    "mounting_holes": [
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H1",
+        "plated": true,
+        "x": 3.5,
+        "y": 3.5
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H2",
+        "plated": true,
+        "x": 76.5,
+        "y": 3.5
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H3",
+        "plated": true,
+        "x": 3.5,
+        "y": 76.5
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H4",
+        "plated": true,
+        "x": 76.5,
+        "y": 76.5
+      }
+    ],
+    "outline": {
+      "polygon": [[0.0, 0.0], [80.0, 0.0], [80.0, 80.0], [0.0, 80.0]],
+      "thickness_mm": 1.6
+    },
+    "placements": [
+      {
+        "component_ref": "comp:U1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 40.0,
+        "y": 40.0
+      },
+      {
+        "component_ref": "comp:J1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 5.0,
+        "y": 40.0
+      },
+      {
+        "component_ref": "comp:U2",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 20.0,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:U3",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 10.0,
+        "y": 40.0
+      },
+      {
+        "component_ref": "comp:R1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 15.0,
+        "y": 20.0
+      },
+      {
+        "component_ref": "comp:R2",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 20.0,
+        "y": 20.0
+      },
+      {
+        "component_ref": "comp:C1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 25.0,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:C2",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 30.0,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:C3",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 35.0,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:SW1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 10.0,
+        "y": 48.1
+      },
+      {
+        "component_ref": "comp:D1",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 10.0,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW2",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 29.05,
+        "y": 48.1
+      },
+      {
+        "component_ref": "comp:D2",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 29.05,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW3",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 48.1,
+        "y": 48.1
+      },
+      {
+        "component_ref": "comp:D3",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 48.1,
+        "y": 43.1
+      },
+      {
+        "component_ref": "comp:SW4",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 10.0,
+        "y": 29.05
+      },
+      {
+        "component_ref": "comp:D4",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 10.0,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW5",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 29.05,
+        "y": 29.05
+      },
+      {
+        "component_ref": "comp:D5",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 29.05,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW6",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 48.1,
+        "y": 29.05
+      },
+      {
+        "component_ref": "comp:D6",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 48.1,
+        "y": 24.05
+      },
+      {
+        "component_ref": "comp:SW7",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 10.0,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:D7",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 10.0,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW8",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 29.05,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:D8",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 29.05,
+        "y": 5.0
+      },
+      {
+        "component_ref": "comp:SW9",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 48.1,
+        "y": 10.0
+      },
+      {
+        "component_ref": "comp:D9",
+        "rotation_deg": 0.0,
+        "side": "bottom",
+        "x": 48.1,
+        "y": 5.0
+      }
+    ],
+    "source": {
+      "kind": "kicad_pcb",
+      "path": "layout/atomc-pad.kicad_pcb",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "test_pads": [
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_VBUS",
+        "kind": "pogo",
+        "label": "VBUS",
+        "net_ref": "net:VBUS",
+        "side": "bottom",
+        "x": 6.0,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_3V3",
+        "kind": "pogo",
+        "label": "3V3",
+        "net_ref": "net:3V3",
+        "side": "bottom",
+        "x": 8.54,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_GND",
+        "kind": "pogo",
+        "label": "GND",
+        "net_ref": "net:GND",
+        "side": "bottom",
+        "x": 11.08,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_SWDIO",
+        "kind": "pogo",
+        "label": "SWDIO",
+        "net_ref": "net:SWDIO",
+        "side": "bottom",
+        "x": 13.620000000000001,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_SWCLK",
+        "kind": "pogo",
+        "label": "SWCLK",
+        "net_ref": "net:SWCLK",
+        "side": "bottom",
+        "x": 16.16,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_NRST",
+        "kind": "pogo",
+        "label": "NRST",
+        "net_ref": "net:NRST",
+        "side": "bottom",
+        "x": 18.7,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_BOOT0",
+        "kind": "pogo",
+        "label": "BOOT0",
+        "net_ref": "net:BOOT0",
+        "side": "bottom",
+        "x": 21.240000000000002,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_UART_TX",
+        "kind": "pogo",
+        "label": "UART_TX",
+        "net_ref": "net:UART_TX",
+        "side": "bottom",
+        "x": 23.78,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_UART_RX",
+        "kind": "pogo",
+        "label": "UART_RX",
+        "net_ref": "net:UART_RX",
+        "side": "bottom",
+        "x": 26.32,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW0",
+        "kind": "pogo",
+        "label": "ROW0",
+        "net_ref": "net:ROW0",
+        "side": "bottom",
+        "x": 28.86,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW1",
+        "kind": "pogo",
+        "label": "ROW1",
+        "net_ref": "net:ROW1",
+        "side": "bottom",
+        "x": 31.4,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ROW2",
+        "kind": "pogo",
+        "label": "ROW2",
+        "net_ref": "net:ROW2",
+        "side": "bottom",
+        "x": 33.94,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL0",
+        "kind": "pogo",
+        "label": "COL0",
+        "net_ref": "net:COL0",
+        "side": "bottom",
+        "x": 36.480000000000004,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL1",
+        "kind": "pogo",
+        "label": "COL1",
+        "net_ref": "net:COL1",
+        "side": "bottom",
+        "x": 39.02,
+        "y": 6.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_COL2",
+        "kind": "pogo",
+        "label": "COL2",
+        "net_ref": "net:COL2",
+        "side": "bottom",
+        "x": 41.56,
+        "y": 6.0
+      }
+    ]
+  },
+  "mechanical": {
+    "_meta": {
+      "rev": 3
+    },
+    "artifacts": [],
+    "checks": [
+      {
+        "detail": "min pitch 2.54 mm",
+        "id": "check:pogo",
+        "kind": "pogo_spacing",
+        "status": "pass"
+      }
+    ],
+    "component_bboxes": [
+      {
+        "component_ref": "comp:U1",
+        "max": [45.0, 45.0, 1.2],
+        "min": [35.0, 35.0, 0.0]
+      },
+      {
+        "component_ref": "comp:J1",
+        "max": [8.0, 42.0, 3.0],
+        "min": [2.0, 38.0, 0.0]
+      }
+    ],
+    "enclosure": {
+      "clearance_mm": 0.4,
+      "kind": "tray",
+      "params": {},
+      "wall_mm": 2.0
+    },
+    "jig": {
+      "alignment": "mounting_holes",
+      "min_pitch_mm": 2.54,
+      "plate_thickness_mm": 5.0,
+      "pogo_part": "P75-E2",
+      "spring_force_n": 0.5
+    },
+    "pcb_bbox": {
+      "max": [80.0, 80.0, 1.6],
+      "min": [0.0, 0.0, 0.0]
+    },
+    "plate": {
+      "cutout_mm": 14.0,
+      "material": "PLA",
+      "pitch_mm": 19.05,
+      "thickness_mm": 1.5
+    }
+  },
+  "meta": {
+    "atomc_version": "0.1.0",
+    "created_at": "2026-11-04T00:00:00Z",
+    "description": "3x3 macropad dev fixture on STM32F411CEU6",
+    "modified_at": "2026-11-04T00:00:00Z",
+    "name": "atomc-pad",
+    "project_id": "proj:atomc-pad",
+    "rev": 3
+  },
+  "provenance": {
+    "_meta": {
+      "rev": 3
+    },
+    "nodes": {
+      "atopile.compile": {
+        "duration_ms": 2100,
+        "inputs_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "outputs_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "producer": "plugin:atopile@0.1.0",
+        "ran_at": "2026-11-04T00:00:00Z"
+      }
+    }
+  },
+  "schema_version": "0.1.0",
+  "simulation": {
+    "_meta": {
+      "rev": 3
+    },
+    "captures": [
+      {
+        "id": "cap:uart",
+        "kind": "uart",
+        "path": "build/uart.log",
+        "scenario_ref": "sim:boot"
+      }
+    ],
+    "platform": {
+      "generated_from_rev": 3,
+      "repl_path": "build/atomc-pad.repl",
+      "resc_path": "build/boot.resc"
+    },
+    "scenarios": [
+      {
+        "description": "boot to QMK banner",
+        "id": "sim:boot"
+      }
+    ]
+  },
+  "sourcing": {
+    "_meta": {
+      "rev": 3
+    },
+    "bom": [
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U1_lcsc",
+        "component_refs": ["comp:U1"],
+        "id": "bom:U1",
+        "lcsc": "C60442",
+        "mpn": "STM32F411CEU6",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-04T00:00:00Z",
+            "id": "offer:U1_lcsc",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 420
+              },
+              {
+                "qty": 5,
+                "unit_price_minor": 390
+              }
+            ],
+            "sku": "C60442",
+            "stock": 320,
+            "url": "https://example.com/C60442",
+            "vendor": "lcsc"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U2_lcsc",
+        "component_refs": ["comp:U2"],
+        "id": "bom:U2",
+        "lcsc": "C51118",
+        "mpn": "AP2112K-3.3TRG1",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-04T00:00:00Z",
+            "id": "offer:U2_lcsc",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 8
+              }
+            ],
+            "sku": "C51118",
+            "stock": 1500,
+            "vendor": "lcsc"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:J1_lcsc",
+        "component_refs": ["comp:J1"],
+        "id": "bom:J1",
+        "lcsc": "C165948",
+        "mpn": "USB4085-GF-A",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-04T00:00:00Z",
+            "id": "offer:J1_lcsc",
+            "lead_time_days": 14,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 95
+              }
+            ],
+            "sku": "C165948",
+            "stock": 40,
+            "vendor": "lcsc"
+          }
+        ],
+        "qty_per_unit": 1
+      }
+    ],
+    "budget": {
+      "per_unit_minor": 1500,
+      "total_minor": 7500
+    },
+    "build_qty": 5,
+    "currency": "USD"
+  }
+}

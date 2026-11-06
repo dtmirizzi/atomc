@@ -1,0 +1,92 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "cad-jig",
+  "version": "0.1.0",
+  "description": "Parametric switch plate, tray case and pogo-pin test jig derived from the system IR",
+  "atomc": ">=0.0.1 <0.2.0",
+  "runtime": {
+    "python": "atomc_plugin_cad_jig:plugin"
+  },
+  "watches": [
+    {
+      "id": "cad:generate",
+      "ir": ["/mechanical", "/layout"],
+      "files": [],
+      "debounce_ms": 250
+    }
+  ],
+  "produces": ["/mechanical"],
+  "gates": [
+    {
+      "id": "gate:mech.plate_switch_cutouts_14mm",
+      "severity": "blocking",
+      "owner_agent": "mech-agent",
+      "after": ["cad:generate"],
+      "handler": "check_plate_switch_cutouts"
+    },
+    {
+      "id": "gate:mech.case_usb_cutout_aligned",
+      "severity": "blocking",
+      "owner_agent": "mech-agent",
+      "after": ["cad:generate"],
+      "handler": "check_case_usb_cutout_aligned"
+    },
+    {
+      "id": "gate:mech.pogo_spacing_ge_2p54",
+      "severity": "blocking",
+      "owner_agent": "mech-agent",
+      "after": ["cad:generate"],
+      "handler": "check_pogo_spacing"
+    },
+    {
+      "id": "gate:mech.jig_no_collision",
+      "severity": "blocking",
+      "owner_agent": "mech-agent",
+      "after": ["cad:generate"],
+      "handler": "check_jig_no_collision"
+    },
+    {
+      "id": "gate:mech.enclosure_clearance",
+      "severity": "blocking",
+      "owner_agent": "mech-agent",
+      "after": ["cad:generate"],
+      "handler": "check_enclosure_clearance"
+    }
+  ],
+  "tools": [
+    {
+      "name": "generate",
+      "description": "Generate switch plate, tray case and pogo-pin jig solids and export STEP/STL artifacts; reports an explicit unavailable result when build123d is not installed",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["plate", "case", "jig", "pcb"]
+            },
+            "minItems": 1
+          },
+          "formats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["step", "stl"]
+            },
+            "minItems": 1
+          },
+          "output_dir": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "agents": ["mech-agent"],
+      "mutates": true,
+      "handler": "generate"
+    }
+  ],
+  "cli": [],
+  "ui": []
+}

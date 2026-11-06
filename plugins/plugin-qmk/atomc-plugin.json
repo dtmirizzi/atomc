@@ -1,0 +1,79 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "qmk",
+  "version": "0.1.0",
+  "description": "IR to QMK keyboard definition derivation and qmk compile verification",
+  "atomc": ">=0.0.1 <0.2.0",
+  "runtime": {
+    "python": "atomc_plugin_qmk:plugin",
+    "ts": "./dist/qmk.js"
+  },
+  "watches": [
+    {
+      "id": "qmk:keyboard",
+      "ir": ["/keyboard"]
+    },
+    {
+      "id": "qmk:firmware",
+      "ir": ["/firmware"]
+    }
+  ],
+  "produces": ["/firmware"],
+  "gates": [
+    {
+      "id": "gate:fw.matrix_pins_match_ir",
+      "severity": "blocking",
+      "owner_agent": "fw-agent",
+      "after": ["qmk:keyboard"],
+      "handler": "matrix_pins_match_ir"
+    },
+    {
+      "id": "gate:fw.qmk_compile",
+      "severity": "blocking",
+      "owner_agent": "fw-agent",
+      "after": ["qmk:keyboard", "qmk:firmware"],
+      "handler": "run_qmk_compile"
+    }
+  ],
+  "tools": [
+    {
+      "name": "qmk_generate",
+      "description": "Derive QMK keyboard.json and the default keymap from the IR",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "keymap": {
+            "type": "string",
+            "default": "default"
+          }
+        },
+        "additionalProperties": false
+      },
+      "agents": ["fw-agent"],
+      "mutates": false,
+      "handler": "qmk_generate_tool"
+    },
+    {
+      "name": "qmk_compile",
+      "description": "Derive QMK sources and compile firmware through the qmk CLI",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "keymap": {
+            "type": "string",
+            "default": "default"
+          },
+          "qmk_home": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "agents": ["fw-agent"],
+      "mutates": true,
+      "handler": "qmk_compile_tool"
+    }
+  ],
+  "cli": [],
+  "ui": []
+}
