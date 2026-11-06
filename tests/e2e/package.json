@@ -7,11 +7,10 @@
   "type": "module",
   "scripts": {
     "build:deps": "pnpm --filter @atomc/daemon-client build && pnpm --filter @atomc/core-ir build",
-    "pretest": "pnpm run build:deps",
     "test": "vitest run",
-    "pretypecheck": "pnpm run build:deps",
     "typecheck": "tsc --noEmit",
-    "lint": "biome check ts vitest.config.ts"
+    "lint": "biome check ts vitest.config.ts",
+    "test:standalone": "pnpm run build:deps && vitest run"
   },
   "dependencies": {
     "@atomc/daemon-client": "workspace:*"

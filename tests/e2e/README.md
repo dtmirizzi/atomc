@@ -12,28 +12,28 @@ external-toolchain behaviour deterministic.
 
 ## Layout
 
-| Path                          | Responsibility                                                                                                                                                                                                                                                                                   |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ts/harness.ts`               | Temp project/state/home dirs seeded from `examples/atomc-pad`; real `atomcd serve` spawn via `uv run`; sanitized no-toolchain environment; `/health` wait; token-redacted bounded logs; `runFullDag`/`waitForDagEnd` helpers; `finally`-safe teardown and process-death assertion.                    |
-| `ts/vertical-slice.e2e.test.ts` | Plugin discovery, DAG derivation, full run over RPC, exact per-gate outcomes, IR-stability check (unchanged where no plugin writes; `/simulation` mutated by the renode watch).                                                                                                                  |
-| `ts/failure-honesty.e2e.test.ts` | Mutates the IR over real RPC (new single-pin net → `FAIL` naming it; debug header connecting the dangling nets → `PASS`), so both failure and recovery are shown to come from live daemon state.                                                                                                  |
+| Path                             | Responsibility                                                                                                                                                                                                                                                                     |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ts/harness.ts`                  | Temp project/state/home dirs seeded from `examples/atomc-pad`; real `atomcd serve` spawn via `uv run`; sanitized no-toolchain environment; `/health` wait; token-redacted bounded logs; `runFullDag`/`waitForDagEnd` helpers; `finally`-safe teardown and process-death assertion. |
+| `ts/vertical-slice.e2e.test.ts`  | Plugin discovery, DAG derivation, full run over RPC, exact per-gate outcomes, IR-stability check (unchanged where no plugin writes; `/simulation` mutated by the renode watch).                                                                                                    |
+| `ts/failure-honesty.e2e.test.ts` | Mutates the IR over real RPC (new single-pin net → `FAIL` naming it; debug header connecting the dangling nets → `PASS`), so both failure and recovery are shown to come from live daemon state.                                                                                   |
 
 ## Expected outcomes for the committed pad fixture
 
 The harness runs the daemon with **no** `qmk`/`renode` on `PATH`, a temp `HOME`, and a
 non-existent `QMK_HOME`, so toolchain-dependent gates always `SKIP`:
 
-| Gate                                  | Status | Why                                                                |
-| ------------------------------------- | ------ | ------------------------------------------------------------------ |
-| `gate:erc.no_unconnected`             | FAIL   | 6 MCU-only nets have a single pin in the hand-authored IR          |
-| `gate:erc.assertions`                 | PASS   | one recorded assertion passes                                      |
-| `gate:layout.testpads.min_count`      | PASS   | 15 test pads ≥ 8                                                   |
-| `gate:layout.testpads.nets_covered`   | PASS   | all 6 matrix nets have a pad                                       |
-| `gate:fw.matrix_pins_match_ir`        | PASS   | generated QMK matrix pins equal the IR pins                        |
-| `gate:fw.qmk_compile`                 | SKIP   | `qmk` not found on the sanitized `PATH`                            |
-| `gate:fw.renode_boot`                 | SKIP   | no Renode binary in the sanitized environment                      |
-| `gate:fw.matrix_scan`                 | SKIP   | declared-not-implemented; requires HIL, never a fabricated scan    |
-| five `gate:mech.*` gates              | PASS   | pure geometric checks over the pad IR                              |
+| Gate                                | Status | Why                                                             |
+| ----------------------------------- | ------ | --------------------------------------------------------------- |
+| `gate:erc.no_unconnected`           | FAIL   | 6 MCU-only nets have a single pin in the hand-authored IR       |
+| `gate:erc.assertions`               | PASS   | one recorded assertion passes                                   |
+| `gate:layout.testpads.min_count`    | PASS   | 15 test pads ≥ 8                                                |
+| `gate:layout.testpads.nets_covered` | PASS   | all 6 matrix nets have a pad                                    |
+| `gate:fw.matrix_pins_match_ir`      | PASS   | generated QMK matrix pins equal the IR pins                     |
+| `gate:fw.qmk_compile`               | SKIP   | `qmk` not found on the sanitized `PATH`                         |
+| `gate:fw.renode_boot`               | SKIP   | no Renode binary in the sanitized environment                   |
+| `gate:fw.matrix_scan`               | SKIP   | declared-not-implemented; requires HIL, never a fabricated scan |
+| five `gate:mech.*` gates            | PASS   | pure geometric checks over the pad IR                           |
 
 `gate:erc.no_unconnected` genuinely fails on the committed fixture: `SWDIO`, `SWCLK`,
 `NRST`, `BOOT0`, `UART_TX` and `UART_RX` each have a single MCU pin and no second component
