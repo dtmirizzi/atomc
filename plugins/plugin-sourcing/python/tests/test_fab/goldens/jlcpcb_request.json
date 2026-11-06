@@ -1,0 +1,42 @@
+{
+  "default": {
+    "orderType": 1,
+    "pcbParam": {
+      "layer": 2,
+      "width": 80.0,
+      "length": 80.0,
+      "qty": 5,
+      "thickness": 1.6,
+      "pcbColor": 1,
+      "surfaceFinish": 1,
+      "copperWeight": 1.0,
+      "goldFinger": 0,
+      "materialDetails": "",
+      "panelFlag": 0,
+      "differentDesign": 1
+    },
+    "country": "US"
+  },
+  "assembly": {
+    "orderType": 1,
+    "pcbParam": {
+      "layer": 2,
+      "width": 80.0,
+      "length": 80.0,
+      "qty": 5,
+      "thickness": 1.6,
+      "pcbColor": 1,
+      "surfaceFinish": 1,
+      "copperWeight": 1.0,
+      "goldFinger": 0,
+      "materialDetails": "",
+      "panelFlag": 0,
+      "differentDesign": 1
+    },
+    "country": "US",
+    "assemblyParam": {
+      "side": 3,
+      "partsCount": 3
+    }
+  }
+}

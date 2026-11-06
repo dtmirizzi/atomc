@@ -15,7 +15,18 @@ import httpx
 from .adapters import build_adapters
 from .adapters.base import VendorAdapter
 from .cache import DEFAULT_TTL_S, OfferCache
+from .fab import build_fab_adapters
+from .fab.base import FabAdapter
+from .fab.gates import check_quote_under_budget as _check_quote_under_budget
+from .fab.service import FabService
+from .fab.tools import quote_pcb_payload
 from .manifest import manifest_dict
+from .optimizer import (
+    all_in_stock_gate,
+    cost_under_budget_gate,
+    lead_time_under_days_gate,
+    optimize_payload,
+)
 from .service import SourcingService
 from .tools import query_payload, refresh_payload
 
@@ -40,7 +51,9 @@ class SourcingPlugin:
         self,
         *,
         adapters: Mapping[str, VendorAdapter] | None = None,
+        fab_adapters: Mapping[str, FabAdapter] | None = None,
         service: SourcingService | None = None,
+        fab_service: FabService | None = None,
         cache: OfferCache | None = None,
         env: Mapping[str, str] | None = None,
         transport: httpx.BaseTransport | None = None,
@@ -74,6 +87,21 @@ class SourcingPlugin:
             )
             self.service = SourcingService(adapter_map, cache=offer_cache, clock=clock)
 
+        if fab_service is not None:
+            self.fab_service = fab_service
+        else:
+            resolved_fab_adapters = (
+                fab_adapters
+                if fab_adapters is not None
+                else build_fab_adapters(
+                    env=resolved_env,
+                    transport=transport,
+                    clock=clock,
+                    timeout_s=timeout_s,
+                )
+            )
+            self.fab_service = FabService(resolved_fab_adapters, clock=clock)
+
     async def query_tool(
         self,
         ctx: Any,
@@ -87,6 +115,32 @@ class SourcingPlugin:
         payload: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         return await refresh_payload(self.service, ctx, payload)
+
+    async def optimize_tool(
+        self,
+        ctx: Any,
+        payload: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        return await optimize_payload(ctx, payload)
+
+    async def quote_pcb_tool(
+        self,
+        ctx: Any,
+        payload: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        return await quote_pcb_payload(self.fab_service, ctx, payload)
+
+    async def check_all_in_stock(self, ctx: Any) -> dict[str, Any]:
+        return await all_in_stock_gate(ctx)
+
+    async def check_cost_under_budget(self, ctx: Any) -> dict[str, Any]:
+        return await cost_under_budget_gate(ctx)
+
+    async def check_lead_time_under_days(self, ctx: Any) -> dict[str, Any]:
+        return await lead_time_under_days_gate(ctx)
+
+    async def check_quote_under_budget(self, ctx: Any) -> dict[str, Any]:
+        return await _check_quote_under_budget(ctx)
 
 
 plugin = SourcingPlugin()

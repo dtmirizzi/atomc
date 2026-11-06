@@ -9,34 +9,249 @@
   },
   "watches": [
     {
+      "id": "fab:quote",
+      "ir": [
+        "/layout"
+      ]
+    },
+    {
       "id": "sourcing:refresh",
-      "ir": ["/sourcing"]
+      "ir": [
+        "/sourcing"
+      ]
     }
   ],
-  "produces": ["/sourcing"],
-  "gates": [],
+  "produces": [
+    "/fabrication",
+    "/sourcing"
+  ],
+  "gates": [
+    {
+      "id": "gate:bom.all_in_stock",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "sourcing:refresh"
+      ],
+      "handler": "check_all_in_stock"
+    },
+    {
+      "id": "gate:bom.cost_under_budget",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "sourcing:refresh"
+      ],
+      "handler": "check_cost_under_budget"
+    },
+    {
+      "id": "gate:bom.lead_time_under_days",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "sourcing:refresh"
+      ],
+      "handler": "check_lead_time_under_days"
+    },
+    {
+      "id": "gate:fab.quote_under_budget",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "fab:quote"
+      ],
+      "handler": "check_quote_under_budget"
+    }
+  ],
   "tools": [
+    {
+      "name": "optimize",
+      "description": "Choose offers and rank alternates under cost, stock, MOQ, lead-time and vendor constraints; writes chosen_offer_ref and alternates into /sourcing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "constraints": {
+            "type": "object",
+            "properties": {
+              "lead_time_cap_days": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "vendor_count_cap": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "vendor_budget_weights": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "agents": [
+        "ee-agent",
+        "ops-agent"
+      ],
+      "mutates": true,
+      "handler": "optimize_tool"
+    },
     {
       "name": "query",
       "description": "Query vendor offers for a BOM line, MPN or LCSC part number",
       "input_schema": {
         "type": "object",
         "properties": {
-          "bom_line_id": { "type": "string" },
-          "mpn": { "type": "string" },
-          "lcsc": { "type": "string" },
+          "bom_line_id": {
+            "type": "string"
+          },
+          "mpn": {
+            "type": "string"
+          },
+          "lcsc": {
+            "type": "string"
+          },
           "vendors": {
             "type": "array",
-            "items": { "enum": ["lcsc", "mouser", "digikey", "nexar"] }
+            "items": {
+              "enum": [
+                "lcsc",
+                "mouser",
+                "digikey",
+                "nexar"
+              ]
+            }
           },
-          "force": { "type": "boolean", "default": false },
-          "ttl_s": { "type": "integer", "minimum": 0 }
+          "force": {
+            "type": "boolean",
+            "default": false
+          },
+          "ttl_s": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "additionalProperties": false
       },
-      "agents": ["ee-agent", "ops-agent"],
+      "agents": [
+        "ee-agent",
+        "ops-agent"
+      ],
       "mutates": false,
       "handler": "query_tool"
+    },
+    {
+      "name": "quote_pcb",
+      "description": "Fetch PCB fabrication quotes for a spec and write them into /fabrication; reports honest UNAVAILABLE/ERROR when no quotes can be trusted",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "pcb": {
+            "type": "object",
+            "properties": {
+              "layers": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "width_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "thickness_mm": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "finish": {
+                "enum": [
+                  "HASL",
+                  "LF-HASL",
+                  "ENIG"
+                ]
+              },
+              "color": {
+                "type": "string"
+              },
+              "qty": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "layers",
+              "width_mm",
+              "height_mm",
+              "thickness_mm",
+              "finish",
+              "color",
+              "qty"
+            ],
+            "additionalProperties": false
+          },
+          "assembly": {
+            "type": "object",
+            "properties": {
+              "side": {
+                "enum": [
+                  "top",
+                  "bottom",
+                  "both"
+                ]
+              },
+              "parts_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "side",
+              "parts_count"
+            ],
+            "additionalProperties": false
+          },
+          "fabs": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "jlcpcb"
+              ]
+            },
+            "minItems": 1
+          },
+          "write": {
+            "type": "boolean",
+            "default": true
+          },
+          "force": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "agents": [
+        "ops-agent"
+      ],
+      "mutates": true,
+      "handler": "quote_pcb_tool"
     },
     {
       "name": "refresh",
@@ -46,14 +261,30 @@
         "properties": {
           "vendors": {
             "type": "array",
-            "items": { "enum": ["lcsc", "mouser", "digikey", "nexar"] }
+            "items": {
+              "enum": [
+                "lcsc",
+                "mouser",
+                "digikey",
+                "nexar"
+              ]
+            }
           },
-          "force": { "type": "boolean", "default": false },
-          "ttl_s": { "type": "integer", "minimum": 0 }
+          "force": {
+            "type": "boolean",
+            "default": false
+          },
+          "ttl_s": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "additionalProperties": false
       },
-      "agents": ["ee-agent", "ops-agent"],
+      "agents": [
+        "ee-agent",
+        "ops-agent"
+      ],
       "mutates": true,
       "handler": "refresh_tool"
     }
