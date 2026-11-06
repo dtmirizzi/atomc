@@ -1,5 +1,5 @@
 /**
- * Cross-language round-trips for the two committed example IRs.
+ * Cross-language round-trips for the committed example IRs.
  *
  * Py -> TS: Python emits canonical JSON, TS `parseSystemIR()` accepts it and its
  * normalized shape matches parsing the source fixture directly.
@@ -13,7 +13,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Bridge, REPO_ROOT } from "./helpers/bridge.js";
 import { pythonCanonical } from "./helpers/python.js";
 
-const EXAMPLES = ["atomc-pad", "atomc-keeb"] as const;
+const EXAMPLES = ["atomc-pad", "atomc-keeb", "atomc-drivetrain", "atomc-cannode"] as const;
 
 function examplePath(name: string): string {
   return resolve(REPO_ROOT, "examples", name, "system_ir.json");

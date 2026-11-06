@@ -84,6 +84,7 @@ function harness(initialRaw?: string): Harness {
     },
     now: () => now,
     homeDir: () => "/home/test",
+    realpath: async (path) => path,
     spawnDaemon: (command, args, options) => {
       spawnCalls.push({ command, args, options });
       alive = true; // the freshly spawned process is alive
@@ -142,6 +143,26 @@ describe("ensureDaemon", () => {
     expect(result.info).toEqual(BASE);
     expect(h.spawnCalls).toHaveLength(0);
     expect(h.connectCalls[0]).toEqual({ url: "ws://127.0.0.1:7437/rpc", token: BASE.token });
+  });
+
+  it("refuses to reuse a daemon bound to a different project root", async () => {
+    const h = harness(JSON.stringify(BASE));
+    await expect(ensureDaemon("/other-project", defaultOptions(h))).rejects.toThrow(
+      /already running for project \/proj, not \/other-project/,
+    );
+    expect(h.spawnCalls).toHaveLength(0);
+    expect(h.connectCalls).toHaveLength(0);
+  });
+
+  it("compares project roots by real path so symlinked checkouts reuse the daemon", async () => {
+    const h = harness(JSON.stringify(BASE));
+    const options = {
+      ...defaultOptions(h),
+      deps: { ...h.deps, realpath: async (path: string) => `/real${path}` },
+    };
+    const result = await ensureDaemon("/proj", options);
+    expect(result.started).toBe(false);
+    await expect(ensureDaemon("/other", options)).rejects.toThrow(/not \/other/);
   });
 
   it("deletes a stale dead-pid file and spawns a daemon", async () => {

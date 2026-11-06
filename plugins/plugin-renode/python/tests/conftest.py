@@ -92,6 +92,13 @@ def project_root(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def fake_ctx(fixture_doc: dict[str, Any], project_root: Path) -> FakeContext:
+    # Materialize the declared ELF artifact so the plugin's on-disk check sees a
+    # design with real firmware present (tests that want the missing-artifact path
+    # remove it explicitly).
+    elf = project_root / "build" / "atomc-pad.elf"
+    elf.parent.mkdir(parents=True, exist_ok=True)
+    if not elf.exists():
+        elf.write_bytes(b"\x7fELF-fixture\n")
     return FakeContext(
         ir=fixture_doc,
         root=project_root,

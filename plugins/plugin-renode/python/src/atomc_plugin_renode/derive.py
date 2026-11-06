@@ -22,7 +22,9 @@ RENODE_BASE_PLATFORM = "platforms/cpus/stm32f4.repl"
 SUPPORTED_MCU_PREFIXES = ("STM32F411",)
 """MCUs whose peripheral set is covered by :data:`RENODE_BASE_PLATFORM` for boot purposes."""
 
-DEFAULT_BOOT_MARKERS = ("QMK", "atomc")
+# "atomc" is deliberately absent: it is the project name and appears in script paths,
+# which would satisfy a substring match without any firmware booting.
+DEFAULT_BOOT_MARKERS = ("QMK",)
 """Substrings that count as a firmware boot banner in captured output."""
 
 

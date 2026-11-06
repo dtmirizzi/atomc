@@ -166,6 +166,11 @@ class RenodePlugin:
         base = project_root if project_root is not None else artifact_root
 
         elf_abs = (base / view.elf_path) if project_root is not None else Path(view.elf_path)
+        # A declared-but-missing ELF means there is no firmware to boot: refuse to
+        # write scripts that reference a nonexistent file (the emulator could never
+        # load it, and the run would degrade to an ambiguous timeout).
+        if not elf_abs.is_file():
+            raise DerivationError(f"declared ELF artifact {view.elf_path!r} is not present on disk")
         repl_abs = artifact_root / f"{slug}.repl"
         resc_abs = artifact_root / f"{slug}.resc"
 
@@ -289,9 +294,28 @@ class RenodePlugin:
     async def _generate(self, ctx: PluginContextLike, payload: dict[str, Any]) -> dict[str, Any]:
         ir = await ctx.ir_get("/")
         if not isinstance(ir, dict):  # pragma: no cover - defensive
-            raise DerivationError("IR root is not a mapping")
+            return _skip("IR root is not a mapping")
+        # A design without a firmware artifact (or with an unsupported MCU) is
+        # out of this watch's domain: report an honest SKIP-shaped no-op instead
+        # of failing the DAG node. Mirrors the tool/gate skip semantics.
+        try:
+            view = firmware_view(ir)
+        except DerivationError as exc:
+            return _skip(str(exc))
+        mcu_reason = unsupported_mcu_reason(view.mcu)
+        if mcu_reason is not None:
+            return _skip(mcu_reason)
+        if not view.elf_path:
+            return _skip(
+                "no ELF firmware artifact in /firmware; run the QMK build "
+                "(gate:fw.qmk_compile) first",
+            )
         timeout_s = float(payload.get("timeout_s", self._timeout_s))
-        written = self._write_scripts(ctx, ir, timeout_s=timeout_s)
+        try:
+            written = self._write_scripts(ctx, ir, timeout_s=timeout_s)
+        except DerivationError as exc:
+            # Includes a declared-but-missing ELF artifact: nothing to emulate.
+            return _skip(str(exc))
 
         fw_rev: int | None = None
         try:

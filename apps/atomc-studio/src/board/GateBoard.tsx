@@ -235,11 +235,7 @@ function GroupTable({
                     </button>
                   </td>
                 </tr>
-                {open && (
-                  <Fragment>
-                    <DetailRow gate={gate} colSpan={5} />
-                  </Fragment>
-                )}
+                {open && <DetailRow gate={gate} colSpan={5} />}
               </Fragment>
             );
           })}

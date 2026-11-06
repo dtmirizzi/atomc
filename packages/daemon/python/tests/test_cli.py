@@ -15,11 +15,14 @@ from typer.testing import CliRunner
 runner = CliRunner()
 
 
-def write_state(state_dir: Path, pid: int) -> None:
+def write_state(state_dir: Path, pid: int, *, port: int = 1) -> None:
+    # Port 1 is reserved and never listening locally: the status health check
+    # must fail regardless of any real daemon the developer happens to run on
+    # the default port (7437).
     RuntimeState(state_dir).write(
         pid=pid,
         host="127.0.0.1",
-        port=7437,
+        port=port,
         token="t",
         project_root="/tmp/project",
         version="0.0.1",

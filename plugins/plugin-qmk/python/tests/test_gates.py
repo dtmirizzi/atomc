@@ -220,10 +220,11 @@ def test_compile_fail_when_only_stale_artifact(tmp_path: Path, example_ir: dict[
     assert "no fresh" in outcome.summary
 
 
-def test_compile_refuses_non_symlink_keyboard(tmp_path: Path, example_ir: dict[str, Any]) -> None:
+def test_compile_refuses_non_plugin_keyboard(tmp_path: Path, example_ir: dict[str, Any]) -> None:
     home = _qmk_home(tmp_path)
     real = home / "keyboards" / "atomc" / "pad"
     real.mkdir(parents=True)
+    (real / "keyboard.json").write_text("{}", encoding="utf-8")
 
     def runner(command: list[str], **kwargs: Any):
         raise AssertionError("runner must not be called")
@@ -236,7 +237,27 @@ def test_compile_refuses_non_symlink_keyboard(tmp_path: Path, example_ir: dict[s
         runner=runner,
     )
     assert outcome.status == "FAIL"
-    assert "refusing to replace non-symlink" in outcome.summary
+    assert "refusing to replace non-plugin" in outcome.summary
+
+
+def test_compile_replaces_plugin_managed_copy(tmp_path: Path, example_ir: dict[str, Any]) -> None:
+    home = _qmk_home(tmp_path)
+    managed = home / "keyboards" / "atomc" / "pad"
+    managed.mkdir(parents=True)
+    (managed / ".atomc-plugin-qmk").write_text("managed\n", encoding="utf-8")
+    (managed / "stale.txt").write_text("old\n", encoding="utf-8")
+
+    outcome = compile_qmk(
+        example_ir,
+        qmk_home=home,
+        artifact_root=tmp_path / "art",
+        which=lambda _: "/usr/bin/qmk",
+        runner=_ok_runner("atomc_pad_default.bin", b"payload"),
+    )
+    assert outcome.status == "PASS"
+    assert outcome.artifact_path is not None
+    assert not (managed / "stale.txt").exists()
+    assert (managed / ".atomc-plugin-qmk").is_file()
 
 
 def test_compile_bounds_compiler_output(tmp_path: Path, example_ir: dict[str, Any]) -> None:
@@ -272,9 +293,11 @@ async def test_matrix_gate_pass(tmp_path: Path, example_ir: dict[str, Any]) -> N
 
 
 @pytest.mark.asyncio
-async def test_matrix_gate_fail_without_keyboard(tmp_path: Path) -> None:
+async def test_matrix_gate_skips_without_keyboard(tmp_path: Path) -> None:
+    # Non-keyboard designs are out of the gate's domain: an honest SKIP.
     result = await matrix_pins_gate(FakeContext({"meta": {}}, tmp_path))
-    assert result["status"] == "FAIL"
+    assert result["status"] == "SKIP"
+    assert "keyboard designs" in result["summary"]
 
 
 @pytest.mark.asyncio
@@ -391,7 +414,8 @@ async def test_compile_gate_fail_without_keyboard(
         ),
     )
     result = await compile_gate(FakeContext({"meta": {}}, tmp_path / "art"))
-    assert result["status"] == "FAIL"
+    assert result["status"] == "SKIP"
+    assert "keyboard designs" in result["summary"]
 
 
 @pytest.mark.asyncio
