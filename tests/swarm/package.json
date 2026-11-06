@@ -1,0 +1,28 @@
+{
+  "name": "@atomc/swarm-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Real daemon + RPC end-to-end tests for atomc swarm convergence (WP-3.10)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "build:deps": "pnpm --filter @atomc/daemon-client build && pnpm --filter @atomc/core-ir build && pnpm --filter @atomc/swarm-harness build",
+    "pretest": "pnpm run build:deps",
+    "test": "vitest run",
+    "pretypecheck": "pnpm run build:deps",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check ts vitest.config.ts"
+  },
+  "dependencies": {
+    "@atomc/daemon-client": "workspace:*",
+    "@atomc/swarm-harness": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/ws": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "ws": "catalog:"
+  }
+}
