@@ -2,6 +2,7 @@
 import { Command, CommanderError, Option } from "commander";
 import { buildCommand } from "./commands/build.js";
 import { type CapabilitySpec, capabilityCommand } from "./commands/capability.js";
+import { convergeCommand } from "./commands/converge.js";
 import { daemonStart, daemonStatus, daemonStop } from "./commands/daemon.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { initCommand } from "./commands/init.js";
@@ -33,11 +34,6 @@ const CAPABILITIES: Record<string, CapabilitySpec> = {
     plugin: "orders",
     summary: "place and track part/PCB/PCBA orders",
     hint: "track order placement in plugin-orders (Phase 5)",
-  },
-  converge: {
-    command: "converge",
-    summary: "run the multi-agent swarm until every gate passes",
-    hint: "track the swarm harness in @atomc/swarm-harness (WP-3.4)",
   },
 };
 
@@ -96,6 +92,19 @@ export function buildProgram(deps: CliDeps): Command {
         ) => buildCommand(deps, target, options),
       ),
     );
+
+  const converge = program
+    .command("converge")
+    .description("run bounded specialist sessions until blocking gates pass")
+    .option("--project <dir>", "project root", ".")
+    .option("--max-rounds <n>", "maximum swarm rounds", "3")
+    .option("--max-cost <usd>", "maximum aggregate model spend in dollars", "2.00")
+    .option("--json", "emit one machine-readable result");
+  converge.action(
+    action((options: { project?: string; maxRounds?: string; maxCost?: string; json?: boolean }) =>
+      convergeCommand(deps, options),
+    ),
+  );
 
   for (const spec of Object.values(CAPABILITIES)) {
     program
