@@ -135,6 +135,9 @@ export function createDaemonStudioApi(options: StudioDaemonOptions): StudioApi {
       lastBuild: "Unknown · daemon RPC has no build-history method",
       nodes,
       gates: mappedGates,
+      // The full system IR the 3D viewer derives geometry from; the RPC read
+      // already fetched it, so pass it through instead of dropping it.
+      systemJson: ir.value,
       agents: structuredClone(agents),
       dataMode: "daemon",
       telemetry: {
