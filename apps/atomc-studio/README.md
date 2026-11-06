@@ -19,7 +19,27 @@ interface StudioHostBridge {
 }
 ```
 
-Then open Studio with `?demo=false&project=atomc-keeb&path=/path/to/project`. The trusted host bridge returns a browser-safe RPC facade. Studio never reads bearer tokens from URLs, query strings, local storage, or frontend configuration. A plain browser deployment without a host bridge fails closed with a connection error. `StudioRpcClient` needs the typed `getIR`, `dagStatus`, `listGates`, and `runDAG` methods from `@atomc/daemon-client`.
+Then open Studio with `?demo=false&project=atomc-keeb&path=/path/to/project`. The trusted host bridge returns a browser-safe RPC facade.
+
+### Dev-only host bridge
+
+During development, `pnpm --filter @atomc/studio dev` loads a **dev host bridge** (disable with
+`ATOMC_STUDIO_DEV_HOST=0`): the vite dev server proxies the daemon RPC at `/@dev-host/rpc`,
+holding the bearer token **server-side** (read from `~/.atomc/daemon.json`), and injects the
+browser shim that defines `window.atomcStudioHost`. Live mode then works with no desktop host:
+
+```bash
+# terminal 1: a daemon for your project (any atomc command starts one)
+node apps/atomc-cli/dist/index.js build --project examples/atomc-drivetrain
+
+# terminal 2: Studio
+pnpm --filter @atomc/studio dev
+# open: http://127.0.0.1:4178/?demo=false&project=atomc-drivetrain&path=examples/atomc-drivetrain
+```
+
+Only the read/run RPC surface Studio needs is forwarded (`ir.get`, `dag.status`, `gates.list`,
+`tools.list`, `dag.run`) — mutating methods are rejected. This bridge never ships in production
+builds (`apply: "serve"`); production hosts keep tokens out of the browser entirely. Studio never reads bearer tokens from URLs, query strings, local storage, or frontend configuration. A plain browser deployment without a host bridge fails closed with a connection error. `StudioRpcClient` needs the typed `getIR`, `dagStatus`, `listGates`, and `runDAG` methods from `@atomc/daemon-client`.
 
 ## Views
 

@@ -83,6 +83,8 @@ describe("createDaemonStudioApi", () => {
     expect(snapshot.activity[0]?.detail).toContain("1 passing gates");
     expect(snapshot.activity[0]?.tone).toBe("success");
     expect(snapshot.lastBuild).toBe("Unknown · daemon RPC has no build-history method");
+    // The full system IR rides along so the 3D viewer derives real geometry.
+    expect(snapshot.systemJson).toEqual({ meta: { rev: 42 } });
   });
 
   it("labels daemon snapshots honestly: data mode, telemetry and idle agents", async () => {

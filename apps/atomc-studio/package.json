@@ -42,6 +42,8 @@
     "jsdom": "catalog:",
     "typescript": "^5.9.0",
     "vite": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "ws": "catalog:",
+    "@types/ws": "catalog:"
   }
 }
