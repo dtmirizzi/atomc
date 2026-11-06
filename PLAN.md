@@ -470,6 +470,7 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-3.7 Studio 3D           | queued              | `wp/3.7-studio-3d`           | R3F board, plate/case/jig GLB viewer and test-pad overlay                                                                    |
 | WP-3.8 Studio telemetry    | queued              | `wp/3.8-studio-telemetry`    | WaveDrom scan and Renode/QMK console stream                                                                                  |
 | WP-3.9 Studio gates/orders | queued              | `wp/3.9-studio-gates-orders` | full gate board, BOM/quote/order table                                                                                       |
+| WP-3.10 swarm-e2e-rpc      | pi / DeepSeek Flash | `wp/3.10-swarm-e2e-rpc`     | queued; real-process daemon + RPC converge() E2E (deferred from WP-3.5)                                                      |
 | WP-2.6 rpc-contract-tests  | pi / DeepSeek Flash | `wp/2.6-rpc-contract-tests`  | merged (PR #8); 34 real-daemon/client RPC tests pass on CI                                                                   |
 
 ---
