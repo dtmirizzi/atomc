@@ -136,6 +136,22 @@ export interface FakeDaemonOptions {
   onRun?: (params: unknown) => void;
   subscribeThrows?: boolean;
   events?: Array<{ topic: string; data: unknown }>;
+  /** Value returned by `getIR("/")` (whole-document reads). */
+  ir?: unknown;
+  /** Per-pointer `getIR` values, keyed by JSON pointer (e.g. `/orders`). */
+  irByPath?: Record<string, unknown>;
+  /** `tools.call` envelopes keyed by `<plugin>.<tool>`. */
+  toolResults?: Record<string, unknown>;
+  /** Result returned by `gates.run`. */
+  gateRuns?: GateResult[];
+  /** Generic JSON-RPC method results keyed by method name. */
+  requestResults?: Record<string, unknown>;
+  /** Make `listPlugins` reject. */
+  listPluginsThrows?: boolean;
+  /** Make `getIR` reject. */
+  getIRThrows?: boolean;
+  /** Make `gates.run` reject. */
+  gatesRunThrows?: boolean;
 }
 
 /** Scriptable {@link DaemonApi} fake. */
@@ -144,6 +160,8 @@ export class FakeDaemon implements DaemonApi {
   shutdownCalled = false;
   runParams: unknown;
   subscriptionClosed = false;
+  /** Every `tools.call` recorded as `{plugin, tool, args}`. */
+  readonly toolCalls: Array<{ plugin?: string; tool?: string; args?: unknown }> = [];
   readonly #options: FakeDaemonOptions;
 
   constructor(options: FakeDaemonOptions = {}) {
@@ -154,11 +172,29 @@ export class FakeDaemon implements DaemonApi {
     return { info: SAMPLE_INFO, started: this.#options.started ?? false, client: this };
   }
 
-  async request<T>(_method: string, _params?: unknown): Promise<T> {
+  async request<T>(method: string, params?: unknown): Promise<T> {
+    if (method === "tools.call") {
+      const call = (params ?? {}) as { plugin?: string; tool?: string; args?: unknown };
+      this.toolCalls.push(call);
+      const key = `${call.plugin}.${call.tool}`;
+      const entry = this.#options.toolResults?.[key];
+      if (entry === undefined) throw new Error(`FakeDaemon: no tool result for ${key}`);
+      return entry as T;
+    }
+    if (method === "gates.run") {
+      if (this.#options.gatesRunThrows === true) throw new Error("gates.run failed");
+      return (this.#options.gateRuns ?? []) as T;
+    }
+    const canned = this.#options.requestResults;
+    if (canned !== undefined && method in canned) return canned[method] as T;
     return undefined as T;
   }
-  async getIR(): Promise<{ rev: number; value: unknown }> {
-    return { rev: 0, value: {} };
+  async getIR(path = "/"): Promise<{ rev: number; value: unknown }> {
+    if (this.#options.getIRThrows === true) throw new Error("ir.get failed");
+    if (this.#options.irByPath !== undefined && path in this.#options.irByPath) {
+      return { rev: 0, value: this.#options.irByPath[path] };
+    }
+    return { rev: 0, value: this.#options.ir ?? {} };
   }
   async dagStatus(): Promise<{ nodes: DagNodeStatus[] }> {
     return { nodes: this.#options.nodes ?? [] };
@@ -172,6 +208,7 @@ export class FakeDaemon implements DaemonApi {
     return this.#options.gates ?? [];
   }
   async listPlugins(): Promise<PluginStatus[]> {
+    if (this.#options.listPluginsThrows === true) throw new Error("plugins.list failed");
     return this.#options.plugins ?? [];
   }
   async daemonStatus(): Promise<{
