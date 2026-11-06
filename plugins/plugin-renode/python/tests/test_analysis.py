@@ -58,6 +58,24 @@ def test_clean_but_bannerless_fails() -> None:
     assert verdict.status == "FAIL"
 
 
+def test_path_substring_never_counts_as_banner() -> None:
+    # Regression: a timed-out run whose only "atomc" occurrence is the script path
+    # used to be classified PASS. Paths cannot carry a boot banner.
+    output = (
+        "Machine has been created\n"
+        "Loading script: /tmp/project/.atomc/artifacts/renode/atomc-pad.resc\n"
+    )
+    verdict = classify_boot(_result(stdout=output, timed_out=True), ("QMK", "atomc"))
+    assert verdict.status == "FAIL"
+    assert "timeout" in verdict.summary
+
+
+def test_banner_on_a_plain_line_still_passes() -> None:
+    verdict = classify_boot(_result(stdout="QMK firmware booted\n", timed_out=True), ("QMK",))
+    assert verdict.status == "PASS"
+    assert "QMK" in verdict.summary
+
+
 def test_tail_bounds_output() -> None:
     text = "x" * (MAX_EVIDENCE_CHARS + 500)
     bounded = tail(text)
