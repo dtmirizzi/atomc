@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "ee-erc-pass",
+  "description": "ee-agent fixes a single ERC failure with one patch, then verifies.",
+  "agent": "ee-agent",
+  "model": { "provider": "fake", "model": "recorded-1" },
+  "failure": {
+    "id": "gate:erc.no_unconnected",
+    "status": "FAIL",
+    "severity": "blocking",
+    "owner_agent": "ee-agent",
+    "ir_rev": 10,
+    "summary": "2 unconnected pins",
+    "refs": ["comp:U1"]
+  },
+  "turns": [
+    {
+      "turn": 0,
+      "decision": {
+        "kind": "patch",
+        "proposal": {
+          "path": "/electrical",
+          "baseRev": 10,
+          "ops": [{ "op": "replace", "path": "/components/U1/value", "value": "1k" }],
+          "rationale": "match the pull-up value in the datasheet"
+        },
+        "usage": { "inputTokens": 120, "outputTokens": 24, "costMinor": 5 }
+      },
+      "request": { "remainingCostMinor": 100, "toolNames": [] }
+    },
+    {
+      "turn": 1,
+      "decision": {
+        "kind": "verify",
+        "usage": { "inputTokens": 40, "outputTokens": 8, "costMinor": 2 }
+      }
+    }
+  ]
+}

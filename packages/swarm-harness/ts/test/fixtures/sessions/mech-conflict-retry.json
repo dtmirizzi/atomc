@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "mech-conflict-retry",
+  "description": "mech-agent proposes a stale patch, re-reads after the conflict, then applies at the current rev and verifies.",
+  "agent": "mech-agent",
+  "model": { "provider": "fake", "model": "recorded-1" },
+  "failure": {
+    "id": "gate:mech.plate_switch_cutouts_14mm",
+    "status": "FAIL",
+    "severity": "blocking",
+    "owner_agent": "mech-agent",
+    "ir_rev": 11,
+    "summary": "plate cutouts are 13.8 mm",
+    "refs": ["mech:plate"]
+  },
+  "turns": [
+    {
+      "turn": 0,
+      "decision": {
+        "kind": "patch",
+        "proposal": {
+          "path": "/mechanical",
+          "baseRev": 10,
+          "ops": [{ "op": "replace", "path": "/plate/cutout_mm", "value": 14 }]
+        },
+        "usage": { "inputTokens": 80, "outputTokens": 12, "costMinor": 6 }
+      }
+    },
+    {
+      "turn": 1,
+      "decision": {
+        "kind": "patch",
+        "proposal": {
+          "path": "/mechanical",
+          "baseRev": 11,
+          "ops": [{ "op": "replace", "path": "/plate/cutout_mm", "value": 14 }]
+        },
+        "usage": { "inputTokens": 84, "outputTokens": 12, "costMinor": 6 }
+      }
+    },
+    {
+      "turn": 2,
+      "decision": {
+        "kind": "verify",
+        "usage": { "inputTokens": 24, "outputTokens": 4, "costMinor": 2 }
+      }
+    }
+  ]
+}
