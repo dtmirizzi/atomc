@@ -1,0 +1,63 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "sourcing",
+  "version": "0.1.0",
+  "description": "BOM availability and cost sourcing with honest, keyless-first vendor adapters",
+  "atomc": ">=0.0.1 <0.2.0",
+  "runtime": {
+    "python": "atomc_plugin_sourcing:plugin"
+  },
+  "watches": [
+    {
+      "id": "sourcing:refresh",
+      "ir": ["/sourcing"]
+    }
+  ],
+  "produces": ["/sourcing"],
+  "gates": [],
+  "tools": [
+    {
+      "name": "query",
+      "description": "Query vendor offers for a BOM line, MPN or LCSC part number",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "bom_line_id": { "type": "string" },
+          "mpn": { "type": "string" },
+          "lcsc": { "type": "string" },
+          "vendors": {
+            "type": "array",
+            "items": { "enum": ["lcsc", "mouser", "digikey", "nexar"] }
+          },
+          "force": { "type": "boolean", "default": false },
+          "ttl_s": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": false
+      },
+      "agents": ["ee-agent", "ops-agent"],
+      "mutates": false,
+      "handler": "query_tool"
+    },
+    {
+      "name": "refresh",
+      "description": "Re-query every BOM line and write fresh vendor offers into /sourcing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "vendors": {
+            "type": "array",
+            "items": { "enum": ["lcsc", "mouser", "digikey", "nexar"] }
+          },
+          "force": { "type": "boolean", "default": false },
+          "ttl_s": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": false
+      },
+      "agents": ["ee-agent", "ops-agent"],
+      "mutates": true,
+      "handler": "refresh_tool"
+    }
+  ],
+  "cli": [],
+  "ui": []
+}

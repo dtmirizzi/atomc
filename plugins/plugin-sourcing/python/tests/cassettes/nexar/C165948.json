@@ -1,0 +1,54 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "vendor": "nexar",
+    "note": "No live vendor call was made. This fixture models the documented Nexar supSearchMpn GraphQL response shape only."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/graphql",
+    "body_contains": "USB4085-GF-A"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "data": {
+        "supSearchMpn": {
+          "results": [
+            {
+              "part": {
+                "mpn": "USB4085-GF-A",
+                "manufacturer": {
+                  "name": "Synthetic Manufacturer"
+                },
+                "sellers": [
+                  {
+                    "company": {
+                      "name": "Synthetic Seller"
+                    },
+                    "offers": [
+                      {
+                        "sku": "C1S-USB4085-GF-A",
+                        "inventoryLevel": 13,
+                        "moq": 1,
+                        "factoryLeadTime": 5,
+                        "clickUrl": "https://www.nexar.com/part/C1S-USB4085-GF-A",
+                        "prices": [
+                          {
+                            "quantity": 1,
+                            "price": 0.5,
+                            "currency": "USD"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
