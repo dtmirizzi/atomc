@@ -1,0 +1,97 @@
+{
+  "schema_version": "0.1.0",
+  "meta": {
+    "project_id": "proj:atomc-pad",
+    "name": "atomc-pad",
+    "description": "3x3 macropad dev fixture",
+    "created_at": "2026-11-04T00:00:00Z",
+    "modified_at": "2026-11-04T00:00:00Z",
+    "rev": 3,
+    "atomc_version": "0.1.0"
+  },
+  "keyboard": {
+    "_meta": { "rev": 2, "lock": null },
+    "matrix": {
+      "rows": 3,
+      "cols": 3,
+      "diode_direction": "COL2ROW",
+      "row_pins": ["B12", "B13", "B14"],
+      "col_pins": ["A0", "A1", "A2"]
+    },
+    "keys": [
+      { "id": "key:K0_0", "row": 0, "col": 0, "x_u": 0.0, "y_u": 0.0, "keycode_default": "KC_1" },
+      { "id": "key:K0_1", "row": 0, "col": 1, "x_u": 1.0, "y_u": 0.0, "keycode_default": "KC_2" },
+      { "id": "key:K0_2", "row": 0, "col": 2, "x_u": 2.0, "y_u": 0.0, "keycode_default": "KC_3" }
+    ],
+    "usb": {
+      "vid": "0xFEED",
+      "pid": "0x0001",
+      "manufacturer": "atomc",
+      "product": "atomc-pad",
+      "device_version": "1.0.0"
+    },
+    "qmk": {
+      "keyboard_path": "atomc/pad",
+      "bootloader": "stm32-dfu",
+      "processor": "STM32F411",
+      "board": "BLACKPILL_STM32_F411"
+    }
+  },
+  "firmware": {
+    "_meta": { "rev": 3, "lock": null },
+    "targets": [
+      {
+        "id": "fw:main",
+        "mcu": "STM32F411CEU6",
+        "core": "cortex-m4f",
+        "memory": [
+          { "name": "flash", "origin": 134217728, "length": 524288 },
+          { "name": "ram", "origin": 536870912, "length": 131072 }
+        ],
+        "framework": "qmk",
+        "source_dir": "qmk",
+        "build_cmd": "qmk compile",
+        "artifacts": [
+          {
+            "id": "art:fw_elf",
+            "kind": "elf",
+            "path": "build/atomc-pad.elf",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "bytes": 51200,
+            "produced_by": "plugin:qmk@0.1.0",
+            "produced_at": "2026-11-04T00:00:00Z"
+          }
+        ]
+      }
+    ],
+    "peripherals": [
+      {
+        "id": "periph:usart1",
+        "kind": "uart",
+        "base_address": 1073807360,
+        "signals": [
+          { "name": "TX", "pin": "A9" },
+          { "name": "RX", "pin": "A10" }
+        ]
+      },
+      {
+        "id": "periph:gpioa",
+        "kind": "gpio",
+        "base_address": 1073872896,
+        "signals": [{ "name": "LED", "pin": "C13" }]
+      }
+    ],
+    "suites": []
+  },
+  "simulation": {
+    "_meta": { "rev": 3, "lock": null },
+    "platform": {},
+    "scenarios": [{ "id": "sim:boot", "description": "boot to QMK banner" }],
+    "captures": []
+  },
+  "ext": {
+    "renode": {
+      "boot_markers": ["ATOMC-PAD READY"]
+    }
+  }
+}

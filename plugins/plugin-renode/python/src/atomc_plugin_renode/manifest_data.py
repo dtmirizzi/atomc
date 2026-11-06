@@ -1,0 +1,71 @@
+"""The Renode plugin manifest data.
+
+The manifest is declared here (validated at import by ``atomc_plugin``) and mirrored verbatim in
+``plugins/plugin-renode/atomc-plugin.json`` for project-tree discovery. A test asserts the two
+agree so they cannot drift.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+__all__ = ["MANIFEST"]
+
+MANIFEST: dict[str, Any] = {
+    "manifest_version": "0.1.0",
+    "name": "renode",
+    "version": "0.1.0",
+    "description": (
+        "Derive Renode platform/run scripts from the IR and run honest emulation gates"
+    ),
+    "atomc": ">=0.0.1 <0.2.0",
+    "runtime": {"python": "atomc_plugin_renode:plugin"},
+    "watches": [
+        {
+            "id": "renode:generate",
+            "ir": ["/firmware", "/simulation"],
+            "files": [],
+            "debounce_ms": 500,
+        }
+    ],
+    "produces": ["/simulation"],
+    "gates": [
+        {
+            "id": "gate:fw.renode_boot",
+            "severity": "blocking",
+            "owner_agent": "fw-agent",
+            "after": ["renode:generate"],
+            "handler": "renode_boot",
+        },
+        {
+            "id": "gate:fw.matrix_scan",
+            "severity": "blocking",
+            "owner_agent": "fw-agent",
+            "after": ["renode:generate"],
+            "handler": "matrix_scan",
+        },
+    ],
+    "tools": [
+        {
+            "name": "renode_generate",
+            "description": "Derive a .repl platform and a .resc run script from the IR",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "timeout_s": {
+                        "type": "number",
+                        "minimum": 0.1,
+                        "maximum": 600,
+                        "description": "Run window for the generated script, in seconds",
+                    }
+                },
+                "additionalProperties": False,
+            },
+            "agents": ["fw-agent"],
+            "mutates": True,
+            "handler": "generate",
+        }
+    ],
+    "cli": [],
+    "ui": [],
+}
