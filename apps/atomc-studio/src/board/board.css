@@ -1,0 +1,258 @@
+.gboard-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gboard-filters__title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.gboard-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.gboard-filter-row__label {
+  min-width: 68px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--quiet);
+}
+
+.gboard-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gboard-group__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gboard-group__heading h3 {
+  margin: 4px 0 2px;
+  font-size: 1.05rem;
+}
+
+.gboard-group__description {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.gboard-group__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.gboard-group__empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.gboard-rate {
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gboard-rate__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.gboard-rate__label strong {
+  color: var(--text);
+}
+
+.gboard-rate__track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-hover);
+  overflow: hidden;
+}
+
+.gboard-rate__track > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.gboard-rate__flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  color: var(--red);
+}
+
+.gboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.gboard-table__header th {
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+  color: var(--quiet);
+  border-bottom: 1px solid var(--line);
+}
+
+.gboard-row > th,
+.gboard-row > td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+
+.gboard-row__name {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: 500;
+}
+
+.gboard-row__title {
+  text-transform: capitalize;
+}
+
+.gboard-row__name code {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.gboard-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+}
+
+.gboard-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 0.76rem;
+}
+
+.gboard-toggle__chevron {
+  transition: transform 0.15s ease;
+}
+
+.gboard-toggle__chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.gboard-detail > td {
+  padding: 16px 14px 20px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--line);
+}
+
+.gboard-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px 18px;
+}
+
+.gboard-detail__field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gboard-detail__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--quiet);
+}
+
+.gboard-detail__field code {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text);
+}
+
+.gboard-detail__summary {
+  margin: 14px 0 6px;
+  color: var(--text);
+}
+
+.gboard-detail__heading {
+  margin: 14px 0 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--quiet);
+}
+
+.gboard-detail__empty {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.gboard-evidence,
+.gboard-suggestions,
+.gboard-refs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gboard-evidence li,
+.gboard-suggestions li,
+.gboard-refs li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.gboard-evidence code,
+.gboard-suggestions code,
+.gboard-refs code {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--muted);
+}
