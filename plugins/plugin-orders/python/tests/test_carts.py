@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from _helpers import demo_ir
+from _orders_helpers import demo_ir
 from atomc_plugin_orders.carts import (
     cart_artifact_id,
     cart_lines_from_sourcing,

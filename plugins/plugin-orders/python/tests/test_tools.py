@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
-from _helpers import FakeContext, build_ir, demo_ir
+from _orders_helpers import FakeContext, build_ir, demo_ir
 from atomc_plugin_orders.carriers import MockCarrier
 from atomc_plugin_orders.clock import FixedClock
 from atomc_plugin_orders.plugin import OrdersPlugin

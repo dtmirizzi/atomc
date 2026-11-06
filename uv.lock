@@ -12,6 +12,7 @@ members = [
     "atomc-plugin-qmk",
     "atomc-plugin-renode",
     "atomc-plugin-sdk",
+    "atomc-plugin-sourcing",
     "atomc-workspace",
 ]
 
@@ -342,6 +343,34 @@ requires-dist = [
     { name = "jsonschema", specifier = ">=4.26" },
     { name = "pydantic", specifier = ">=2.14" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=9.2" },
+]
+provides-extras = ["test"]
+
+[[package]]
+name = "atomc-plugin-sourcing"
+version = "0.0.1"
+source = { editable = "plugins/plugin-sourcing/python" }
+dependencies = [
+    { name = "atomc-core-ir" },
+    { name = "atomc-plugin-sdk" },
+    { name = "httpx" },
+    { name = "pydantic" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "atomc-core-ir", editable = "packages/core-ir/python" },
+    { name = "atomc-plugin-sdk", editable = "packages/plugin-sdk/python" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "pydantic", specifier = ">=2.14" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=9.2" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=1.4" },
 ]
 provides-extras = ["test"]
 
