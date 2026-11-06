@@ -129,7 +129,12 @@ async def test_no_unconnected_fail_on_single_pin_net(tmp_path: Path) -> None:
     )
     result = await check_no_unconnected(ctx)
     assert result.status == "FAIL"
-    assert result.refs == ["comp:R3.1"]
+    # Refs must resolve to document ids: the unconnected net, not pin-level refs
+    # (pin detail rides in the evidence payload).
+    assert result.refs == ["net:ORPHAN"]
+    detail = result.evidence[0].model_dump()
+    assert detail["kind"] == "json"
+    assert detail["data"]["unconnected"][0]["pin_refs"] == ["comp:R3.1"]
 
 
 @pytest.mark.asyncio

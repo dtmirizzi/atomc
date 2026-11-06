@@ -99,7 +99,9 @@ async def check_no_unconnected(ctx: PluginContext) -> GateResult:
             f"{len(nets)} nets each connect >= 2 pins",
             evidence=[{"kind": "json", "data": {"nets": len(nets), "unconnected": []}}],
         )
-    refs = [ref for net_ref in unconnected for ref in refs_by_net.get(net_ref, [])]
+    # Document referential integrity requires refs to resolve to declared ids:
+    # pin-level refs ("comp:U1.5") are not ids, so they carry in the evidence
+    # detail and the refs list the unconnected nets (which are ids) instead.
     return _result(
         "gate:erc.no_unconnected",
         "FAIL",
@@ -109,12 +111,17 @@ async def check_no_unconnected(ctx: PluginContext) -> GateResult:
                 "kind": "json",
                 "data": {
                     "unconnected": [
-                        {"net": net_ref, "pins": counts.get(net_ref, 0)} for net_ref in unconnected
+                        {
+                            "net": net_ref,
+                            "pins": counts.get(net_ref, 0),
+                            "pin_refs": refs_by_net.get(net_ref, []),
+                        }
+                        for net_ref in unconnected
                     ]
                 },
             }
         ],
-        refs=refs or unconnected,
+        refs=unconnected,
     )
 
 
