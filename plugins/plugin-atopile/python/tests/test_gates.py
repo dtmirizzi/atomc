@@ -138,6 +138,41 @@ async def test_no_unconnected_fail_on_single_pin_net(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
+async def test_no_unconnected_counts_test_pads_as_connections(tmp_path: Path) -> None:
+    # Debug nets (SWD/UART/BOOT0) deliberately terminate on one MCU pin plus a
+    # probe pad: the pad is a connection, not a dangling net.
+    ctx = context(
+        tmp_path,
+        electrical=electrical(
+            [
+                component(
+                    "comp:U1",
+                    [
+                        {"number": "1", "net_ref": "net:SWDIO"},
+                        {"number": "2", "net_ref": "net:GND"},
+                    ],
+                ),
+                component(
+                    "comp:U2",
+                    [{"number": "1", "net_ref": "net:GND"}, {"number": "2", "net_ref": "net:VCC"}],
+                ),
+                component("comp:U3", [{"number": "1", "net_ref": "net:VCC"}]),
+            ],
+            ["net:SWDIO", "net:GND", "net:VCC"],
+        ),
+        layout={
+            "outline": {"polygon": [[0, 0], [10, 0], [10, 10], [0, 10]]},
+            "test_pads": [
+                {"id": "pad:TP_SWDIO", "net_ref": "net:SWDIO", "x": 1, "y": 1}
+            ],
+        },
+    )
+    result = await check_no_unconnected(ctx)
+    assert result.status == "PASS"
+    assert "test pads" in result.summary or "nets" in result.summary
+
+
+@pytest.mark.asyncio
 async def test_no_unconnected_skips_without_electrical(tmp_path: Path) -> None:
     result = await check_no_unconnected(context(tmp_path))
     assert result.status == "SKIP"

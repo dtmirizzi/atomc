@@ -57,7 +57,13 @@ def _result(
 
 
 async def check_no_unconnected(ctx: PluginContext) -> GateResult:
-    """``gate:erc.no_unconnected`` — every declared net connects at least two pins."""
+    """``gate:erc.no_unconnected`` — every declared net connects at least two pins.
+
+    A test pad counts as a connection: debug nets (SWD, UART, BOOT0) deliberately
+    terminate on a single MCU pin plus a probe pad, and that is their purpose.
+    A net is unconnected when it has fewer than two terminations (component pins
+    + test pads).
+    """
     electrical = await read_value(ctx, "/electrical")
     if not isinstance(electrical, Mapping):
         return _result(
@@ -83,6 +89,17 @@ async def check_no_unconnected(ctx: PluginContext) -> GateResult:
             net_ref = str(net_ref)
             counts[net_ref] += 1
             refs_by_net.setdefault(net_ref, []).append(f"{component_id}.{pin.get('number', '?')}")
+
+    # Test pads terminate their nets deliberately: count them as connections.
+    layout = await read_value(ctx, "/layout")
+    test_pads = layout.get("test_pads") if isinstance(layout, Mapping) else None
+    if isinstance(test_pads, list):
+        for test_pad in test_pads:
+            if not isinstance(test_pad, Mapping):
+                continue
+            net_ref = test_pad.get("net_ref")
+            if net_ref:
+                counts[str(net_ref)] += 1
 
     unconnected: list[str] = []
     for net in nets:
