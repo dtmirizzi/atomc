@@ -170,9 +170,7 @@ class RenodePlugin:
         # write scripts that reference a nonexistent file (the emulator could never
         # load it, and the run would degrade to an ambiguous timeout).
         if not elf_abs.is_file():
-            raise DerivationError(
-                f"declared ELF artifact {view.elf_path!r} is not present on disk"
-            )
+            raise DerivationError(f"declared ELF artifact {view.elf_path!r} is not present on disk")
         repl_abs = artifact_root / f"{slug}.repl"
         resc_abs = artifact_root / f"{slug}.resc"
 

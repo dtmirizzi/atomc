@@ -162,9 +162,7 @@ async def test_no_unconnected_counts_test_pads_as_connections(tmp_path: Path) ->
         ),
         layout={
             "outline": {"polygon": [[0, 0], [10, 0], [10, 10], [0, 10]]},
-            "test_pads": [
-                {"id": "pad:TP_SWDIO", "net_ref": "net:SWDIO", "x": 1, "y": 1}
-            ],
+            "test_pads": [{"id": "pad:TP_SWDIO", "net_ref": "net:SWDIO", "x": 1, "y": 1}],
         },
     )
     result = await check_no_unconnected(ctx)

@@ -624,9 +624,7 @@ async def matrix_pins_gate(ctx: Any) -> dict[str, Any]:
             evidence=[
                 {
                     "kind": "text",
-                    "message": (
-                        "the /keyboard node is absent; no matrix pins exist to check"
-                    ),
+                    "message": ("the /keyboard node is absent; no matrix pins exist to check"),
                 }
             ],
             suggestions=[],
@@ -801,9 +799,7 @@ async def compile_gate(ctx: Any) -> dict[str, Any]:
             evidence=[
                 {
                     "kind": "text",
-                    "message": (
-                        "the /keyboard node is absent; there is no firmware to compile"
-                    ),
+                    "message": ("the /keyboard node is absent; there is no firmware to compile"),
                 }
             ],
             suggestions=[],
