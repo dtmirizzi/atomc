@@ -1,0 +1,44 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "vendor": "mouser",
+    "note": "No live vendor call was made. This fixture models the documented Mouser Search API v1 response shape only."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/search/partnumber",
+    "body_contains": "STM32F411CEU6"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "Errors": [],
+      "SearchResults": {
+        "NumberOfResult": 1,
+        "Parts": [
+          {
+            "ManufacturerPartNumber": "STM32F411CEU6",
+            "MouserPartNumber": "511-STM32F411CEU6",
+            "Availability": "290 In Stock",
+            "LeadTime": "10 Days",
+            "MOQ": 1,
+            "Currency": "USD",
+            "ProductDetailUrl": "https://www.mouser.com/ProductDetail/511-STM32F411CEU6",
+            "PriceBreaks": [
+              {
+                "Quantity": 1,
+                "Price": "$0.45",
+                "Currency": "USD"
+              },
+              {
+                "Quantity": 10,
+                "Price": "$0.41",
+                "Currency": "USD"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

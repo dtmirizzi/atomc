@@ -1,0 +1,71 @@
+{
+  "C60442": [
+    {
+      "vendor": "digikey",
+      "mpn": "STM32F411CEU6",
+      "sku": "497-STM32F411CEU6-ND",
+      "stock": 500,
+      "moq": 1,
+      "lead_time_days": 21,
+      "price_breaks": [
+        {
+          "qty": 1,
+          "unit_price_minor": 55
+        },
+        {
+          "qty": 10,
+          "unit_price_minor": 50
+        }
+      ],
+      "currency": "USD",
+      "fetched_at": "2026-11-05T12:00:00Z",
+      "url": "https://www.digikey.com/en/products/detail/497-STM32F411CEU6-ND"
+    }
+  ],
+  "C51118": [
+    {
+      "vendor": "digikey",
+      "mpn": "AP2112K-3.3TRG1",
+      "sku": "AP2112K-3.3TRG1DICT-ND",
+      "stock": 1680,
+      "moq": 1,
+      "lead_time_days": 21,
+      "price_breaks": [
+        {
+          "qty": 1,
+          "unit_price_minor": 55
+        },
+        {
+          "qty": 10,
+          "unit_price_minor": 50
+        }
+      ],
+      "currency": "USD",
+      "fetched_at": "2026-11-05T12:00:00Z",
+      "url": "https://www.digikey.com/en/products/detail/AP2112K-3.3TRG1DICT-ND"
+    }
+  ],
+  "C165948": [
+    {
+      "vendor": "digikey",
+      "mpn": "USB4085-GF-A",
+      "sku": "USB4085-GF-ACT-ND",
+      "stock": 220,
+      "moq": 1,
+      "lead_time_days": 21,
+      "price_breaks": [
+        {
+          "qty": 1,
+          "unit_price_minor": 55
+        },
+        {
+          "qty": 10,
+          "unit_price_minor": 50
+        }
+      ],
+      "currency": "USD",
+      "fetched_at": "2026-11-05T12:00:00Z",
+      "url": "https://www.digikey.com/en/products/detail/USB4085-GF-ACT-ND"
+    }
+  ]
+}

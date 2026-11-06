@@ -1,0 +1,71 @@
+{
+  "C60442": [
+    {
+      "vendor": "mouser",
+      "mpn": "STM32F411CEU6",
+      "sku": "511-STM32F411CEU6",
+      "stock": 290,
+      "moq": 1,
+      "lead_time_days": 10,
+      "price_breaks": [
+        {
+          "qty": 1,
+          "unit_price_minor": 45
+        },
+        {
+          "qty": 10,
+          "unit_price_minor": 41
+        }
+      ],
+      "currency": "USD",
+      "fetched_at": "2026-11-05T12:00:00Z",
+      "url": "https://www.mouser.com/ProductDetail/511-STM32F411CEU6"
+    }
+  ],
+  "C51118": [
+    {
+      "vendor": "mouser",
+      "mpn": "AP2112K-3.3TRG1",
+      "sku": "755-AP2112K-3.3TRG1",
+      "stock": 1470,
+      "moq": 1,
+      "lead_time_days": 10,
+      "price_breaks": [
+        {
+          "qty": 1,
+          "unit_price_minor": 45
+        },
+        {
+          "qty": 10,
+          "unit_price_minor": 41
+        }
+      ],
+      "currency": "USD",
+      "fetched_at": "2026-11-05T12:00:00Z",
+      "url": "https://www.mouser.com/ProductDetail/755-AP2112K-3.3TRG1"
+    }
+  ],
+  "C165948": [
+    {
+      "vendor": "mouser",
+      "mpn": "USB4085-GF-A",
+      "sku": "538-USB4085-GF-A",
+      "stock": 10,
+      "moq": 1,
+      "lead_time_days": 10,
+      "price_breaks": [
+        {
+          "qty": 1,
+          "unit_price_minor": 45
+        },
+        {
+          "qty": 10,
+          "unit_price_minor": 41
+        }
+      ],
+      "currency": "USD",
+      "fetched_at": "2026-11-05T12:00:00Z",
+      "url": "https://www.mouser.com/ProductDetail/538-USB4085-GF-A"
+    }
+  ]
+}

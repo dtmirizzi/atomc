@@ -1,0 +1,44 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "vendor": "mouser",
+    "note": "No live vendor call was made. This fixture models the documented Mouser Search API v1 response shape only."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/search/partnumber",
+    "body_contains": "USB4085-GF-A"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "Errors": [],
+      "SearchResults": {
+        "NumberOfResult": 1,
+        "Parts": [
+          {
+            "ManufacturerPartNumber": "USB4085-GF-A",
+            "MouserPartNumber": "538-USB4085-GF-A",
+            "Availability": "10 In Stock",
+            "LeadTime": "10 Days",
+            "MOQ": 1,
+            "Currency": "USD",
+            "ProductDetailUrl": "https://www.mouser.com/ProductDetail/538-USB4085-GF-A",
+            "PriceBreaks": [
+              {
+                "Quantity": 1,
+                "Price": "$0.45",
+                "Currency": "USD"
+              },
+              {
+                "Quantity": 10,
+                "Price": "$0.41",
+                "Currency": "USD"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

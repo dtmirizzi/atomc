@@ -1,0 +1,54 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "vendor": "nexar",
+    "note": "No live vendor call was made. This fixture models the documented Nexar supSearchMpn GraphQL response shape only."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/graphql",
+    "body_contains": "STM32F411CEU6"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "data": {
+        "supSearchMpn": {
+          "results": [
+            {
+              "part": {
+                "mpn": "STM32F411CEU6",
+                "manufacturer": {
+                  "name": "Synthetic Manufacturer"
+                },
+                "sellers": [
+                  {
+                    "company": {
+                      "name": "Synthetic Seller"
+                    },
+                    "offers": [
+                      {
+                        "sku": "C1S-STM32F411CEU6",
+                        "inventoryLevel": 106,
+                        "moq": 1,
+                        "factoryLeadTime": 5,
+                        "clickUrl": "https://www.nexar.com/part/C1S-STM32F411CEU6",
+                        "prices": [
+                          {
+                            "quantity": 1,
+                            "price": 0.5,
+                            "currency": "USD"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

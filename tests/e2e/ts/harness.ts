@@ -51,7 +51,14 @@ export const REPO_ROOT = resolve(HERE, "../../..");
 export const PAD_IR_FIXTURE = resolve(REPO_ROOT, "examples/atomc-pad/system_ir.json");
 
 /** The four built-in plugins the daemon must discover through entry points. */
-export const EXPECTED_PLUGINS = ["atopile", "renode", "cad-jig", "qmk"] as const;
+export const EXPECTED_PLUGINS = [
+  "atopile",
+  "renode",
+  "cad-jig",
+  "qmk",
+  "sourcing",
+  "orders",
+] as const;
 
 /** Shape of `~/.atomc/daemon.json` (mode 0600). */
 export interface DaemonStateFile {

@@ -1,0 +1,41 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "vendor": "digikey",
+    "note": "No live vendor call was made. This fixture models the documented DigiKey ProductSearch v4 response shape only."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/products/v4/search/keyword",
+    "body_contains": "AP2112K-3.3TRG1"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "ProductsCount": 1,
+      "Products": [
+        {
+          "ManufacturerPartNumber": "AP2112K-3.3TRG1",
+          "DigiKeyPartNumber": "AP2112K-3.3TRG1DICT-ND",
+          "QuantityAvailable": 1680,
+          "MinimumQuantity": 1,
+          "Currency": "USD",
+          "ProductUrl": "https://www.digikey.com/en/products/detail/AP2112K-3.3TRG1DICT-ND",
+          "ManufacturerLeadWeeks": 3,
+          "StandardPricing": [
+            {
+              "BreakQuantity": 1,
+              "UnitPrice": 0.55,
+              "Currency": "USD"
+            },
+            {
+              "BreakQuantity": 10,
+              "UnitPrice": 0.5,
+              "Currency": "USD"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

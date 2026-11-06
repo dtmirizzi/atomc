@@ -1,0 +1,36 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "vendor": "lcsc",
+    "note": "No live vendor call was made. This fixture models the documented public product JSON shape only."
+  },
+  "request": {
+    "method": "GET",
+    "path": "/wmsc/product/query/productDetail",
+    "params": {
+      "productCode": "C165948"
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "code": 200,
+      "message": "success",
+      "result": {
+        "productCode": "C165948",
+        "productModel": "USB4085-GF-A",
+        "stockNumber": 40,
+        "moq": 1,
+        "currency": "USD",
+        "leadTimeDays": 14,
+        "productUrl": "https://www.lcsc.com/product-detail/C165948.html",
+        "priceBreaks": [
+          {
+            "quantity": 1,
+            "price": 0.95
+          }
+        ]
+      }
+    }
+  }
+}
