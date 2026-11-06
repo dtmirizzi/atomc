@@ -126,6 +126,27 @@ export interface ModelDecision {
   usage?: TurnUsage;
 }
 
+/**
+ * One multimodal attachment carried into a model turn.
+ *
+ * Providers that accept images (pi-ai, Anthropic, OpenRouter multimodal models)
+ * inline these as image content parts. Documents are pre-rendered to images by
+ * the producing plugin; the harness never sends raw PDFs because provider
+ * support is inconsistent.
+ */
+export interface ModelAttachment {
+  /** Only inline images are supported today. */
+  kind: "image";
+  /** IANA media type, e.g. `image/png`. */
+  mimeType: string;
+  /** Base64 payload without a `data:` prefix. */
+  data: string;
+  /** Optional display name (e.g. datasheet page or render id). */
+  name?: string;
+  /** Optional source artifact ref for provenance (e.g. `art:render-plate`). */
+  ref?: string;
+}
+
 /** Per-turn model accounting. */
 export interface TurnUsage {
   inputTokens?: number;
@@ -142,6 +163,10 @@ export interface ModelRequest {
   scopeReads: ReadonlyArray<{ path: string; rev: number; value: unknown }>;
   transcript: readonly AgentTurn[];
   tools: readonly ToolDescriptor[];
+  /** Optional multimodal attachments (datasheet/render images) for this turn. */
+  attachments?: readonly ModelAttachment[];
+  /** Cancellation signal forwarded to the model provider. */
+  signal?: AbortSignal;
   turn: number;
   remainingCostMinor: number;
 }

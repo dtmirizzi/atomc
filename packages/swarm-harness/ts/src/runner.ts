@@ -9,6 +9,7 @@
  */
 import { ConflictError, type GateResult } from "@atomc/daemon-client";
 import { z } from "zod";
+import { isModelAttachment } from "./multimodal.js";
 import { SwarmStateMachine } from "./state-machine.js";
 import { TranscriptWriter } from "./transcript.js";
 import type {
@@ -18,8 +19,10 @@ import type {
   AgentSession,
   AgentState,
   AgentToolCall,
+  AgentTurn,
   GateFailure,
   HarnessDaemon,
+  ModelAttachment,
   ModelDecision,
   ModelProvider,
   RunOutcome,
@@ -166,6 +169,8 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
   let reason: string | undefined;
   let gateResults: GateResult[] = [];
   let currentTools: ToolDescriptor[] = [];
+  const turnsLog: AgentTurn[] = [];
+  const attachments: ModelAttachment[] = [];
 
   const readScopes = async (): Promise<void> => {
     const reads: Array<{ path: string; rev: number; value: unknown }> = [];
@@ -325,6 +330,13 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
       throw new RunBail("ACTION_FAILED", "ESCALATE", "tool decision without a call");
     }
     if (!isToolPermitted(definition.permittedTools, call)) {
+      turnsLog.push({
+        index: turns,
+        kind: "tool",
+        call,
+        error: "tool not permitted for this agent",
+        at: at(),
+      });
       emit({
         kind: "tool.rejected",
         plugin: call.plugin,
@@ -370,6 +382,14 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
     }
     try {
       const result = await daemon.callTool(call.plugin, call.tool, parsed.data, holder);
+      turnsLog.push({
+        index: turns,
+        kind: "tool",
+        call,
+        result: result.result,
+        at: at(),
+      });
+      if (isModelAttachment(result.result)) attachments.push(result.result);
       emit({ kind: "tool.called", plugin: call.plugin, tool: call.tool, at: at() });
       await transcript.append({
         kind: "tool",
@@ -380,6 +400,13 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
         at: at(),
       });
     } catch (error) {
+      turnsLog.push({
+        index: turns,
+        kind: "tool",
+        call,
+        error: messageOf(error),
+        at: at(),
+      });
       await transcript.append({
         kind: "tool.error",
         plugin: call.plugin,
@@ -417,8 +444,10 @@ export async function runAgent(options: RunAgentOptions): Promise<AgentRunResult
           rev: read.rev,
           value: read.value,
         })),
-        transcript: [],
+        transcript: [...turnsLog],
         tools: currentTools,
+        attachments: [...attachments],
+        ...(options.signal !== undefined ? { signal: options.signal } : {}),
         turn: turns,
         remainingCostMinor: Math.max(0, maxCostMinor - costMinor),
       });
