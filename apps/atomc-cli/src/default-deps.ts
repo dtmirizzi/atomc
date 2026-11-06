@@ -191,7 +191,16 @@ export function createDefaultDeps(overrides: Partial<CliDeps> = {}): CliDeps {
     ensureDaemon:
       overrides.ensureDaemon ??
       (async (projectRoot) => {
-        const result = await ensureDaemonClient(projectRoot);
+        // Resolve the repository that carries the atomcd entry point so scaffolded
+        // projects (outside this checkout) can still start the daemon: `uv run
+        // atomcd` needs the workspace root, which ATOMC_REPO also provides.
+        // ATOMC_HOME keeps daemon state alongside findDaemon's location.
+        const uvProject =
+          env.ATOMC_REPO && env.ATOMC_REPO !== "" ? env.ATOMC_REPO : await findRepoRoot();
+        const result = await ensureDaemonClient(projectRoot, {
+          uvProject,
+          ...(env.ATOMC_HOME && env.ATOMC_HOME !== "" ? { atomcHome: env.ATOMC_HOME } : {}),
+        });
         return {
           info: result.info,
           started: result.started,
