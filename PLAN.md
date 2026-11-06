@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 2 and the initial Phase 3 foundation (CLI, deterministic harness core, Studio shell, workspace lockfile and strengthened CI) are merged to `main` via PR #9.** WP-3.3 and WP-3.5 implementations are pushed for review; WP-3.4 is in development. Studio 3D/telemetry/orders views and hardware-domain plugins remain.
+Status: **Phase 2 and the Phase 3 foundation are merged: PR #9 (CLI, deterministic harness core, Studio shell, lockfile, CI), PR #10 (specialist agents + replay tests) and PR #11 (convergence scheduler).** Studio 3D/telemetry/orders views, hardware-domain plugins and the vertical build pipeline remain.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -377,9 +377,9 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 
 **WP-3.1 `cli`** — Commander 15 app with init/build/doctor/daemon/plugin commands, TTY output and `--json`. **Merged** in PR #9 with 52 unit tests. Typed `atomc.config.ts` loading is not implemented; hardware-dependent commands remain honest structured stubs until plugins/converger land.
 **WP-3.2 `harness-core`** — transactional state machine, provider/daemon ports, budgets and transcript persistence. **Merged** in PR #9 with 45 fake-provider tests. Specialist definitions/provider adapter are WP-3.3; writes enforce lock/produces scopes and tools validate advertised JSON Schema.
-**WP-3.3 `harness-agents`** — implementation pushed to `wp/3.3-harness-agents` for review: specialist definitions/prompts, gate routing, image inspection, typed pi-ai adapter and safe provider construction. Exact importer update is recorded in the handoff; root lockfile integration remains orchestrator-owned.
-**WP-3.4 `harness-converge`** — in progress on `wp/3.4-harness-converge`: bounded gate routing, scheduler and `atomc converge` integration.
-**WP-3.5 `harness-tests`** — deterministic versioned recordings, replay provider, test report and 48 seeded budget invariants pushed on `wp/3.5-harness-tests`; review pending. Specialist conformance and coordinator E2E await WP-3.3/WP-3.4 integration. Live provider tests remain future, opt-in work.
+**WP-3.3 `harness-agents`** — **merged** via PR #10: specialist definitions/prompts, gate routing, image inspection, typed pi-ai adapter and safe provider construction; the lockfile importer was integrated with the branch.
+**WP-3.4 `harness-converge`** — **merged** via PR #11: bounded gate routing, scheduler with aggregate cost/token/turn ceilings, rollback policy and `atomc converge` with an injected runtime; `AgentRegistry` composes with `converge()` structurally (integration test included).
+**WP-3.5 `harness-tests`** — **merged** via PR #10: deterministic versioned recordings, replay provider, test report and 48 seeded budget invariants. Live provider tests remain future, opt-in work.
 **WP-3.6 `studio-shell`** (Vite+React, WS to daemon, 4-pane layout). The local-first responsive dashboard shell, DAG, gate, agent and artifact views are **implemented in PR #9** with 24 unit tests and 4 Playwright/axe tests. Live browser connection requires a trusted embedding host bridge; no bearer tokens are stored in URL parameters. · **WP-3.7 `studio-3d`** (R3F PCB + plate + case + jig from GLB, test-pad overlay) · **WP-3.8 `studio-telemetry`** (WaveDrom matrix scan, Renode/QMK console stream) · **WP-3.9 `studio-gates-orders`** (gate board, BOM/quote/order table).
 
 ### Phase 4 — Core hardware plugins (vertical slice on example)
@@ -463,9 +463,9 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-2.5 daemon-client-ts    | pi / DeepSeek Flash | `wp/2.5-daemon-client-ts`    | merged in PR #6; 54 Vitest tests and 92.8% statement coverage                                                                |
 | WP-3.1 CLI                 | pi / DeepSeek Flash | `wp/3.1-cli`                 | merged in PR #9; 52 Vitest tests, 95.55% statements; CI passed                                                               |
 | WP-3.2 harness-core        | pi / DeepSeek Flash | `wp/3.2-harness-core`        | merged in PR #9; 45 deterministic fake-provider tests; CI passed                                                             |
-| WP-3.3 harness-agents      | pi / DeepSeek Flash | `wp/3.3-harness-agents`      | pushed at e5729e4; 110 tests, typed pi-ai adapter, cancellation/context continuity, root-confined inspection; review pending |
-| WP-3.4 harness-converge    | pi / DeepSeek Flash | `wp/3.4-harness-converge`    | in progress; implementing coordinator over runAgent and daemon gate truth                                                    |
-| WP-3.5 harness-tests       | pi / DeepSeek Flash | `wp/3.5-harness-tests`       | pushed at c51ee6f; 74 package tests, 48 seeded budget cases and replay; specialist/router E2E deferred pending WP-3.3/3.4    |
+| WP-3.3 harness-agents      | pi / DeepSeek Flash | `wp/3.3-harness-agents`      | merged in PR #10; 110 tests, typed pi-ai adapter, cancellation/context continuity, root-confined inspection                   |
+| WP-3.4 harness-converge    | pi / DeepSeek Flash | `wp/3.4-harness-converge`    | merged in PR #11; 195 harness tests incl. 53 convergence + registry integration test; honest unavailable/empty-gate behavior |
+| WP-3.5 harness-tests       | pi / DeepSeek Flash | `wp/3.5-harness-tests`       | merged in PR #10; 48 seeded budget cases, versioned recordings and replay E2E; live runs remain opt-in                         |
 | WP-3.6 Studio shell        | orchestrator        | `integration/phase3`         | merged in PR #9; responsive UI, 24 unit tests and 4 Playwright/axe tests; CI passed                                          |
 | WP-3.7 Studio 3D           | queued              | `wp/3.7-studio-3d`           | R3F board, plate/case/jig GLB viewer and test-pad overlay                                                                    |
 | WP-3.8 Studio telemetry    | queued              | `wp/3.8-studio-telemetry`    | WaveDrom scan and Renode/QMK console stream                                                                                  |
