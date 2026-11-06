@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phases 2–4 are complete (PRs #9–#16). Phase 5's plugin layer is merged (PRs #17/#18): vendor sourcing adapters with synthetic cassettes, the pure offer optimizer with bom.* gates, JLCPCB fab quotes with the fab gate, and the draft-only orders ledger with mock carrier tracking.** WP-5.5 (CLI quote/orders UX) is in flight. Live vendor calls require credentials that do not exist — adapters fail closed honestly; Phase 6 requires physical prototyping.
+Status: **Phases 2–4 are complete (PRs #9–#16). Phase 5's plugin layer is merged (PRs #17/#18): vendor sourcing adapters with synthetic cassettes, the pure offer optimizer with bom.* gates, JLCPCB fab quotes with the fab gate, and the draft-only orders ledger with mock carrier tracking.** **Phase 5 is complete.** Live vendor calls require credentials that do not exist — adapters fail closed honestly; Phase 6 (physical prototyping, bring-up, 1.0) remains open.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -397,7 +397,7 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 **WP-5.2 `sourcing-optimizer`** — **merged in PR #18:** pure selection under cost/stock/MOQ/lead-time/vendor constraints with deterministic tie-breaks and infeasibility reasons; `bom.*` gates always runnable against IR.
 **WP-5.3 `fab-quotes`** — **merged in PR #18:** JLCPCB quote adapter + `quote_pcb` tool writing `/fabrication/quotes`; `fab.quote_under_budget` SKIPs honestly with no quotes fetched.
 **WP-5.4 `plugin-orders`** — **merged in PR #17:** per-vendor cart CSV writers, a draft-only order ledger with validated transitions, mock carrier tracking labeled `mock` — no tool can place a real order. 80 tests.
-**WP-5.5 `cli-quote-orders`** (in flight) — `atomc quote`/`atomc orders` UX + docs.
+**WP-5.5 `cli-quote-orders`** — **merged:** `atomc quote` (drives `quote_pcb` over `tools.call`, reads `/fabrication/quotes`, reports the fab gate) and `atomc orders`/`orders build-cart` (ledger rendering + cart artifacts); honest exits 0/1/2/3 and single-object `--json`; 108 CLI tests.
 
 ### Phase 6 — Hardening & 1.0
 

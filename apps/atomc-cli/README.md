@@ -25,8 +25,9 @@ The binary name is `atomc` when invoked from the built package. Until publicatio
 | `atomc build [target]`             | working  | start/attach to daemon, request DAG run, wait for status and report actual gates. Hardware outputs require plugins. |
 | `atomc sim`                        | stub     | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                             |
 | `atomc jig`                        | stub     | pogo jig / plate / case generation — reports status, never PASS                                                     |
-| `atomc quote`                      | stub     | BOM + fab quotes — reports status, never PASS                                                                       |
-| `atomc orders`                     | stub     | order placement — reports status, never PASS                                                                        |
+| `atomc quote`                      | working  | refresh fab quotes via the sourcing plugin, report quotes + `fab.quote_under_budget`; honest `unavailable` (exit 3) |
+| `atomc orders [--status <s>]`      | working  | print the `/orders` ledger from the daemon (read-only), with optional status filter                                 |
+| `atomc orders build-cart`          | working  | call the orders plugin's `build_cart`, print cart paths; `--vendor` filters, `--out` copies the files               |
 | `atomc converge`                   | working* | invokes a trusted convergence runtime; reports honest unavailable status when none is configured                    |
 
 Implemented commands support `--json`. They emit one JSON object on stdout; diagnostics go to
@@ -38,7 +39,8 @@ model runtime by default, so `converge` returns `unavailable` until a trusted ho
 | Code | Meaning                                                              |
 | ---- | -------------------------------------------------------------------- |
 | `0`  | success                                                              |
-| `1`  | error, failed build, or doctor `FAIL`                                |
+| `1`  | error, failed build/quote/order, or doctor `FAIL`                    |
+| `2`  | invalid command option                                               |
 | `3`  | capability unavailable (`plugin` missing or feature not implemented) |
 
 ## Configuration
@@ -61,9 +63,16 @@ whole command tree with an in-memory filesystem and a scripted `DaemonApi` fake.
 
 ## Current scope limitations
 
-- `sim`, `jig`, `quote`, and `orders` are intentionally stubs. They report a structured
-  `unavailable`/`not_implemented` result and exit `3`; they never report a fake `PASS`. They will
-  be wired to plugins in Phases 4–5.
+- `sim` and `jig` are intentionally stubs. They report a structured
+  `unavailable`/`not_implemented` result and exit `3`; they never report a fake `PASS`.
+- `quote` calls the sourcing plugin's `quote_pcb` tool and prints whatever trustworthy quotes it
+  wrote to `/fabrication`; with no plugin/credentials it exits `3`. It never invents a price.
+  `--refresh` passes `force: true` (the shipping `FabService` has no cache, so it is accepted for
+  tool-schema stability).
+- `orders` reads `/orders` from the daemon and `orders build-cart` calls the orders plugin's
+  `build_cart` tool, which writes cart files under the plugin's artifact root and records a draft
+  order. `--out` copies those files client-side; `--vendor` filters the reported artifacts. The
+  command never contacts a vendor and never places an order.
 - `converge` uses an injected `ConvergenceRuntime`; without one, it reports structured
   `unavailable` and exits `3`. Incomplete convergence exits `1`; only final daemon gate state with
   no blocking FAIL/ERROR exits `0`.
