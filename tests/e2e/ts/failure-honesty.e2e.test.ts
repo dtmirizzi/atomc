@@ -6,11 +6,11 @@
  * state with a `FAIL` whose evidence names the mutation — proving the result is evaluated
  * on live daemon IR rather than a cached or fabricated outcome.
  *
- * The committed fixture already contains single-pin MCU nets, so the test:
- * 1. runs the gate on the untouched fixture and records those nets;
- * 2. transacts a brand-new single-pin net (`net:ORPHAN` on `comp:J9`) through the daemon;
- * 3. reruns the gate and asserts the mutation appears in the evidence, alongside the
- *    baseline nets, with `pins: 1`.
+ * The committed fixture's single-pin debug nets terminate on test pads (connected),
+ * so the baseline PASSes. The spec then:
+ * 1. transacts a brand-new single-pin net with NO test pad (`net:ORPHAN` on `comp:J9`);
+ * 2. reruns the gate and asserts a FAIL whose evidence names the mutation;
+ * 3. connects the orphan with a second pin and asserts the gate flips back to PASS.
  */
 import type { DaemonClient, GateResult } from "@atomc/daemon-client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -28,10 +28,19 @@ const ORPHAN_COMPONENT = {
   pins: [{ number: "1", net_ref: "net:ORPHAN" }],
 };
 
-function unconnectedEvidence(result: GateResult): { net: string; pins: number }[] {
+function unconnectedEvidence(
+  result: GateResult,
+): { net: string; pins: number; pin_refs?: string[] }[] {
   const evidence = result.evidence.find((item) => item.kind === "json" && item.data !== undefined);
-  const data = evidence?.data as { unconnected?: { net: string; pins: number }[] } | undefined;
+  const data = evidence?.data as
+    | { unconnected?: { net: string; pins: number; pin_refs?: string[] }[] }
+    | undefined;
   return data?.unconnected ?? [];
+}
+
+/** Match an evidence entry on net and pins, ignoring the pin_refs detail. */
+function namesNet(entries: { net: string; pins: number }[], net: string, pins: number): boolean {
+  return entries.some((entry) => entry.net === net && entry.pins === pins);
 }
 
 describe("gate failure honesty over the real daemon", () => {
@@ -51,11 +60,8 @@ describe("gate failure honesty over the real daemon", () => {
   it("fails on a freshly mutated single-pin net and names it in the evidence", async () => {
     const baseline = await client.runGates([GATE_ID]);
     const baselineResult = baseline[0];
-    expect(baselineResult?.status).toBe("FAIL");
-    expect(unconnectedEvidence(baselineResult as GateResult)).not.toContainEqual({
-      net: "net:ORPHAN",
-      pins: 1,
-    });
+    // Debug nets terminate on test pads, so the untouched fixture is connected.
+    expect(baselineResult?.status).toBe("PASS");
 
     const electrical = await client.getIR("/electrical");
     const tx = await client.transact({
@@ -73,10 +79,7 @@ describe("gate failure honesty over the real daemon", () => {
     const mutatedResult = mutated[0];
     expect(mutatedResult?.status).toBe("FAIL");
     expect(mutatedResult?.summary).toMatch(/fewer than 2 connected pins/);
-    expect(unconnectedEvidence(mutatedResult as GateResult)).toContainEqual({
-      net: "net:ORPHAN",
-      pins: 1,
-    });
+    expect(namesNet(unconnectedEvidence(mutatedResult as GateResult), "net:ORPHAN", 1)).toBe(true);
 
     // The mutation is visible on subsequent reads too: the daemon persisted it.
     const reread = await client.getIR("/electrical");
@@ -85,14 +88,26 @@ describe("gate failure honesty over the real daemon", () => {
     expect(reread.rev).toBeGreaterThan(electrical.rev);
   });
 
-  it("flips to PASS when the dangling nets are genuinely connected over RPC", async () => {
-    const danglingNets = unconnectedEvidence(
-      (await client.runGates([GATE_ID]))[0] as GateResult,
-    ).map((entry) => entry.net);
-    expect(danglingNets.length).toBeGreaterThan(0);
+  it("flips back to PASS when the orphan net is genuinely connected over RPC", async () => {
+    // Start from the connected baseline, then break a debug net by removing its
+    // test pad: the net is then genuinely dangling (one pin, no pad).
+    const layout = await client.getIR("/layout");
+    const pads = (layout.value as { test_pads: { id: string; net_ref: string }[] }).test_pads;
+    const swdioPad = pads.find((pad) => pad.net_ref === "net:SWDIO");
+    expect(swdioPad).toBeDefined();
 
-    // Add a debug header that gives each dangling net a second pin. This is a real
-    // board fixture edit, performed through the daemon's optimistic-concurrency RPC.
+    await client.transact({
+      path: "/layout",
+      base_rev: layout.rev,
+      ops: [{ op: "remove", path: `/test_pads/${pads.indexOf(swdioPad!)}` }],
+      holder: "test:wp-4.5",
+    });
+    const broken = (await client.runGates([GATE_ID]))[0];
+    expect(broken?.status).toBe("FAIL");
+    expect(namesNet(unconnectedEvidence(broken as GateResult), "net:SWDIO", 1)).toBe(true);
+
+    // Give the net a second pin: a debug header connection, through the same
+    // optimistic-concurrency RPC. The gate must flip back to PASS.
     const electrical = await client.getIR("/electrical");
     await client.transact({
       path: "/electrical",
@@ -108,10 +123,7 @@ describe("gate failure honesty over the real daemon", () => {
             attributes: {},
             mpn: "Debug_Header_1x06",
             package: "PinHeader_1x06",
-            pins: danglingNets.map((net, index) => ({
-              number: String(index + 1),
-              net_ref: net,
-            })),
+            pins: [{ number: "1", net_ref: "net:SWDIO" }],
           },
         },
       ],
