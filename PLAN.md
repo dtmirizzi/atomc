@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phase 2 and the Phase 3 foundation are merged: PR #9 (CLI, deterministic harness core, Studio shell, lockfile, CI), PR #10 (specialist agents + replay tests) and PR #11 (convergence scheduler).** Studio 3D/telemetry/orders views, hardware-domain plugins and the vertical build pipeline remain.
+Status: **Phases 2 and 3 are complete (PRs #9–#14): CLI, harness core with specialist agents, replay + convergence, Studio with 3D/telemetry/gate-board views, real-daemon RPC E2E, and four hardware plugins (atopile, renode, qmk, cad-jig).** The Phase 4 vertical slice (WP-4.4/4.5) is in flight; Phase 5 sourcing and Phase 6 hardening require vendor and physical-world integration.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -384,12 +384,12 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 
 ### Phase 4 — Core hardware plugins (vertical slice on example)
 
-**WP-4.1 `plugin-atopile`** (briefed, in flight) — compile `.ato` through the `ato` CLI subprocess (the 0.15 Python API is unsupported, see the kernel adapter); extract components/nets/assertions/test-points; parse `.kicad_pcb` (kiutils) for outline + pad coordinates; ERC gates.
-**WP-4.2 `plugin-renode`** — IR → `.repl` (STM32F411 platform + supported GPIO/UART) + `.resc`; first run compatibility probes for QMK ChibiOS on Renode STM32F411. Test boot/no HardFault and debug UART where feasible. Matrix-injection tests require a proven GPIO model and a QMK-emulation keymap; USB HID is **not** assumed emulated. Unsupported features produce an explicit `SKIP` with evidence, never a false `PASS`. Provide a recorded-HIL checklist and leave full matrix/USB assertions to a connected board + pogo fixture until proven simulatable.
-**WP-4.2b `plugin-qmk`** — IR → `keyboards/atomc/<name>/keyboard.json` (matrix pins, diode direction, layout geometry from switch placements, USB ids) + default keymap; `qmk compile` tool + `fw.qmk_compile` gate; artifact `.bin/.uf2` sha into IR.
-**WP-4.3 `plugin-cad-jig`** — build123d: PCB solid from outline, component bboxes; pogo-pin bed-of-nails jig (P75 receptacles, alignment pins on mounting holes, clamshell lid); **switch plate** (14 mm cutouts at 19.05 mm pitch from IR switch placements), **case** (tray mount, USB-C cutout aligned to connector); collision + spacing gates; export `.step/.stl/.glb` + PNG renders (for multimodal agents).
-**WP-4.4 `example-firmware`** — QMK keymaps for pad + keeb (layers, optional debug console on UART for emulation builds via `keymaps/renode`), QMK compile tests; HIL test script/checklist for every key position, USB HID and bootloader.
-**WP-4.5 `e2e-vertical-slice`** — `atomc build` on `atomc-pad`, then `atomc-keeb`, yields IR + QMK firmware + `.repl` + plate/case/jig `.step`; goldens; docs walkthrough with embedded GLB.
+**WP-4.1 `plugin-atopile`** — **merged in PR #13:** `ato` CLI compile + kiutils PCB import + four pure IR gates; 42 tests, real-path smoke recorded in the handoff. extract components/nets/assertions/test-points; parse `.kicad_pcb` (kiutils) for outline + pad coordinates; ERC gates.
+**WP-4.2 `plugin-renode`** — **merged in PR #13:** IR → `.repl` (STM32F411 platform + supported GPIO/UART) + `.resc`; Byte-deterministic script derivation with goldens; boot gate checks banner/no-HardFault via headless Renode; matrix_scan declared SKIP pending HIL. 48 tests; real Renode 1.17 smoke recorded. Matrix-injection tests require a proven GPIO model and a QMK-emulation keymap; USB HID is **not** assumed emulated. Unsupported features produce an explicit `SKIP` with evidence, never a false `PASS`. Provide a recorded-HIL checklist and leave full matrix/USB assertions to a connected board + pogo fixture until proven simulatable.
+**WP-4.2b `plugin-qmk`** — **merged in PR #14:** IR → `keyboards/atomc/<name>/keyboard.json` (matrix pins, diode direction, layout geometry, USB ids) + default keymap with byte-for-byte goldens; `qmk compile` gate records artifact shas into `/firmware`, honest SKIP without a toolchain. 39 tests.
+**WP-4.3 `plugin-cad-jig`** — **merged in PR #14:** pure parametric derivation + five always-runnable mechanical gates; build123d solids only when importable: PCB solid from outline, component bboxes; pogo-pin bed-of-nails jig (P75 receptacles, alignment pins on mounting holes, clamshell lid); **switch plate** (14 mm cutouts at 19.05 mm pitch from IR switch placements), **case** (tray mount, USB-C cutout aligned to connector); collision + spacing gates; export `.step/.stl/.glb` + PNG renders (for multimodal agents).
+**WP-4.4 `example-firmware`** (briefed, in flight) — QMK keymaps for pad + keeb (layers, optional debug console on UART for emulation builds via `keymaps/renode`), QMK compile tests; HIL test script/checklist for every key position, USB HID and bootloader.
+**WP-4.5 `e2e-vertical-slice`** (briefed, in flight) — `atomc build` on `atomc-pad`, then `atomc-keeb`, yields IR + QMK firmware + `.repl` + plate/case/jig `.step`; goldens; docs walkthrough with embedded GLB.
 
 ### Phase 5 — Supply chain & logistics
 
@@ -467,10 +467,10 @@ A phase is complete when: all its WPs merged, `ci.yml` green on `main`, docs pag
 | WP-3.4 harness-converge    | pi / DeepSeek Flash | `wp/3.4-harness-converge`    | merged in PR #11; 195 harness tests incl. 53 convergence + registry integration test; honest unavailable/empty-gate behavior |
 | WP-3.5 harness-tests       | pi / DeepSeek Flash | `wp/3.5-harness-tests`       | merged in PR #10; 48 seeded budget cases, versioned recordings and replay E2E; live runs remain opt-in                         |
 | WP-3.6 Studio shell        | orchestrator        | `integration/phase3`         | merged in PR #9; honesty follow-up in PR #12 (dataMode labels, no implied DAG edges, 30 unit + 5 Playwright tests)            |
-| WP-3.7 Studio 3D           | queued              | `wp/3.7-studio-3d`           | R3F board, plate/case/jig GLB viewer and test-pad overlay                                                                    |
-| WP-3.8 Studio telemetry    | queued              | `wp/3.8-studio-telemetry`    | WaveDrom scan and Renode/QMK console stream                                                                                  |
+| WP-3.7 Studio 3D           | pi / DeepSeek Flash | `wp/3.7-studio-3d`           | merged in PR #13; pure IR geometry derivation, R3F canvas, honest unavailable states; 22 unit + 2 e2e tests                  |
+| WP-3.8 Studio telemetry    | pi / DeepSeek Flash | `wp/3.8-studio-telemetry`    | merged in PR #13; hand-rolled timing diagram + bounded console, honest unavailable in daemon mode                            |
 | WP-3.9 Studio gates/orders | queued              | `wp/3.9-studio-gates-orders` | full gate board, BOM/quote/order table                                                                                       |
-| WP-3.10 swarm-e2e-rpc      | pi / DeepSeek Flash | `wp/3.10-swarm-e2e-rpc`     | queued; real-process daemon + RPC converge() E2E (deferred from WP-3.5)                                                      |
+| WP-3.10 swarm-e2e-rpc      | pi / DeepSeek Flash | `wp/3.10-swarm-e2e-rpc`     | merged in PR #13; 3 real-daemon convergence E2E paths (PASS, conflict retry, abort) with process-death assertions             |
 | WP-2.6 rpc-contract-tests  | pi / DeepSeek Flash | `wp/2.6-rpc-contract-tests`  | merged (PR #8); 34 real-daemon/client RPC tests pass on CI                                                                   |
 
 ---
