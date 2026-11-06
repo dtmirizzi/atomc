@@ -13,7 +13,63 @@
  * @packageDocumentation
  */
 
+export {
+  AGENT_DEFINITIONS,
+  AgentDefinitionError,
+  AgentRegistry,
+  allAgentDefinitions,
+  DEFAULT_AGENT_MODEL,
+  defaultAgentRegistry,
+  EE_AGENT_PROMPT,
+  FW_AGENT_PROMPT,
+  getAgentDefinition,
+  HARNESS_INSPECTION_TOOL_GRANTS,
+  MECH_AGENT_PROMPT,
+  MULTI_OWNER_GATES,
+  normalizeGateId,
+  OPS_AGENT_PROMPT,
+  routeGateToAgents,
+  SHARED_AGENT_RULES,
+} from "./agents/index.js";
 export { DaemonClientAdapter } from "./daemon-adapter.js";
+export {
+  ALLOWED_IMAGE_MIME_TYPES,
+  type AllowedImageMimeType,
+  type ArtifactReader,
+  type AttachmentLimits,
+  type AttachmentSource,
+  type BoundedFileSystem,
+  createImageAttachment,
+  HarnessInspectionDaemon,
+  INSPECTION_TOOL_NAMES,
+  INSPECTION_TOOLS,
+  type InspectionToolName,
+  inspectionToolGrants,
+  isModelAttachment,
+  isPathContained,
+  loadImageAttachment,
+  MAX_ATTACHMENT_BYTES,
+  MultimodalInspector,
+  normalizeProjectPath,
+  ProjectImageReader,
+  sniffImageMimeType,
+} from "./multimodal.js";
+export {
+  createPiAiProvider,
+  DECISION_INSTRUCTIONS,
+  DEFAULT_PI_AI_COMPLETE,
+  decodeToolName,
+  encodeToolName,
+  extractJsonObject,
+  type PiAiComplete,
+  PiAiProvider,
+  type PiAiProviderConfig,
+  type PiAiProviderDeps,
+  type PiAiProviderOptions,
+  toModelDecision,
+  toPiAiContext,
+  toTurnUsage,
+} from "./providers/index.js";
 export { isToolPermitted, isWithinScopes, type RunAgentOptions, runAgent } from "./runner.js";
 export {
   AGENT_EVENTS,
@@ -45,6 +101,7 @@ export type {
   AgentTurn,
   GateFailure,
   HarnessDaemon,
+  ModelAttachment,
   ModelConfig,
   ModelDecision,
   ModelProvider,

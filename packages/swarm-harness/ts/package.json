@@ -28,6 +28,7 @@
   "dependencies": {
     "@atomc/core-ir": "workspace:*",
     "@atomc/daemon-client": "workspace:*",
+    "@mariozechner/pi-ai": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
