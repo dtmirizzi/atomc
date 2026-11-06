@@ -1,0 +1,939 @@
+{
+  "electrical": {
+    "_meta": {
+      "rev": 1
+    },
+    "assertions": [
+      {
+        "expr": "I2C pull-ups present",
+        "id": "assert:i2c_pullups",
+        "status": "pass"
+      }
+    ],
+    "components": [
+      {
+        "attributes": {},
+        "designator": "U1",
+        "dnp": false,
+        "id": "comp:U1",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "STM32G0B1CBT6",
+        "package": "LQFP48",
+        "pins": [
+          {
+            "name": "VDD",
+            "net_ref": "net:3V3",
+            "number": "1"
+          },
+          {
+            "name": "VSS",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "PB6/I2C1_SCL",
+            "net_ref": "net:I2C_SCL",
+            "number": "3"
+          },
+          {
+            "name": "PB7/I2C1_SDA",
+            "net_ref": "net:I2C_SDA",
+            "number": "4"
+          },
+          {
+            "name": "PA13/SWDIO",
+            "net_ref": "net:SWDIO",
+            "number": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U2",
+        "dnp": false,
+        "id": "comp:U2",
+        "manufacturer": "Texas Instruments",
+        "mpn": "SN65HVD230",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "VCC",
+            "net_ref": "net:3V3",
+            "number": "3"
+          },
+          {
+            "name": "CANL",
+            "net_ref": "net:CAN_L",
+            "number": "6"
+          },
+          {
+            "name": "CANH",
+            "net_ref": "net:CAN_H",
+            "number": "7"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U3",
+        "dnp": false,
+        "id": "comp:U3",
+        "manufacturer": "Sensirion",
+        "mpn": "SHT40-AD1B",
+        "package": "DFN-4",
+        "pins": [
+          {
+            "name": "SDA",
+            "net_ref": "net:I2C_SDA",
+            "number": "1"
+          },
+          {
+            "name": "SCL",
+            "net_ref": "net:I2C_SCL",
+            "number": "2"
+          },
+          {
+            "name": "VDD",
+            "net_ref": "net:3V3",
+            "number": "3"
+          },
+          {
+            "name": "VSS",
+            "net_ref": "net:GND",
+            "number": "4"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "U4",
+        "dnp": false,
+        "id": "comp:U4",
+        "manufacturer": "Diodes Incorporated",
+        "mpn": "AP2112K-3.3",
+        "package": "SOT-25-5",
+        "pins": [
+          {
+            "name": "VIN",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "EN",
+            "net_ref": "net:5V",
+            "number": "3"
+          },
+          {
+            "name": "VOUT",
+            "net_ref": "net:3V3",
+            "number": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "designator": "J1",
+        "dnp": false,
+        "id": "comp:J1",
+        "manufacturer": "TE Connectivity",
+        "mpn": "640456-4",
+        "package": "THT-4",
+        "pins": [
+          {
+            "name": "5V",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "CAN_H",
+            "net_ref": "net:CAN_H",
+            "number": "3"
+          },
+          {
+            "name": "CAN_L",
+            "net_ref": "net:CAN_L",
+            "number": "4"
+          }
+        ]
+      }
+    ],
+    "erc": [],
+    "nets": [
+      {
+        "class": "power",
+        "id": "net:5V",
+        "name": "5V"
+      },
+      {
+        "class": "ground",
+        "id": "net:GND",
+        "name": "GND"
+      },
+      {
+        "class": "power",
+        "id": "net:3V3",
+        "name": "3V3"
+      },
+      {
+        "class": "diff",
+        "id": "net:CAN_H",
+        "name": "CAN_H"
+      },
+      {
+        "class": "diff",
+        "id": "net:CAN_L",
+        "name": "CAN_L"
+      },
+      {
+        "class": "signal",
+        "id": "net:I2C_SDA",
+        "name": "I2C_SDA"
+      },
+      {
+        "class": "signal",
+        "id": "net:I2C_SCL",
+        "name": "I2C_SCL"
+      },
+      {
+        "class": "signal",
+        "id": "net:SWDIO",
+        "name": "SWDIO"
+      }
+    ],
+    "source": {
+      "ato_version": "0.15.9",
+      "entry": "main.ato:App",
+      "kind": "atopile"
+    }
+  },
+  "ext": {},
+  "firmware": {
+    "_meta": {
+      "rev": 1
+    },
+    "peripherals": [
+      {
+        "id": "periph:can",
+        "kind": "can",
+        "signals": []
+      },
+      {
+        "id": "periph:i2c",
+        "kind": "i2c",
+        "signals": [
+          {
+            "name": "SDA",
+            "net_ref": "net:I2C_SDA",
+            "pin": "PB7"
+          },
+          {
+            "name": "SCL",
+            "net_ref": "net:I2C_SCL",
+            "pin": "PB6"
+          }
+        ]
+      },
+      {
+        "id": "periph:timer",
+        "kind": "timer",
+        "signals": []
+      }
+    ],
+    "suites": [],
+    "targets": [
+      {
+        "artifacts": [],
+        "core": "cortex-m0plus",
+        "framework": "baremetal",
+        "id": "fw:cannode",
+        "mcu": "STM32G0B1CBT6",
+        "memory": [],
+        "source_dir": "firmware/"
+      }
+    ]
+  },
+  "gates": {
+    "_meta": {
+      "rev": 17
+    },
+    "results": {
+      "bom.all_in_stock": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "data": {
+              "bom_lines": 5,
+              "build_qty": 5,
+              "failures": []
+            },
+            "kind": "json"
+          }
+        ],
+        "id": "gate:bom.all_in_stock",
+        "ir_rev": 13,
+        "owner_agent": "ops-agent",
+        "plugin": "plugin:sourcing@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "PASS",
+        "suggestions": [],
+        "summary": "all 5 BOM line(s) have chosen offers covering quantity and MOQ"
+      },
+      "bom.cost_under_budget": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "data": {
+              "bom_lines": 5,
+              "build_qty": 5,
+              "failures": [],
+              "per_unit_budget_minor": 1500,
+              "per_unit_cost_minor": "740",
+              "total_budget_minor": 7500,
+              "total_cost_minor": 3700
+            },
+            "kind": "json"
+          }
+        ],
+        "id": "gate:bom.cost_under_budget",
+        "ir_rev": 14,
+        "owner_agent": "ops-agent",
+        "plugin": "plugin:sourcing@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "PASS",
+        "suggestions": [],
+        "summary": "extended cost 3700 minor (740 per unit) vs total budget 7500 minor and per-unit budget 1500 minor"
+      },
+      "bom.lead_time_under_days": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "No lead-time cap exists in the frozen /sourcing model; the default 14 day(s) is documented in optimizer.constraints."
+          },
+          {
+            "data": {
+              "bom_lines": 5,
+              "cap_days": 14,
+              "failures": [],
+              "max_chosen_lead_time_days": 7
+            },
+            "kind": "json"
+          }
+        ],
+        "id": "gate:bom.lead_time_under_days",
+        "ir_rev": 15,
+        "owner_agent": "ops-agent",
+        "plugin": "plugin:sourcing@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "PASS",
+        "suggestions": [],
+        "summary": "max chosen lead time 7 day(s) is within the 14-day cap"
+      },
+      "erc.assertions": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [],
+        "id": "gate:erc.assertions",
+        "ir_rev": 1,
+        "owner_agent": "ee-agent",
+        "plugin": "plugin:atopile@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "PASS",
+        "suggestions": [],
+        "summary": "1 assertion(s) passed"
+      },
+      "fab.quote_under_budget": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "no fab quotes are stored at /fabrication/quotes; run quote_pcb first"
+          }
+        ],
+        "id": "gate:fab.quote_under_budget",
+        "ir_rev": 16,
+        "owner_agent": "ops-agent",
+        "plugin": "plugin:sourcing@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [],
+        "summary": "no quotes fetched yet"
+      },
+      "fw.matrix_pins_match_ir": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /keyboard pointer is absent"
+          }
+        ],
+        "id": "gate:fw.matrix_pins_match_ir",
+        "ir_rev": 11,
+        "owner_agent": "fw-agent",
+        "plugin": "plugin:qmk@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "FAIL",
+        "suggestions": [
+          {
+            "message": "Populate the IR /keyboard node and rerun the gate."
+          }
+        ],
+        "summary": "IR has no /keyboard node; cannot check matrix pins"
+      },
+      "fw.matrix_scan": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "GPIO matrix-injection model unproven; requires HIL board + pogo fixture. Renode does not demonstrate QMK USB HID or per-key reporting, so no scan is claimed."
+          }
+        ],
+        "id": "gate:fw.matrix_scan",
+        "ir_rev": 5,
+        "owner_agent": "fw-agent",
+        "plugin": "plugin:renode@0.1.0",
+        "refs": ["fw:cannode"],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [],
+        "summary": "GPIO matrix-injection model unproven; requires HIL board + pogo fixture. Renode does not demonstrate QMK USB HID or per-key reporting, so no scan is claimed."
+      },
+      "fw.qmk_compile": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /keyboard pointer is absent"
+          }
+        ],
+        "id": "gate:fw.qmk_compile",
+        "ir_rev": 12,
+        "owner_agent": "fw-agent",
+        "plugin": "plugin:qmk@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "FAIL",
+        "suggestions": [
+          {
+            "message": "Populate the IR /keyboard node and rerun the gate."
+          }
+        ],
+        "summary": "IR has no /keyboard node; cannot derive QMK sources"
+      },
+      "fw.renode_boot": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "MCU 'STM32G0B1CBT6' is not covered by the generated platform (platforms/cpus/stm32f4.repl); supported prefixes: STM32F411"
+          }
+        ],
+        "id": "gate:fw.renode_boot",
+        "ir_rev": 4,
+        "owner_agent": "fw-agent",
+        "plugin": "plugin:renode@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [],
+        "summary": "MCU 'STM32G0B1CBT6' is not covered by the generated platform (platforms/cpus/stm32f4.repl); supported prefixes: STM32F411"
+      },
+      "layout.testpads.min_count": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "data": {
+              "count": 8,
+              "minimum": 8
+            },
+            "kind": "json"
+          }
+        ],
+        "id": "gate:layout.testpads.min_count",
+        "ir_rev": 2,
+        "owner_agent": "ee-agent",
+        "plugin": "plugin:atopile@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "PASS",
+        "suggestions": [],
+        "summary": "8 test pads (>= 8)"
+      },
+      "layout.testpads.nets_covered": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [],
+        "id": "gate:layout.testpads.nets_covered",
+        "ir_rev": 3,
+        "owner_agent": "ee-agent",
+        "plugin": "plugin:atopile@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [],
+        "summary": "/keyboard is absent; matrix nets are unknown"
+      },
+      "mech.case_usb_cutout_aligned": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /layout or /mechanical IR is missing or contradictory at /keyboard/keys: no switch references found"
+          }
+        ],
+        "id": "gate:mech.case_usb_cutout_aligned",
+        "ir_rev": 7,
+        "owner_agent": "mech-agent",
+        "plugin": "plugin:cad-jig@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [
+          {
+            "message": "provide valid /keyboard/keys data (e.g. from atopile layout import)"
+          }
+        ],
+        "summary": "cannot derive the mechanical model: /keyboard/keys: no switch references found"
+      },
+      "mech.enclosure_clearance": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /layout or /mechanical IR is missing or contradictory at /keyboard/keys: no switch references found"
+          }
+        ],
+        "id": "gate:mech.enclosure_clearance",
+        "ir_rev": 10,
+        "owner_agent": "mech-agent",
+        "plugin": "plugin:cad-jig@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [
+          {
+            "message": "provide valid /keyboard/keys data (e.g. from atopile layout import)"
+          }
+        ],
+        "summary": "cannot derive the mechanical model: /keyboard/keys: no switch references found"
+      },
+      "mech.jig_no_collision": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /layout or /mechanical IR is missing or contradictory at /keyboard/keys: no switch references found"
+          }
+        ],
+        "id": "gate:mech.jig_no_collision",
+        "ir_rev": 9,
+        "owner_agent": "mech-agent",
+        "plugin": "plugin:cad-jig@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [
+          {
+            "message": "provide valid /keyboard/keys data (e.g. from atopile layout import)"
+          }
+        ],
+        "summary": "cannot derive the mechanical model: /keyboard/keys: no switch references found"
+      },
+      "mech.plate_switch_cutouts_14mm": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /layout or /mechanical IR is missing or contradictory at /keyboard/keys: no switch references found"
+          }
+        ],
+        "id": "gate:mech.plate_switch_cutouts_14mm",
+        "ir_rev": 6,
+        "owner_agent": "mech-agent",
+        "plugin": "plugin:cad-jig@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [
+          {
+            "message": "provide valid /keyboard/keys data (e.g. from atopile layout import)"
+          }
+        ],
+        "summary": "cannot derive the mechanical model: /keyboard/keys: no switch references found"
+      },
+      "mech.pogo_spacing_ge_2p54": {
+        "duration_ms": 0,
+        "evaluated_at": "2026-11-06T15:24:30Z",
+        "evidence": [
+          {
+            "kind": "text",
+            "message": "the /layout or /mechanical IR is missing or contradictory at /keyboard/keys: no switch references found"
+          }
+        ],
+        "id": "gate:mech.pogo_spacing_ge_2p54",
+        "ir_rev": 8,
+        "owner_agent": "mech-agent",
+        "plugin": "plugin:cad-jig@0.1.0",
+        "refs": [],
+        "severity": "blocking",
+        "status": "SKIP",
+        "suggestions": [
+          {
+            "message": "provide valid /keyboard/keys data (e.g. from atopile layout import)"
+          }
+        ],
+        "summary": "cannot derive the mechanical model: /keyboard/keys: no switch references found"
+      }
+    }
+  },
+  "layout": {
+    "_meta": {
+      "rev": 1
+    },
+    "keepouts": [],
+    "layers": 2,
+    "mounting_holes": [
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H1",
+        "plated": false,
+        "x": 3.0,
+        "y": 22.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H2",
+        "plated": false,
+        "x": 37.0,
+        "y": 22.0
+      }
+    ],
+    "outline": {
+      "polygon": [[0.0, 0.0], [40.0, 0.0], [40.0, 25.0], [0.0, 25.0]],
+      "thickness_mm": 1.6
+    },
+    "placements": [
+      {
+        "component_ref": "comp:U1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 20.0,
+        "y": 12.5
+      },
+      {
+        "component_ref": "comp:U2",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 11.0,
+        "y": 12.5
+      },
+      {
+        "component_ref": "comp:U3",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 30.0,
+        "y": 18.0
+      },
+      {
+        "component_ref": "comp:U4",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 30.0,
+        "y": 7.0
+      },
+      {
+        "component_ref": "comp:J1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 3.0,
+        "y": 12.5
+      }
+    ],
+    "test_pads": [
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_3V3",
+        "kind": "pogo",
+        "label": "3V3",
+        "net_ref": "net:3V3",
+        "side": "bottom",
+        "x": 5.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_GND",
+        "kind": "pogo",
+        "label": "GND",
+        "net_ref": "net:GND",
+        "side": "bottom",
+        "x": 7.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_CAN_H",
+        "kind": "pogo",
+        "label": "CAN_H",
+        "net_ref": "net:CAN_H",
+        "side": "bottom",
+        "x": 9.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_CAN_L",
+        "kind": "pogo",
+        "label": "CAN_L",
+        "net_ref": "net:CAN_L",
+        "side": "bottom",
+        "x": 11.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_I2C_SDA",
+        "kind": "pogo",
+        "label": "I2C_SDA",
+        "net_ref": "net:I2C_SDA",
+        "side": "bottom",
+        "x": 13.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_I2C_SCL",
+        "kind": "pogo",
+        "label": "I2C_SCL",
+        "net_ref": "net:I2C_SCL",
+        "side": "bottom",
+        "x": 15.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_5V",
+        "kind": "pogo",
+        "label": "5V",
+        "net_ref": "net:5V",
+        "side": "bottom",
+        "x": 17.0,
+        "y": 3.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_SWDIO",
+        "kind": "pogo",
+        "label": "SWDIO (U1)",
+        "net_ref": "net:SWDIO",
+        "side": "bottom",
+        "x": 19.0,
+        "y": 3.0
+      }
+    ]
+  },
+  "mechanical": {
+    "_meta": {
+      "rev": 1
+    },
+    "artifacts": [],
+    "checks": [],
+    "component_bboxes": [],
+    "pcb_bbox": {
+      "max": [40.0, 25.0, 1.6],
+      "min": [0.0, 0.0, 0.0]
+    }
+  },
+  "meta": {
+    "atomc_version": "0.1.0",
+    "created_at": "2026-11-06T00:00:00Z",
+    "description": "2-layer CAN environmental sensor node (bench integration fixture)",
+    "modified_at": "2026-11-06T15:24:30Z",
+    "name": "atomc-cannode",
+    "project_id": "proj:atomc-cannode",
+    "rev": 17
+  },
+  "schema_version": "0.1.0",
+  "sourcing": {
+    "_meta": {
+      "rev": 1
+    },
+    "bom": [
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U1",
+        "component_refs": ["comp:U1"],
+        "id": "bom:U1",
+        "mpn": "STM32G0B1CBT6",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U1",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 280
+              }
+            ],
+            "sku": "example-STM32G0B1CBT6",
+            "stock": 1000,
+            "url": "https://example.com/STM32G0B1CBT6",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U2",
+        "component_refs": ["comp:U2"],
+        "id": "bom:U2",
+        "mpn": "SN65HVD230",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U2",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 120
+              }
+            ],
+            "sku": "example-SN65HVD230",
+            "stock": 1000,
+            "url": "https://example.com/SN65HVD230",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U3",
+        "component_refs": ["comp:U3"],
+        "id": "bom:U3",
+        "mpn": "SHT40-AD1B",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U3",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 250
+              }
+            ],
+            "sku": "example-SHT40-AD1B",
+            "stock": 1000,
+            "url": "https://example.com/SHT40-AD1B",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U4",
+        "component_refs": ["comp:U4"],
+        "id": "bom:U4",
+        "mpn": "AP2112K-3.3",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U4",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 50
+              }
+            ],
+            "sku": "example-AP2112K-3.3",
+            "stock": 1000,
+            "url": "https://example.com/AP2112K-3.3",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:J1",
+        "component_refs": ["comp:J1"],
+        "id": "bom:J1",
+        "mpn": "640456-4",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:J1",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 40
+              }
+            ],
+            "sku": "example-640456-4",
+            "stock": 1000,
+            "url": "https://example.com/640456-4",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      }
+    ],
+    "budget": {
+      "per_unit_minor": 1500,
+      "total_minor": 7500
+    },
+    "build_qty": 5,
+    "currency": "USD"
+  }
+}

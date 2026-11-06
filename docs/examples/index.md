@@ -10,6 +10,7 @@ require the corresponding toolchains.
 | [`atomc-pad`](/examples/atomc-pad)              | 3×3 macropad               | Small source/IR fixture for development and pipeline tests                 |
 | [`atomc-keeb`](/examples/atomc-keeb)            | 4×12 ortholinear (48 keys) | Larger keyboard source/IR fixture for the hardware pipeline                |
 | [`atomc-drivetrain`](/examples/atomc-drivetrain) | 120×80 mm control board    | Modeled openinverter-style drive-unit control board, proving the IR is domain-generic |
+| [`atomc-cannode`](/examples/atomc-cannode)      | 40×25 mm CAN sensor node   | Non-keyboard fixture proving the IR and gates are domain-generic           |
 
 All fixtures include hand-written IR that validates against the
 [IR schema](/architecture/contracts/ir-schema) and an `atomc.config.ts`. The keyboard
