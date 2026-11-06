@@ -1,4 +1,5 @@
 import type { AgentName, GateResult } from "@atomc/daemon-client";
+import { padFixtureIr } from "./viewer3d/fixtures.js";
 
 export type ConnectionState = "connecting" | "connected" | "offline";
 export type RunState = "idle" | "queued" | "running" | "passed" | "failed" | "stale";
@@ -53,6 +54,8 @@ export interface BoardSnapshot {
   activity: ActivityItem[];
   /** "demo" snapshots are illustrative; "daemon" snapshots come from RPC reads. */
   dataMode: DataMode;
+  /** Raw system IR used by the 3D viewer. Absent when a snapshot cannot supply it. */
+  systemJson?: unknown;
   /** What the agent panels actually know; never inferred from gate ownership. */
   telemetry: TelemetryNotice;
 }
@@ -196,6 +199,7 @@ export function createDemoSnapshot(): BoardSnapshot {
     ],
     agents: structuredClone(specialists),
     dataMode: "demo",
+    systemJson: padFixtureIr,
     telemetry: {
       kind: "demo",
       label: "Simulated specialist activity",

@@ -28,6 +28,7 @@ Then open Studio with `?demo=false&project=atomc-keeb&path=/path/to/project`. Th
 - **Gate results:** filter PASS/FAIL/SKIP/ERROR and inspect owner/revision/details.
 - **Agent team:** specialist cards. In preview mode they are simulated (labeled); in daemon mode sessions and spend are reported as unavailable rather than invented.
 - **Artifacts:** output groups. Preview data is fixture-only; daemon-mode stays empty until the RPC reports per-node artifacts.
+- **3D viewer:** board outline extrusion with switch cutouts and test-pad markers derived from `/layout`, `/keyboard` and `/mechanical`. Preview mode is labelled simulated; a snapshot without usable IR shows an explicit unavailable notice rather than a placeholder board. Rendering uses `@react-three/fiber` + `three` (pnpm catalog) and falls back to the textual geometry summary when WebGL is unavailable.
 
 Every snapshot carries a `dataMode` ("demo" | "daemon") and a telemetry notice so the UI cannot pass simulated or placeholder values off as live data. Last-build state is "Unknown" in daemon mode — the RPC has no build-history method — rather than a fabricated timestamp.
 
@@ -49,4 +50,6 @@ Unit tests use a fake `StudioApi`, never sockets. Playwright runs the built site
 
 ## Current scope
 
-The Studio shell and overview, pipeline, gate, agent and artifact views are implemented. RPC-backed snapshots/build requests are available through an injected trusted host bridge. Studio does not yet bundle an Electron/Tauri host, agent wake runtime, 3D/CAD viewer, telemetry stream, sourcing/order mutation UI, or persistence for local preferences. Those remain separate follow-ups; disabled/unavailable controls do not report false success.
+The Studio shell and the overview, pipeline, gate, agent, artifact and 3D viewer views are implemented. RPC-backed snapshots/build requests are available through an injected trusted host bridge. Studio does not yet bundle an Electron/Tauri host, agent wake runtime, telemetry stream, sourcing/order mutation UI, or persistence for local preferences. Those remain separate follow-ups; disabled/unavailable controls do not report false success.
+
+The 3D viewer derives geometry from the snapshot's system IR. Daemon mode renders that IR when it is present and says so honestly when it is not; the demo snapshot carries a fixture IR (mirroring `examples/atomc-pad/system_ir.json`) and is labelled simulated.
