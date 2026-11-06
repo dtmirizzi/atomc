@@ -21,7 +21,7 @@ import type { DaemonClient, GateResult } from "@atomc/daemon-client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DaemonHarness, dagNodeIds, EXPECTED_PLUGINS, gatesById, runFullDag } from "./harness.js";
 
-/** DAG nodes derived from the six plugins' manifests (8 watches + 13 gates). */
+/ Counts grow with each plugin: 10 watches + 16 gates across 8 plugins. */;
 const WATCH_NODES = [
   "atopile:build",
   "cad:generate",
@@ -29,11 +29,16 @@ const WATCH_NODES = [
   "qmk:keyboard",
   "renode:generate",
   "sourcing:refresh",
+  "fab:quote",
   "orders:sourcing",
   "orders:ledger",
 ] as const;
 
 const GATE_NODES = [
+  "gate:bom.all_in_stock",
+  "gate:bom.cost_under_budget",
+  "gate:bom.lead_time_under_days",
+  "gate:fab.quote_under_budget",
   "gate:erc.no_unconnected",
   "gate:erc.assertions",
   "gate:layout.testpads.min_count",
@@ -54,6 +59,10 @@ const GATE_NODES = [
  * `PASS`/`FAIL` are dictated by the IR; `SKIP` is the honest toolchain-independent result.
  */
 const EXPECTED_STATUS: Record<string, GateResult["status"]> = {
+  "gate:bom.all_in_stock": "PASS",
+  "gate:bom.cost_under_budget": "PASS",
+  "gate:bom.lead_time_under_days": "PASS",
+  "gate:fab.quote_under_budget": "SKIP",
   "gate:erc.no_unconnected": "FAIL",
   "gate:erc.assertions": "PASS",
   "gate:layout.testpads.min_count": "PASS",
