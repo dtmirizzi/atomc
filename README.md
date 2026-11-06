@@ -16,11 +16,13 @@ uv sync --all-packages
 pnpm build
 ```
 
-Optional toolchains (QMK, Renode, atopile) are installed by the idempotent bootstrap, which never uses sudo and writes `~/.atomc/env.sh` (no shell-rc changes):
+(pnpm may print an `Ignored build scripts` notice for esbuild/protobufjs — safe to ignore, or run `pnpm approve-builds` to approve them.)
+
+Install the optional toolchains next — they are **optional** (their gates SKIP without them) but the example output below assumes them. The bootstrap is idempotent, never uses sudo and writes `~/.atomc/env.sh` (no shell-rc changes):
 
 ```bash
 bash scripts/bootstrap.sh
-. ~/.atomc/env.sh   # exports QMK_HOME, PYRENODE_PATH, ...
+. ~/.atomc/env.sh   # exports QMK_HOME, PYRENODE_PATH, toolchain PATH...
 ```
 
 Build an example project end to end — the daemon starts automatically, discovers the plugins, runs the DAG and evaluates every gate:
@@ -28,20 +30,37 @@ Build an example project end to end — the daemon starts automatically, discove
 ```bash
 node apps/atomc-cli/dist/index.js build --project examples/atomc-pad
 # run run-1: 26 node(s), all settled
-# gates: 14 pass, 0 fail, 2 skip, 0 error
+# gates: 13 pass, 0 fail, 3 skip, 0 error
 ```
 
-Without the optional toolchains, the toolchain-dependent gates (QMK compile, Renode boot, fab quotes) report an honest `SKIP` with evidence instead of failing silently.
+The three SKIPs are honest: `fw.qmk_compile` sibling gates and `fw.renode_boot` (the fixture's declared
+ELF is a placeholder that does not exist on disk — the gate says exactly that). With **no optional
+toolchains** installed, the toolchain gates SKIP instead; a **present-but-broken** toolchain FAILs
+with the real compiler error — atomc never converts a broken tool into a quiet SKIP.
+
+Two things to know when running more examples:
+
+- The daemon is bound to **one project at a time**. Switching `--project` requires
+  `atomc daemon stop` first — the CLI refuses to silently build the wrong project.
+- The daemon caches the environment it was started with; after changing toolchain env
+  (sourcing `env.sh`), stop and let the next command restart it.
+
+Scaffold and build your own project (from the same checkout):
+
+```bash
+node apps/atomc-cli/dist/index.js init /tmp/my-board
+node apps/atomc-cli/dist/index.js build --project /tmp/my-board
+```
 
 More commands:
 
 ```bash
 node apps/atomc-cli/dist/index.js doctor          # CLI, daemon, schema and toolchain checks
-node apps/atomc-cli/dist/index.js quote --project examples/atomc-pad   # fab quotes (needs vendor credentials)
-node apps/atomc-cli/dist/index.js orders --project examples/atomc-pad  # order ledger (draft-only)
+node apps/atomc-cli/dist/index.js quote --project examples/atomc-pad   # fab quotes (needs vendor credentials; exits 3 without)
+node apps/atomc-cli/dist/index.js orders --project examples/atomc-pad  # order ledger (draft-only; empty ledger exits 1)
 ```
 
-Every command takes `--json` (one object on stdout, diagnostics on stderr).
+Leaf commands take `--json` (one object on stdout, diagnostics on stderr).
 
 ## Examples
 
@@ -54,14 +73,15 @@ Every command takes `--json` (one object on stdout, diagnostics on stderr).
 
 - **Core IR + contracts**: Pydantic/TS System IR with revisions, subtree locks, JSON-Patch transactions; cross-language round-trip contract tests
 - **Daemon**: authenticated loopback RPC, reactive DAG, gate registry, plugin discovery (Python entry points + project-tree manifests), warm kernels
-- **Plugins**: atopile (compile + PCB import + ERC), qmk (IR → keyboard.json + real compiles), renode (platform scripts + boot gate), cad-jig (plate/case/jig geometry + mechanical gates), sourcing (vendor adapters + optimizer + BOM gates), orders (draft-only ledger)
-- **CLI**: `init`, `build`, `doctor`, `daemon`, `plugin`, `quote`, `orders`, `converge` — honest exit codes; nothing reports a fake PASS
+- **Plugins**: atopile (compile + PCB import + ERC gates), qmk (IR → keyboard.json + real `qmk compile` with artifact hashes), renode (platform scripts + boot gate that never treats a file path as a banner), cad-jig (pure model derivation + five mechanical gates; STEP/STL export only when build123d is importable), sourcing (vendor adapters + optimizer + BOM gates), orders (draft-only ledger + cart writers)
+- **CLI**: `init`, `build`, `doctor`, `daemon`, `plugin`, `quote`, `orders`, `converge`, `sim`, `jig` — honest exit codes; nothing reports a fake PASS (`sim`/`jig` remain structured stubs)
 - **Swarm harness**: deterministic transactional agent runner, specialist definitions, convergence scheduler; `atomc converge` requires a host-injected model runtime (reports `unavailable`, exit 3, without one)
 - **Studio**: local-first dashboard (build graph, gates, agents, 3D viewer, telemetry) with data-source labeling; demo data is always labeled
 
 ## What does not (yet)
 
 - Live vendor calls (no credentials ship with the repo), order placement (draft-only by design), model-provider API keys
+- A present ELF artifact for the Renode boot gate on the example fixtures (they declare placeholders)
 - Renode regression checks do not establish real USB-HID behavior; physical validation requires hardware-in-the-loop
 - Phase 6: real prototype bring-up and the 1.0 release
 

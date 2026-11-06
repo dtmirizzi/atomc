@@ -97,11 +97,11 @@ SKIP") differs from observed behaviour.
 Two additional honesty notes from the end-to-end run (recorded in full in
 `docs/plan/handoffs/WP-6.1.md`):
 
-- The `renode:generate` **watch** node raises `DerivationError: no ELF firmware
-  artifact in /firmware`. In a full DAG run this aborts the run before later gates
-  execute, so the daemon build path reports a partial gate table. Running the gates
-  directly (as above) avoids the watch and still exercises the real `GateRunner`.
-- No gate returns `ERROR` for this fixture.
+- The `renode:generate` watch completes as an honest no-op: this fixture has no
+  firmware artifact, so there is nothing to emulate (the watch returns a
+  SKIP-shaped result, mirroring the gate semantics).
+- No gate returns `ERROR` for this fixture; a full daemon DAG run settles all 26
+  nodes and exits 0.
 
 ## Build and check it
 
@@ -111,7 +111,7 @@ Validate the IR with core-ir (Python) and the contract tests (TypeScript):
 # from the repository root
 uv sync --all-packages
 uv run python -c "from atomc_core_ir import SystemIR; SystemIR.load('examples/atomc-drivetrain/system_ir.json')"
-pnpm --filter @atomc/contract test
+pnpm --filter @atomc/contract-tests test
 ```
 
 Run the daemon gate runner over a throwaway copy of the IR (this does not modify

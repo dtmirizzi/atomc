@@ -1,44 +1,73 @@
 # Your first build
 
-::: info Current status
-`atomc build` is implemented in the CLI as a daemon DAG runner. The full hardware pipeline below is still staged: most hardware plugins/backends have not landed, and an empty or incomplete pipeline is never presented as a successful hardware result.
-:::
-
-A build walks the hardware DAG from source to artifacts, stopping at every gate:
-
-```
-atomc build
-```
-
-## Intended full build path
-
-This is the planned Phase 4+ flow. The CLI can start or attach to the daemon and request a DAG run, but the atomc hardware plugins that perform these steps are not implemented yet.
-
-1. **Connect.** The CLI connects to `atomcd` over the frozen JSON-RPC/WebSocket contract.
-2. **Schedule.** Installed plugins provide watch/produces declarations. The daemon can represent and run DAG nodes, but this repository does not yet contain the atopile/QMK/CAD/sourcing project plugins.
-3. **Compile electrical sources.** The planned atopile plugin will populate `/electrical` and `/layout` from project sources.
-4. **Build firmware.** The planned QMK plugin will produce firmware from `/keyboard`; direct `qmk compile` is available separately if QMK is installed.
-5. **Simulate supported paths.** The planned Renode plugin will test only demonstrated CPU/peripheral behavior. Renode is not USB-HID or physical-key proof.
-6. **Generate CAD.** The planned CAD plugin will produce and check enclosure/plate/jig artifacts.
-7. **Evaluate sourcing.** The planned sourcing plugin will collect offers/quotes and evaluate budget gates.
-
-When domain plugins exist, DAG nodes can record input/output hashes and producer metadata in `/provenance`.
-
-## Artifacts
-
-| Artifact                  | Current source/status                                                                        |
-| ------------------------- | -------------------------------------------------------------------------------------------- |
-| `system_ir.json`          | Example fixture exists; daemon can own and persist it.                                       |
-| `.elf` / `.bin` / `.uf2`  | Buildable directly with QMK and its local toolchain; atomc plugin generation is future work. |
-| `.repl` / `.resc`         | Planned Renode plugin; atomc does not generate it yet.                                       |
-| `.step` / `.stl` / `.glb` | Planned CAD plugin; atomc does not generate it yet.                                          |
-| BOM CSV + fab quote       | Planned sourcing plugin; atomc does not currently fetch offers or quotes.                    |
-
-## The example to try
-
-`examples/atomc-pad` (3×3 macropad) is the smaller source/IR fixture; `examples/atomc-keeb` (4×12 ortholinear) is the larger target. Both are described in [Examples](/examples/).
+`atomc build` runs the full hardware DAG: the CLI starts or attaches to the daemon, the daemon
+discovers the installed plugins, schedules every watch and gate, and reads the final gate state back
+over the frozen JSON-RPC/WebSocket contract.
 
 ```bash
-cd examples/atomc-pad
-atomc build          # requires the daemon and its build plugins
+node apps/atomc-cli/dist/index.js build --project examples/atomc-pad
+# run run-1: 26 node(s), all settled
+# gates: 13 pass, 0 fail, 3 skip, 0 error
 ```
+
+The exact pass/skip mix depends on which toolchains you have installed and sourced:
+
+| Environment | Typical result |
+| --- | --- |
+| Toolchains installed and `~/.atomc/env.sh` sourced | 13 pass, 0 fail, 3 skip — includes a real `qmk compile` |
+| No optional toolchains | the toolchain gates SKIP honestly (`qmk`/`renode` unavailable) |
+| Toolchain present but broken | the gate **FAILs** with the real compiler error — atomc never converts a broken toolchain into a quiet SKIP |
+
+`fw.renode_boot` SKIPs on the example fixtures because their declared ELF artifact is a placeholder
+that does not exist on disk; the gate reports exactly that. Renode is a regression aid, not
+USB-HID proof.
+
+## What a build actually does
+
+1. **Connect.** The CLI ensures a daemon is running for the project (loopback WebSocket, token auth).
+   A daemon is bound to **one** project; switching `--project` requires `atomc daemon stop` first —
+   the CLI refuses to silently build the wrong project.
+2. **Discover.** The daemon loads the plugins (atopile, renode, qmk, cad-jig, sourcing, orders) via
+   their `atomc.plugins` entry points.
+3. **Schedule.** Plugin manifests declare watches and gates; the daemon derives the DAG (26 nodes on
+   the pad example) and runs it.
+4. **Gates.** Every gate is evaluated against real IR data or a real tool run. Pure gates (ERC,
+   layout test pads, mechanical checks, BOM) always run; toolchain gates run the real subprocess.
+5. **Persist.** Gate results and artifacts are recorded into the project's `system_ir.json` and
+   `.atomc/artifacts/` — running a build mutates the project's IR file by design.
+
+## Artifacts produced on the pad example
+
+| Artifact | Source |
+| --- | --- |
+| `atomc_pad_default.bin` (real QMK compile, hashed into `/firmware`) | qmk plugin + real `qmk compile` |
+| `.repl` / `.resc` platform scripts | renode plugin (generated from the IR) |
+| `.step` / `.stl` solids | cad-jig plugin — **only with build123d importable**; otherwise a structured unavailable result |
+| Gate results in `system_ir.json` | the daemon |
+
+## Mechanical gates are IR checks, not CAD verification
+
+The five `mech.*` gates are pure checks over the declared model data (cutout geometry, pogo pitch,
+clearances). They can PASS with no CAD toolchain installed, because they verify the **declared
+design**, not generated solids. Treat them as design-rule checks; solid export is a separate,
+explicitly-optional tool.
+
+## Try the non-keyboard examples
+
+`examples/atomc-drivetrain` (openinverter-style traction control board) and
+`examples/atomc-cannode` (CAN sensor node) build with the same one command. Keyboard-specific gates
+SKIP with "not a keyboard design" evidence instead of failing — see
+[Examples](/examples/).
+
+```bash
+atomc daemon stop   # the daemon is per-project
+node apps/atomc-cli/dist/index.js build --project examples/atomc-drivetrain
+```
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| 0 | DAG settled; no blocking gate FAIL |
+| 1 | a blocking gate FAILed (or no data, e.g. an empty orders ledger) |
+| 3 | daemon/plugin/tool unavailable |

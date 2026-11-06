@@ -38,7 +38,7 @@ Conflicts (`ConflictError`) trigger a fresh scoped read and model turn, never a 
 
 ## Guards
 
-- **Budget cap** — the core accepts per-run cost/token/turn caps; the CLI `converge --max-cost` integration is not implemented yet.
+- **Budget cap** — the convergence core enforces aggregate cost/token/turn caps; the CLI's `converge --max-cost` passes them to an injected runtime (no runtime is bundled, so the command reports `unavailable`, exit 3).
 - **Turn caps** — each run has a bounded number of provider decisions before escalation.
 - **Transcripts** — every session is written to `.atomc/sessions/<run>/<agent>.jsonl`.
 - **Fake provider in CI** — a scripted provider exercises the transaction/verification core without network calls. A real pi-ai adapter, recorded-session replay and capped live-model tests have not landed yet. See [Testing](/architecture/testing).
