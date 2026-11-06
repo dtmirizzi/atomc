@@ -12,9 +12,9 @@
 
 import { spawn } from "node:child_process";
 import { closeSync, openSync } from "node:fs";
-import { mkdir, readFile, rm } from "node:fs/promises";
+import { mkdir, readFile, realpath, rm } from "node:fs/promises";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { DaemonClient, type DaemonClientOptions } from "./client.js";
 import { DaemonStartError } from "./errors.js";
 import type { DaemonInfo, HealthResult } from "./types.js";
@@ -54,6 +54,8 @@ export interface EnsureDaemonDeps {
   sleep?: (ms: number) => Promise<void>;
   now?: () => number;
   homeDir?: () => string;
+  /** Resolves symlinks so project roots compare by real location; defaults to fs.realpath. */
+  realpath?: (path: string) => Promise<string>;
 }
 
 /** Options for {@link ensureDaemon}. */
@@ -102,6 +104,7 @@ interface ResolvedDeps {
   sleep: (ms: number) => Promise<void>;
   now: () => number;
   homeDir: () => string;
+  realpath: (path: string) => Promise<string>;
 }
 
 /** WebSocket URL for a daemon, mapping wildcard bind hosts to loopback. */
@@ -177,6 +180,7 @@ function resolveDeps(deps: EnsureDaemonDeps | undefined): ResolvedDeps {
     sleep: deps?.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms))),
     now: deps?.now ?? (() => Date.now()),
     homeDir: deps?.homeDir ?? homedir,
+    realpath: deps?.realpath ?? ((path) => realpath(path)),
   };
 }
 
@@ -221,6 +225,18 @@ async function validateDaemon(deps: ResolvedDeps, info: DaemonInfo): Promise<boo
   return deps.isProcessAlive(info.pid) && (await deps.healthCheck(info));
 }
 
+/** Compare two project roots by their real (symlink-resolved) locations. */
+async function sameProjectRoot(deps: ResolvedDeps, left: string, right: string): Promise<boolean> {
+  const resolveReal = async (path: string): Promise<string> => {
+    try {
+      return await deps.realpath(path);
+    } catch {
+      return resolve(path);
+    }
+  };
+  return (await resolveReal(left)) === (await resolveReal(right));
+}
+
 /**
  * Return a live daemon for `projectRoot`, spawning one if necessary.
  *
@@ -242,6 +258,12 @@ export async function ensureDaemon(
 
   const existing = await readDaemonInfo(deps, pidPath);
   if (existing !== undefined && (await validateDaemon(deps, existing))) {
+    if (!(await sameProjectRoot(deps, existing.project_root, projectRoot))) {
+      throw new DaemonStartError(
+        `A daemon is already running for project ${existing.project_root}, not ${projectRoot}. ` +
+          "Run 'atomc daemon stop' first (or use the same project), then retry.",
+      );
+    }
     const client = await deps.connect({ url: daemonWebSocketUrl(existing), token: existing.token });
     return { info: existing, started: false, client };
   }
