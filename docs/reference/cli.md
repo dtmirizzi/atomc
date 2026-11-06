@@ -9,16 +9,23 @@ node apps/atomc-cli/dist/index.js <command> [options]
 
 ## Commands
 
-| Command                         | Current behavior                                                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `init <dir>`                    | Copy the atomc-pad template, update project identity and guard existing files.                                      |
-| `build [target]`                | Start/attach to daemon, request DAG run, wait for status and report actual gates. Hardware outputs require plugins. |
-| `doctor`                        | Report CLI, daemon/schema and local toolchain checks.                                                               |
-| `daemon start\|status\|stop`    | Ensure, inspect or shut down the daemon.                                                                            |
-| `plugin list`                   | List daemon-discovered plugins.                                                                                     |
-| `plugin new <name>`             | Scaffold a manifest and entrypoints validated by the SDK.                                                           |
-| `sim`, `jig`, `quote`, `orders` | Structured capability stubs; exit 3 and never report PASS.                                                          |
-| `converge`                      | Implemented (WP-3.4): runs an injected convergence runtime; honest `unavailable` (exit 3) without one. |
+| Command                      | Current behavior                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `init <dir>`                 | Copy the atomc-pad template, update project identity and guard existing files.                                      |
+| `build [target]`             | Start/attach to daemon, request DAG run, wait for status and report actual gates. Hardware outputs require plugins. |
+| `doctor`                     | Report CLI, daemon/schema and local toolchain checks.                                                               |
+| `daemon start\|status\|stop` | Ensure, inspect or shut down the daemon.                                                                            |
+| `plugin list`                | List daemon-discovered plugins.                                                                                     |
+| `plugin new <name>`          | Scaffold a manifest and entrypoints validated by the SDK.                                                           |
+| `quote [--refresh]`          | Call the sourcing plugin's `quote_pcb` tool, print `/fabrication/quotes` and the `fab.quote_under_budget` gate.     |
+| `orders [--status <s>]`      | Read `/orders` and print the ledger, optionally filtered by status.                                                 |
+| `orders build-cart`          | Call the orders plugin's `build_cart`; `--vendor` filters and `--out <dir>` copies the written cart files.          |
+| `sim`, `jig`                 | Structured capability stubs; exit 3 and never report PASS.                                                          |
+| `converge`                   | Implemented (WP-3.4): runs an injected convergence runtime; honest `unavailable` (exit 3) without one.              |
+
+Statuses follow the honest-exit contract: `0` = data read and gates green, `1` = data read but a
+blocking gate failed / no data exists, `3` = daemon or plugin unavailable (`2` for invalid options).
+No command ever reports a fabricated quote, cart or PASS.
 
 ## Options
 
@@ -36,4 +43,6 @@ export default {
 };
 ```
 
-The package README documents current limitations. In particular, plugin-dependent commands remain explicit stubs until their backends are implemented.
+The package README documents current limitations. Plugin-dependent commands (`sim`, `jig`) remain
+explicit stubs until their backends are implemented; `quote` and `orders` are wired to the sourcing
+and orders plugins and report honest `unavailable` results without them.
