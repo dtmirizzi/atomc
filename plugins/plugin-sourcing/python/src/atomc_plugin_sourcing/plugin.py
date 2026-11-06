@@ -16,6 +16,12 @@ from .adapters import build_adapters
 from .adapters.base import VendorAdapter
 from .cache import DEFAULT_TTL_S, OfferCache
 from .manifest import manifest_dict
+from .optimizer import (
+    all_in_stock_gate,
+    cost_under_budget_gate,
+    lead_time_under_days_gate,
+    optimize_payload,
+)
 from .service import SourcingService
 from .tools import query_payload, refresh_payload
 
@@ -87,6 +93,22 @@ class SourcingPlugin:
         payload: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         return await refresh_payload(self.service, ctx, payload)
+
+    async def optimize_tool(
+        self,
+        ctx: Any,
+        payload: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        return await optimize_payload(ctx, payload)
+
+    async def check_all_in_stock(self, ctx: Any) -> dict[str, Any]:
+        return await all_in_stock_gate(ctx)
+
+    async def check_cost_under_budget(self, ctx: Any) -> dict[str, Any]:
+        return await cost_under_budget_gate(ctx)
+
+    async def check_lead_time_under_days(self, ctx: Any) -> dict[str, Any]:
+        return await lead_time_under_days_gate(ctx)
 
 
 plugin = SourcingPlugin()

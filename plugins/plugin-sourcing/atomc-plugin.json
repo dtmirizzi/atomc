@@ -10,11 +10,43 @@
   "watches": [
     {
       "id": "sourcing:refresh",
-      "ir": ["/sourcing"]
+      "ir": [
+        "/sourcing"
+      ]
     }
   ],
-  "produces": ["/sourcing"],
-  "gates": [],
+  "produces": [
+    "/sourcing"
+  ],
+  "gates": [
+    {
+      "id": "gate:bom.all_in_stock",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "sourcing:refresh"
+      ],
+      "handler": "check_all_in_stock"
+    },
+    {
+      "id": "gate:bom.cost_under_budget",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "sourcing:refresh"
+      ],
+      "handler": "check_cost_under_budget"
+    },
+    {
+      "id": "gate:bom.lead_time_under_days",
+      "severity": "blocking",
+      "owner_agent": "ops-agent",
+      "after": [
+        "sourcing:refresh"
+      ],
+      "handler": "check_lead_time_under_days"
+    }
+  ],
   "tools": [
     {
       "name": "query",
@@ -22,19 +54,41 @@
       "input_schema": {
         "type": "object",
         "properties": {
-          "bom_line_id": { "type": "string" },
-          "mpn": { "type": "string" },
-          "lcsc": { "type": "string" },
+          "bom_line_id": {
+            "type": "string"
+          },
+          "mpn": {
+            "type": "string"
+          },
+          "lcsc": {
+            "type": "string"
+          },
           "vendors": {
             "type": "array",
-            "items": { "enum": ["lcsc", "mouser", "digikey", "nexar"] }
+            "items": {
+              "enum": [
+                "lcsc",
+                "mouser",
+                "digikey",
+                "nexar"
+              ]
+            }
           },
-          "force": { "type": "boolean", "default": false },
-          "ttl_s": { "type": "integer", "minimum": 0 }
+          "force": {
+            "type": "boolean",
+            "default": false
+          },
+          "ttl_s": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "additionalProperties": false
       },
-      "agents": ["ee-agent", "ops-agent"],
+      "agents": [
+        "ee-agent",
+        "ops-agent"
+      ],
       "mutates": false,
       "handler": "query_tool"
     },
@@ -46,16 +100,79 @@
         "properties": {
           "vendors": {
             "type": "array",
-            "items": { "enum": ["lcsc", "mouser", "digikey", "nexar"] }
+            "items": {
+              "enum": [
+                "lcsc",
+                "mouser",
+                "digikey",
+                "nexar"
+              ]
+            }
           },
-          "force": { "type": "boolean", "default": false },
-          "ttl_s": { "type": "integer", "minimum": 0 }
+          "force": {
+            "type": "boolean",
+            "default": false
+          },
+          "ttl_s": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "additionalProperties": false
       },
-      "agents": ["ee-agent", "ops-agent"],
+      "agents": [
+        "ee-agent",
+        "ops-agent"
+      ],
       "mutates": true,
       "handler": "refresh_tool"
+    },
+    {
+      "name": "optimize",
+      "description": "Choose offers and rank alternates under cost, stock, MOQ, lead-time and vendor constraints; writes chosen_offer_ref and alternates into /sourcing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "constraints": {
+            "type": "object",
+            "properties": {
+              "lead_time_cap_days": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "vendor_count_cap": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "vendor_budget_weights": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "agents": [
+        "ee-agent",
+        "ops-agent"
+      ],
+      "mutates": true,
+      "handler": "optimize_tool"
     }
   ],
   "cli": [],
