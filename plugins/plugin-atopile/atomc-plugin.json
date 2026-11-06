@@ -1,0 +1,92 @@
+{
+  "manifest_version": "0.1.0",
+  "name": "atopile",
+  "version": "0.1.0",
+  "description": "Compile atopile projects through the `ato` CLI and import KiCad PCB layouts into the atomc IR",
+  "atomc": ">=0.0.1 <0.2.0",
+  "runtime": {
+    "python": "atomc_plugin_atopile:plugin"
+  },
+  "watches": [
+    {
+      "id": "atopile:build",
+      "ir": ["/electrical", "/layout"],
+      "files": [
+        "**/*.ato",
+        "**/ato.yaml",
+        "**/*.kicad_sym",
+        "**/*.kicad_mod",
+        "**/*.kicad_pcb"
+      ],
+      "debounce_ms": 500
+    }
+  ],
+  "produces": ["/electrical", "/layout"],
+  "gates": [
+    {
+      "id": "gate:erc.no_unconnected",
+      "severity": "blocking",
+      "owner_agent": "ee-agent",
+      "after": ["atopile:build"],
+      "handler": "check_no_unconnected"
+    },
+    {
+      "id": "gate:erc.assertions",
+      "severity": "blocking",
+      "owner_agent": "ee-agent",
+      "after": ["atopile:build"],
+      "handler": "check_assertions"
+    },
+    {
+      "id": "gate:layout.testpads.min_count",
+      "severity": "blocking",
+      "owner_agent": "ee-agent",
+      "after": ["atopile:build"],
+      "handler": "check_testpad_min_count"
+    },
+    {
+      "id": "gate:layout.testpads.nets_covered",
+      "severity": "blocking",
+      "owner_agent": "ee-agent",
+      "after": ["atopile:build"],
+      "handler": "check_testpad_nets_covered"
+    }
+  ],
+  "tools": [
+    {
+      "name": "compile",
+      "description": "Run `ato build` and write extracted components, nets and assertions to /electrical",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "project_dir": { "type": "string" },
+          "entry": { "type": "string" },
+          "target": { "type": "string" },
+          "timeout_s": { "type": "integer", "minimum": 1 }
+        },
+        "required": ["project_dir"],
+        "additionalProperties": false
+      },
+      "agents": ["ee-agent", "fw-agent"],
+      "mutates": true,
+      "handler": "compile"
+    },
+    {
+      "name": "import_pcb",
+      "description": "Parse a .kicad_pcb with kiutils and write outline, placements and test pads to /layout",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "pcb_path": { "type": "string" }
+        },
+        "required": ["pcb_path"],
+        "additionalProperties": false
+      },
+      "agents": ["ee-agent", "mech-agent"],
+      "mutates": true,
+      "handler": "import_pcb"
+    }
+  ],
+  "cli": [],
+  "ui": []
+}

@@ -5,6 +5,7 @@ import {
   ArrowDownToLine,
   ArrowRight,
   ArrowUpRight,
+  Box,
   Boxes,
   Check,
   CheckCircle2,
@@ -38,6 +39,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { GateBoard } from "./board/GateBoard.js";
 import { createDaemonStudioApi } from "./daemon-api.js";
 import type {
   ActivityItem,
@@ -49,16 +51,32 @@ import type {
   TelemetryNotice,
 } from "./model.js";
 import { createDemoApi } from "./model.js";
+import { SourcingView } from "./sourcing/SourcingView.js";
+import { TelemetryView } from "./telemetry/TelemetryView.js";
+import { Viewer3DView } from "./viewer3d/Viewer3DView.js";
 
-type ViewId = "overview" | "pipeline" | "gates" | "agents" | "artifacts";
+type ViewId =
+  | "overview"
+  | "pipeline"
+  | "gates"
+  | "board"
+  | "sourcing"
+  | "agents"
+  | "artifacts"
+  | "viewer3d"
+  | "telemetry";
 type GateFilter = "all" | "failed" | "passed" | "skipped";
 
 const navItems: Array<{ id: ViewId; label: string; icon: LucideIcon; count?: string }> = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "pipeline", label: "Build graph", icon: GitBranch },
   { id: "gates", label: "Gate results", icon: ShieldCheck, count: "1" },
+  { id: "board", label: "Gate board", icon: ShieldCheck },
+  { id: "sourcing", label: "BOM & orders", icon: PackageCheck },
   { id: "agents", label: "Agent team", icon: Sparkles },
   { id: "artifacts", label: "Artifacts", icon: Boxes },
+  { id: "viewer3d", label: "3D viewer", icon: Box },
+  { id: "telemetry", label: "Telemetry", icon: TerminalSquare },
 ];
 
 const stateLabels: Record<RunState, string> = {
@@ -1252,12 +1270,26 @@ export function StudioApp(props: StudioAppProps) {
                 />
               </div>
             )}
+            {activeView === "board" && (
+              <GateBoard gates={snapshot.gates} dataMode={snapshot.dataMode} />
+            )}
+            {activeView === "sourcing" && (
+              <SourcingView
+                sourcing={snapshot.sourcing}
+                fabrication={snapshot.fabrication}
+                orders={snapshot.orders}
+                components={snapshot.components}
+                dataMode={snapshot.dataMode}
+              />
+            )}
             {activeView === "agents" && (
               <AgentsView agents={snapshot.agents} isDemo={isDemo} telemetry={snapshot.telemetry} />
             )}
             {activeView === "artifacts" && (
               <ArtifactView nodes={snapshot.nodes} isDemo={isDemo} revision={snapshot.revision} />
             )}
+            {activeView === "viewer3d" && <Viewer3DView snapshot={snapshot} />}
+            {activeView === "telemetry" && <TelemetryView mode={snapshot.dataMode} />}
             <footer className="workspace-footer">
               <span>
                 <LockKeyhole size={12} />

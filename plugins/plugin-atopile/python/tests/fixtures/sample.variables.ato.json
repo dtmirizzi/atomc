@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "build_id": "testbuild",
+  "nodes": [
+    {
+      "name": "v3v3",
+      "type": "interface",
+      "path": "v3v3",
+      "typeName": "ElectricPower",
+      "variables": [
+        { "name": "voltage", "spec": "3.3V \u00b15%", "actual": null, "meetsSpec": null, "source": "derived" }
+      ],
+      "children": []
+    }
+  ]
+}

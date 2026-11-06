@@ -13,6 +13,8 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from pydantic import BaseModel
+
 from .manifest import MANIFEST_FILENAME, Manifest, ManifestError, Runtime, load_manifest
 from .registry import LoadedPlugin, PluginRegistry
 
@@ -144,6 +146,11 @@ def _resolve_entry(entry: Any, value: str) -> tuple[Manifest, Path | None]:
         raise ManifestError(f"entry point {value!r} exposes no __atomc_manifest__")
     if isinstance(manifest_obj, Manifest):
         return manifest_obj, None
+    # Plugin SDKs attach their own pydantic manifest models (e.g. atomc_plugin_sdk's
+    # ``PluginManifest``); coerce through a plain mapping so validation rules are the
+    # daemon's, not the SDK class identity.
+    if isinstance(manifest_obj, BaseModel):
+        manifest_obj = manifest_obj.model_dump(exclude_none=True)
     return Manifest.model_validate(manifest_obj), None
 
 

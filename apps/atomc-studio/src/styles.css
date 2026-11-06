@@ -2192,3 +2192,239 @@ h1 {
     transition-duration: 0.01ms;
   }
 }
+
+/* ── Telemetry (WP-3.8): matrix-scan timeline + console stream ─────────────── */
+.telemetry-loading {
+  padding: 18px 15px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid #22313d;
+  border-radius: 9px;
+  font-size: 11px;
+}
+.telemetry-unavailable {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 15px;
+}
+.telemetry-unavailable svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--amber);
+}
+.telemetry-unavailable strong {
+  color: #e6d2aa;
+  font-size: 12px;
+}
+.telemetry-unavailable p {
+  margin-top: 5px;
+  color: #9c8f78;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.scan-timeline {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 14px 15px 15px;
+  background: var(--surface);
+  border: 1px solid #22313d;
+  border-radius: 9px;
+}
+.scan-timeline__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #0d151e;
+  border: 1px solid #1d2a36;
+  border-radius: 7px;
+}
+.scan-timeline__grid {
+  stroke: #1b2733;
+  stroke-width: 1;
+}
+.scan-timeline__lane-rule {
+  stroke: #17212b;
+  stroke-width: 1;
+}
+.scan-timeline__tick {
+  fill: #7f93a5;
+  font-family: var(--mono);
+  font-size: 8px;
+}
+.scan-timeline__lane-label {
+  fill: #a9bac8;
+  font-family: var(--mono);
+  font-size: 8px;
+}
+.scan-timeline__bar {
+  stroke: rgba(6, 18, 15, 0.55);
+  stroke-width: 0.5;
+}
+.scan-timeline__bar--row-strobe {
+  fill: #45d1ac;
+}
+.scan-timeline__bar--col-strobe {
+  fill: #6fa8e0;
+}
+.scan-timeline__bar--key-down {
+  fill: #eab564;
+}
+.scan-timeline__bar--key-up {
+  fill: #f0787c;
+}
+.scan-timeline__caption {
+  color: #92a4b4;
+  font-size: 9px;
+}
+.scan-timeline__table-wrap {
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid #1d2a36;
+  border-radius: 7px;
+}
+.scan-timeline__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 9px;
+}
+.scan-timeline__table caption {
+  padding: 9px 10px 3px;
+  color: #92a4b4;
+  text-align: left;
+  font-family: Inter, sans-serif;
+  font-size: 9px;
+}
+.scan-timeline__table th,
+.scan-timeline__table td {
+  padding: 5px 10px;
+  text-align: left;
+  border-top: 1px solid #17212b;
+}
+.scan-timeline__table th {
+  position: sticky;
+  top: 0;
+  color: #9fb0bf;
+  background: #131d27;
+  font-weight: 600;
+}
+.scan-timeline__table td {
+  color: #c3d0db;
+}
+
+.console-stream {
+  overflow: hidden;
+}
+.console-stream__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 15px 10px;
+}
+.console-stream__title {
+  margin-top: 5px;
+  color: #e0e8ef;
+  font-family: Manrope, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.25px;
+}
+.console-stream__controls {
+  display: flex;
+  gap: 8px;
+}
+.console-stream__control {
+  min-height: 30px;
+  font-size: 9px;
+}
+.console-stream__dropped {
+  padding: 0 15px 8px;
+  color: var(--amber);
+  font-size: 9px;
+}
+.console-stream__log {
+  max-height: 280px;
+  overflow: auto;
+  background: #0a1219;
+  border-top: 1px solid #1d2a36;
+}
+.console-stream__empty {
+  padding: 18px 15px;
+  color: #8699a9;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.console-stream__list {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+.console-line {
+  display: grid;
+  grid-template-columns: 88px 84px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  padding: 4px 15px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.console-line:hover {
+  background: #101a24;
+}
+.console-line__time {
+  color: #7f93a5;
+}
+.console-line__text {
+  color: #c7d4df;
+  overflow-wrap: anywhere;
+}
+.console-line--warn .console-line__text {
+  color: #eac17d;
+}
+.console-line--error .console-line__text {
+  color: #f09699;
+}
+.source-badge {
+  justify-self: start;
+  padding: 1px 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 8px;
+  letter-spacing: 0.3px;
+}
+.source-badge--renode {
+  color: #8fc7f4;
+  background: rgba(129, 183, 245, 0.1);
+  border-color: rgba(129, 183, 245, 0.2);
+}
+.source-badge--qmk {
+  color: #8fe0c2;
+  background: rgba(69, 209, 172, 0.1);
+  border-color: rgba(69, 209, 172, 0.2);
+}
+.source-badge--renode-agent {
+  color: #e3c98b;
+  background: rgba(234, 181, 100, 0.1);
+  border-color: rgba(234, 181, 100, 0.2);
+}
+.console-stream__paused {
+  padding: 8px 15px;
+  color: #eac17d;
+  background: rgba(234, 181, 100, 0.08);
+  border-top: 1px solid rgba(234, 181, 100, 0.16);
+  font-size: 9px;
+}
+
+@media (max-width: 720px) {
+  .console-line {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+  .console-line__text {
+    grid-column: 1 / -1;
+  }
+}

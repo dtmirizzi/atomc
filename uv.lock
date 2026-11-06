@@ -6,6 +6,8 @@ requires-python = "==3.14.*"
 members = [
     "atomc-core-ir",
     "atomc-daemon",
+    "atomc-plugin-atopile",
+    "atomc-plugin-renode",
     "atomc-plugin-sdk",
     "atomc-workspace",
 ]
@@ -165,6 +167,60 @@ requires-dist = [
     { name = "typer", specifier = ">=0.27.3" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0" },
     { name = "watchfiles", specifier = ">=1.3.0" },
+]
+provides-extras = ["test"]
+
+[[package]]
+name = "atomc-plugin-atopile"
+version = "0.0.1"
+source = { editable = "plugins/plugin-atopile/python" }
+dependencies = [
+    { name = "atomc-core-ir" },
+    { name = "atomc-plugin-sdk" },
+    { name = "pydantic" },
+]
+
+[package.optional-dependencies]
+pcb = [
+    { name = "kiutils" },
+]
+test = [
+    { name = "kiutils" },
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "atomc-core-ir", editable = "packages/core-ir/python" },
+    { name = "atomc-plugin-sdk", editable = "packages/plugin-sdk/python" },
+    { name = "kiutils", marker = "extra == 'pcb'", specifier = ">=1.4.8" },
+    { name = "kiutils", marker = "extra == 'test'", specifier = ">=1.4.8" },
+    { name = "pydantic", specifier = ">=2.14" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=9.2" },
+]
+provides-extras = ["pcb", "test"]
+
+[[package]]
+name = "atomc-plugin-renode"
+version = "0.0.1"
+source = { editable = "plugins/plugin-renode/python" }
+dependencies = [
+    { name = "atomc-core-ir" },
+    { name = "atomc-plugin-sdk" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "atomc-core-ir", editable = "packages/core-ir/python" },
+    { name = "atomc-plugin-sdk", editable = "packages/plugin-sdk/python" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=9.2" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = ">=1.4" },
 ]
 provides-extras = ["test"]
 
@@ -489,6 +545,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa6d1095e7cc5569bebf04342ee146178e2d36600708b/jsonschema_specifications-2025.9.1.tar.gz", hash = "sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d", size = 32855, upload-time = "2025-09-08T01:34:59.186Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl", hash = "sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe", size = 18437, upload-time = "2025-09-08T01:34:57.871Z" },
+]
+
+[[package]]
+name = "kiutils"
+version = "1.4.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/db/07/04d7a636eaf9f54f6e7cdfc2117843ef4cc6a6360a9866fbd76bc2a0d0dd/kiutils-1.4.8.tar.gz", hash = "sha256:18c5803283e579cfe8772955e7702548d7139e0fc630daa579ed6b2b767db846", size = 84024, upload-time = "2024-02-02T23:38:00.283Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8c/c0/381ece43b464ce8aff02a327b0d5cdc011b8c0d9a652e245b05e0bb0810a/kiutils-1.4.8-py3-none-any.whl", hash = "sha256:ca7c5c7eafb7bc33daa3d6cfe42cc704be2bcd2206103b28ad2682d88a6072ae", size = 93827, upload-time = "2024-02-02T23:37:58.443Z" },
 ]
 
 [[package]]
