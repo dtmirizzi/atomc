@@ -6,6 +6,7 @@ The repository contains two hardware project fixtures, a 3×3 macropad and a 4×
 | ------------------------------------ | -------------------------- | ------------------------------------------------------------------- |
 | [`atomc-pad`](/examples/atomc-pad)   | 3×3 macropad               | Small source/IR fixture for development and future pipeline tests   |
 | [`atomc-keeb`](/examples/atomc-keeb) | 4×12 ortholinear (48 keys) | Larger keyboard source/IR fixture for the planned hardware pipeline |
+| [`atomc-cannode`](/examples/atomc-cannode) | 40×25 mm CAN sensor node | Non-keyboard fixture proving the IR and gates are domain-generic |
 
 Both fixtures include atopile/QMK source scaffolding, hand-written IR that validates against the [IR schema](/architecture/contracts/ir-schema), and an `atomc.config.ts`. The keyboard fixture also has plate/case/jig target definitions. Atomc does not yet generate these artifacts end-to-end.
 
