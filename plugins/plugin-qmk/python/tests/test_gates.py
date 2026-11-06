@@ -293,9 +293,11 @@ async def test_matrix_gate_pass(tmp_path: Path, example_ir: dict[str, Any]) -> N
 
 
 @pytest.mark.asyncio
-async def test_matrix_gate_fail_without_keyboard(tmp_path: Path) -> None:
+async def test_matrix_gate_skips_without_keyboard(tmp_path: Path) -> None:
+    # Non-keyboard designs are out of the gate's domain: an honest SKIP.
     result = await matrix_pins_gate(FakeContext({"meta": {}}, tmp_path))
-    assert result["status"] == "FAIL"
+    assert result["status"] == "SKIP"
+    assert "keyboard designs" in result["summary"]
 
 
 @pytest.mark.asyncio
@@ -412,7 +414,8 @@ async def test_compile_gate_fail_without_keyboard(
         ),
     )
     result = await compile_gate(FakeContext({"meta": {}}, tmp_path / "art"))
-    assert result["status"] == "FAIL"
+    assert result["status"] == "SKIP"
+    assert "keyboard designs" in result["summary"]
 
 
 @pytest.mark.asyncio

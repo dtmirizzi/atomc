@@ -615,12 +615,21 @@ async def matrix_pins_gate(ctx: Any) -> dict[str, Any]:
             duration_ms=int((time.perf_counter() - started) * 1000),
         )
     if not isinstance(keyboard, dict):
+        # A design without a /keyboard node is simply not a keyboard design:
+        # the gate is not applicable rather than failing.
         return _gate_result(
             gate_id=gate_id,
-            status="FAIL",
-            summary="IR has no /keyboard node; cannot check matrix pins",
-            evidence=[{"kind": "text", "message": "the /keyboard pointer is absent"}],
-            suggestions=[{"message": "Populate the IR /keyboard node and rerun the gate."}],
+            status="SKIP",
+            summary="IR has no /keyboard node; this gate applies to keyboard designs",
+            evidence=[
+                {
+                    "kind": "text",
+                    "message": (
+                        "the /keyboard node is absent; no matrix pins exist to check"
+                    ),
+                }
+            ],
+            suggestions=[],
             ir_rev=rev,
             duration_ms=int((time.perf_counter() - started) * 1000),
         )
@@ -783,12 +792,21 @@ async def compile_gate(ctx: Any) -> dict[str, Any]:
             duration_ms=int((time.perf_counter() - started) * 1000),
         )
     if not isinstance(keyboard, dict):
+        # A design without a /keyboard node is not a keyboard design: the gate
+        # is not applicable rather than a firmware failure.
         return _gate_result(
             gate_id=gate_id,
-            status="FAIL",
-            summary="IR has no /keyboard node; cannot derive QMK sources",
-            evidence=[{"kind": "text", "message": "the /keyboard pointer is absent"}],
-            suggestions=[{"message": "Populate the IR /keyboard node and rerun the gate."}],
+            status="SKIP",
+            summary="IR has no /keyboard node; this gate applies to keyboard designs",
+            evidence=[
+                {
+                    "kind": "text",
+                    "message": (
+                        "the /keyboard node is absent; there is no firmware to compile"
+                    ),
+                }
+            ],
+            suggestions=[],
             ir_rev=rev,
             duration_ms=int((time.perf_counter() - started) * 1000),
         )
@@ -846,8 +864,9 @@ async def generate_tool(ctx: Any, payload: Mapping[str, Any] | None = None) -> d
         }
     if not isinstance(keyboard, dict):
         return {
-            "status": "FAIL",
-            "summary": "IR has no /keyboard node; cannot derive QMK sources",
+            "status": "SKIP",
+            "summary": "IR has no /keyboard node; this applies to keyboard designs",
+            "detail": "the /keyboard node is absent; there is nothing to derive",
             "duration_ms": int((time.perf_counter() - started) * 1000),
         }
     try:
@@ -892,8 +911,9 @@ async def compile_tool(ctx: Any, payload: Mapping[str, Any] | None = None) -> di
         }
     if not isinstance(keyboard, dict):
         return {
-            "status": "FAIL",
-            "summary": "IR has no /keyboard node; cannot derive QMK sources",
+            "status": "SKIP",
+            "summary": "IR has no /keyboard node; this applies to keyboard designs",
+            "detail": "the /keyboard node is absent; there is nothing to derive",
             "duration_ms": int((time.perf_counter() - started) * 1000),
         }
     document = document if isinstance(document, dict) else {"keyboard": keyboard}
