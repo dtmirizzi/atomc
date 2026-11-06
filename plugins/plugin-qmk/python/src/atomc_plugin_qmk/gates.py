@@ -75,6 +75,9 @@ class CompileOutcome:
 
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
+
+# Marker file the plugin writes into its installed keyboard copies.
+_PLUGIN_MARKER = ".atomc-plugin-qmk"
 Which = Callable[[str], str | None]
 
 
@@ -311,18 +314,23 @@ def compile_qmk(
     target = toolchain.qmk_home / "keyboards" / keyboard_path
     try:
         target.parent.mkdir(parents=True, exist_ok=True)
-        if target.is_symlink():
-            target.unlink()
+        # qmk's keyboard enumeration does not follow symlinked keyboard folders, so
+        # the plugin installs a real directory copy and marks it as its own.
+        if target.is_symlink() or (target.exists() and (target / _PLUGIN_MARKER).is_file()):
+            if target.is_symlink() and not target.is_dir():
+                target.unlink()
+            else:
+                shutil.rmtree(target)
         elif target.exists():
             return _fail(
-                f"refusing to replace non-symlink {target}",
+                f"refusing to replace non-plugin {target}",
                 duration_ms=int((time.perf_counter() - started) * 1000),
                 evidence=[
                     {
                         "kind": "text",
                         "message": (
-                            f"{target} exists and is not a symlink; the plugin only replaces "
-                            "its own symlinks"
+                            f"{target} exists and is not plugin-managed (no {_PLUGIN_MARKER}); "
+                            "the plugin only replaces its own keyboard copies"
                         ),
                     }
                 ],
@@ -335,10 +343,11 @@ def compile_qmk(
                 ],
                 qmk_home=toolchain.qmk_home,
             )
-        target.symlink_to(staging / "keyboards" / keyboard_path, target_is_directory=True)
+        shutil.copytree(staging / "keyboards" / keyboard_path, target)
+        (target / _PLUGIN_MARKER).write_text("managed by atomc-plugin-qmk\n", encoding="utf-8")
     except OSError as exc:
         return _fail(
-            f"could not symlink {target} into QMK_HOME: {exc}",
+            f"could not install {target} into QMK_HOME: {exc}",
             duration_ms=int((time.perf_counter() - started) * 1000),
             evidence=[{"kind": "text", "message": str(exc)}],
             qmk_home=toolchain.qmk_home,
