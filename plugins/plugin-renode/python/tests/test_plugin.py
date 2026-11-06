@@ -148,13 +148,13 @@ async def test_generate_records_relative_paths(fake_ctx: Any) -> None:
     assert outcome["result"]["repl_path"].endswith("atomc-pad.repl")
 
 
-async def test_generate_derivation_error_propagates(fake_ctx: Any) -> None:
-    import pytest
-    from atomc_plugin_renode.derive import DerivationError
-
+async def test_generate_skips_without_firmware_artifact(fake_ctx: Any) -> None:
+    # A design without a firmware artifact is out of the watch's domain:
+    # an honest SKIP-shaped no-op, not a failed DAG node.
     broken = copy.deepcopy(fake_ctx._ir)
     broken["firmware"]["targets"][0]["artifacts"] = []
     fake_ctx._ir = broken
     plugin = RenodePlugin()
-    with pytest.raises(DerivationError):
-        await plugin.generate(fake_ctx, {})
+    result = await plugin.generate(fake_ctx, {})
+    assert result["status"] == "SKIP"
+    assert "no ELF firmware artifact" in result["summary"]
