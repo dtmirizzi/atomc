@@ -1,0 +1,1675 @@
+{
+  "electrical": {
+    "_meta": {
+      "lock": null,
+      "rev": 0
+    },
+    "assertions": [
+      {
+        "expr": "every phase has a current sense path",
+        "id": "assert:phase_current",
+        "status": "pass"
+      },
+      {
+        "expr": "CAN is terminated",
+        "id": "assert:can_term",
+        "status": "pass"
+      }
+    ],
+    "components": [
+      {
+        "attributes": {
+          "clock_mhz": "168",
+          "core": "cortex-m4"
+        },
+        "description": "openinverter mainboard MCU, 3.3 V, 168 MHz",
+        "designator": "U1",
+        "dnp": false,
+        "id": "comp:U1",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "STM32F407VGT6",
+        "package": "LQFP100",
+        "pins": [
+          {
+            "name": "VDD",
+            "net_ref": "net:3V3",
+            "number": "10"
+          },
+          {
+            "name": "VSS",
+            "net_ref": "net:GND",
+            "number": "11"
+          },
+          {
+            "name": "PA0",
+            "net_ref": "net:ISENSE_U",
+            "number": "20"
+          },
+          {
+            "name": "PA1",
+            "net_ref": "net:ISENSE_V",
+            "number": "21"
+          },
+          {
+            "name": "PA2",
+            "net_ref": "net:ISENSE_W",
+            "number": "22"
+          },
+          {
+            "name": "PA3",
+            "net_ref": "net:HV_VSENSE",
+            "number": "23"
+          },
+          {
+            "name": "PA4",
+            "net_ref": "net:RESOLVER_SIN",
+            "number": "24"
+          },
+          {
+            "name": "PA5",
+            "net_ref": "net:RESOLVER_COS",
+            "number": "25"
+          },
+          {
+            "name": "PA6",
+            "net_ref": "net:RESOLVER_EXC",
+            "number": "26"
+          },
+          {
+            "name": "PA7",
+            "net_ref": "net:NTC_PWR",
+            "number": "27"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "isolated dual-channel half-bridge gate driver (phase U)",
+        "designator": "U2",
+        "dnp": false,
+        "id": "comp:U2",
+        "manufacturer": "Texas Instruments",
+        "mpn": "UCC21520",
+        "package": "SOIC-16",
+        "pins": [
+          {
+            "name": "VDD1",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND1",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "VDDA",
+            "net_ref": "net:VSUPPLY_U",
+            "number": "5"
+          },
+          {
+            "name": "VSSA",
+            "net_ref": "net:VSUPPLY_U",
+            "number": "6"
+          },
+          {
+            "name": "VDDB",
+            "net_ref": "net:VSUPPLY_U",
+            "number": "9"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "isolated dual-channel half-bridge gate driver (phase V)",
+        "designator": "U3",
+        "dnp": false,
+        "id": "comp:U3",
+        "manufacturer": "Texas Instruments",
+        "mpn": "UCC21520",
+        "package": "SOIC-16",
+        "pins": [
+          {
+            "name": "VDD1",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND1",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "VDDA",
+            "net_ref": "net:VSUPPLY_V",
+            "number": "5"
+          },
+          {
+            "name": "VSSA",
+            "net_ref": "net:VSUPPLY_V",
+            "number": "6"
+          },
+          {
+            "name": "VDDB",
+            "net_ref": "net:VSUPPLY_V",
+            "number": "9"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "isolated dual-channel half-bridge gate driver (phase W)",
+        "designator": "U4",
+        "dnp": false,
+        "id": "comp:U4",
+        "manufacturer": "Texas Instruments",
+        "mpn": "UCC21520",
+        "package": "SOIC-16",
+        "pins": [
+          {
+            "name": "VDD1",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND1",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "VDDA",
+            "net_ref": "net:VSUPPLY_W",
+            "number": "5"
+          },
+          {
+            "name": "VSSA",
+            "net_ref": "net:VSUPPLY_W",
+            "number": "6"
+          },
+          {
+            "name": "VDDB",
+            "net_ref": "net:VSUPPLY_W",
+            "number": "9"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "phase U current-sense amplifier",
+        "designator": "U5",
+        "dnp": false,
+        "id": "comp:U5",
+        "manufacturer": "Texas Instruments",
+        "mpn": "INA240A2",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "V+",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "OUT",
+            "net_ref": "net:ISENSE_U",
+            "number": "3"
+          },
+          {
+            "name": "REF",
+            "net_ref": "net:GND",
+            "number": "4"
+          },
+          {
+            "name": "IN+",
+            "net_ref": "net:VSUPPLY_U",
+            "number": "8"
+          },
+          {
+            "name": "IN-",
+            "net_ref": "net:VSUPPLY_U",
+            "number": "7"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "phase V current-sense amplifier",
+        "designator": "U6",
+        "dnp": false,
+        "id": "comp:U6",
+        "manufacturer": "Texas Instruments",
+        "mpn": "INA240A2",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "V+",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "OUT",
+            "net_ref": "net:ISENSE_V",
+            "number": "3"
+          },
+          {
+            "name": "REF",
+            "net_ref": "net:GND",
+            "number": "4"
+          },
+          {
+            "name": "IN+",
+            "net_ref": "net:VSUPPLY_V",
+            "number": "8"
+          },
+          {
+            "name": "IN-",
+            "net_ref": "net:VSUPPLY_V",
+            "number": "7"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "phase W current-sense amplifier",
+        "designator": "U7",
+        "dnp": false,
+        "id": "comp:U7",
+        "manufacturer": "Texas Instruments",
+        "mpn": "INA240A2",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "V+",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "OUT",
+            "net_ref": "net:ISENSE_W",
+            "number": "3"
+          },
+          {
+            "name": "REF",
+            "net_ref": "net:GND",
+            "number": "4"
+          },
+          {
+            "name": "IN+",
+            "net_ref": "net:VSUPPLY_W",
+            "number": "8"
+          },
+          {
+            "name": "IN-",
+            "net_ref": "net:VSUPPLY_W",
+            "number": "7"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "isolated DC-link voltage sense amplifier",
+        "designator": "U8",
+        "dnp": false,
+        "id": "comp:U8",
+        "manufacturer": "Texas Instruments",
+        "mpn": "AMC1311",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "VDD1",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND1",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "VINP",
+            "net_ref": "net:HV_VSENSE",
+            "number": "3"
+          },
+          {
+            "name": "VINN",
+            "net_ref": "net:HV_VSENSE",
+            "number": "4"
+          },
+          {
+            "name": "VOUT",
+            "net_ref": "net:HV_VSENSE",
+            "number": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "3.3 V CAN transceiver",
+        "designator": "U9",
+        "dnp": false,
+        "id": "comp:U9",
+        "manufacturer": "Texas Instruments",
+        "mpn": "SN65HVD230",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "VCC",
+            "net_ref": "net:3V3",
+            "number": "3"
+          },
+          {
+            "name": "CANL",
+            "net_ref": "net:CAN_L",
+            "number": "6"
+          },
+          {
+            "name": "CANH",
+            "net_ref": "net:CAN_H",
+            "number": "7"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "12 V to 5 V synchronous buck",
+        "designator": "U10",
+        "dnp": false,
+        "id": "comp:U10",
+        "manufacturer": "Texas Instruments",
+        "mpn": "LM5164",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "VIN",
+            "net_ref": "net:LV_12V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:LV_GND",
+            "number": "2"
+          },
+          {
+            "name": "SW",
+            "net_ref": "net:5V",
+            "number": "3"
+          },
+          {
+            "name": "FB",
+            "net_ref": "net:5V",
+            "number": "4"
+          },
+          {
+            "name": "EN",
+            "net_ref": "net:LV_12V",
+            "number": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "3.3 V LDO",
+        "designator": "U11",
+        "dnp": false,
+        "id": "comp:U11",
+        "manufacturer": "Diodes Inc",
+        "mpn": "AP2112K-3.3",
+        "package": "SOT-25-5",
+        "pins": [
+          {
+            "name": "VIN",
+            "net_ref": "net:5V",
+            "number": "1"
+          },
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "2"
+          },
+          {
+            "name": "EN",
+            "net_ref": "net:5V",
+            "number": "3"
+          },
+          {
+            "name": "VOUT",
+            "net_ref": "net:3V3",
+            "number": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "resolver signal buffer (dual op-amp)",
+        "designator": "U12",
+        "dnp": false,
+        "id": "comp:U12",
+        "manufacturer": "Microchip",
+        "mpn": "MCP6002",
+        "package": "SOIC-8",
+        "pins": [
+          {
+            "name": "OUTA",
+            "net_ref": "net:RESOLVER_SIN",
+            "number": "1"
+          },
+          {
+            "name": "INA-",
+            "net_ref": "net:RESOLVER_SIN",
+            "number": "2"
+          },
+          {
+            "name": "INA+",
+            "net_ref": "net:RESOLVER_SIN",
+            "number": "3"
+          },
+          {
+            "name": "VSS",
+            "net_ref": "net:GND",
+            "number": "4"
+          },
+          {
+            "name": "INB+",
+            "net_ref": "net:RESOLVER_COS",
+            "number": "5"
+          },
+          {
+            "name": "INB-",
+            "net_ref": "net:RESOLVER_COS",
+            "number": "6"
+          },
+          {
+            "name": "OUTB",
+            "net_ref": "net:RESOLVER_COS",
+            "number": "7"
+          },
+          {
+            "name": "VDD",
+            "net_ref": "net:3V3",
+            "number": "8"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "low-side driver: main contactor",
+        "designator": "U13",
+        "dnp": false,
+        "id": "comp:U13",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "VNLD5090",
+        "package": "PowerSSO-12",
+        "pins": [
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "1"
+          },
+          {
+            "name": "OUT",
+            "net_ref": "net:CONT_COIL",
+            "number": "3"
+          },
+          {
+            "name": "VCC",
+            "net_ref": "net:LV_12V",
+            "number": "4"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "low-side driver: precharge",
+        "designator": "U14",
+        "dnp": false,
+        "id": "comp:U14",
+        "manufacturer": "STMicroelectronics",
+        "mpn": "VNLD5090",
+        "package": "PowerSSO-12",
+        "pins": [
+          {
+            "name": "GND",
+            "net_ref": "net:GND",
+            "number": "1"
+          },
+          {
+            "name": "OUT",
+            "net_ref": "net:PRECHG_COIL",
+            "number": "3"
+          },
+          {
+            "name": "VCC",
+            "net_ref": "net:LV_12V",
+            "number": "4"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "12 V LV input header (3-pos)",
+        "designator": "J1",
+        "dnp": false,
+        "id": "comp:J1",
+        "manufacturer": "TE Connectivity",
+        "mpn": "640456-3",
+        "package": "THT",
+        "pins": [
+          {
+            "net_ref": "net:LV_12V",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:LV_GND",
+            "number": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "resolver header (3-pos)",
+        "designator": "J2",
+        "dnp": false,
+        "id": "comp:J2",
+        "manufacturer": "TE Connectivity",
+        "mpn": "2199230-3",
+        "package": "THT",
+        "pins": [
+          {
+            "net_ref": "net:RESOLVER_SIN",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:RESOLVER_COS",
+            "number": "2"
+          },
+          {
+            "net_ref": "net:RESOLVER_EXC",
+            "number": "3"
+          }
+        ]
+      },
+      {
+        "attributes": {},
+        "description": "CAN + NTC + gate-drive pass-through header",
+        "designator": "J3",
+        "dnp": false,
+        "id": "comp:J3",
+        "manufacturer": "TE Connectivity",
+        "mpn": "640456-6",
+        "package": "THT",
+        "pins": [
+          {
+            "net_ref": "net:CAN_H",
+            "number": "1"
+          },
+          {
+            "net_ref": "net:CAN_L",
+            "number": "2"
+          },
+          {
+            "net_ref": "net:NTC_PWR",
+            "number": "3"
+          },
+          {
+            "net_ref": "net:CONT_COIL",
+            "number": "4"
+          },
+          {
+            "net_ref": "net:PRECHG_COIL",
+            "number": "5"
+          },
+          {
+            "net_ref": "net:LV_GND",
+            "number": "6"
+          }
+        ]
+      }
+    ],
+    "erc": [],
+    "nets": [
+      {
+        "class": "power",
+        "id": "net:LV_12V",
+        "name": "LV_12V"
+      },
+      {
+        "class": "ground",
+        "id": "net:LV_GND",
+        "name": "LV_GND"
+      },
+      {
+        "class": "power",
+        "id": "net:3V3",
+        "name": "3V3"
+      },
+      {
+        "class": "ground",
+        "id": "net:GND",
+        "name": "GND"
+      },
+      {
+        "class": "power",
+        "id": "net:5V",
+        "name": "5V"
+      },
+      {
+        "class": "diff",
+        "id": "net:CAN_H",
+        "name": "CAN_H"
+      },
+      {
+        "class": "diff",
+        "id": "net:CAN_L",
+        "name": "CAN_L"
+      },
+      {
+        "class": "signal",
+        "id": "net:ISENSE_U",
+        "name": "ISENSE_U"
+      },
+      {
+        "class": "signal",
+        "id": "net:ISENSE_V",
+        "name": "ISENSE_V"
+      },
+      {
+        "class": "signal",
+        "id": "net:ISENSE_W",
+        "name": "ISENSE_W"
+      },
+      {
+        "class": "power",
+        "id": "net:VSUPPLY_U",
+        "name": "VSUPPLY_U"
+      },
+      {
+        "class": "power",
+        "id": "net:VSUPPLY_V",
+        "name": "VSUPPLY_V"
+      },
+      {
+        "class": "power",
+        "id": "net:VSUPPLY_W",
+        "name": "VSUPPLY_W"
+      },
+      {
+        "class": "signal",
+        "id": "net:RESOLVER_SIN",
+        "name": "RESOLVER_SIN"
+      },
+      {
+        "class": "signal",
+        "id": "net:RESOLVER_COS",
+        "name": "RESOLVER_COS"
+      },
+      {
+        "class": "signal",
+        "id": "net:RESOLVER_EXC",
+        "name": "RESOLVER_EXC"
+      },
+      {
+        "class": "power",
+        "id": "net:HV_VSENSE",
+        "name": "HV_VSENSE"
+      },
+      {
+        "class": "signal",
+        "id": "net:NTC_PWR",
+        "name": "NTC_PWR"
+      },
+      {
+        "class": "signal",
+        "id": "net:CONT_COIL",
+        "name": "CONT_COIL"
+      },
+      {
+        "class": "signal",
+        "id": "net:PRECHG_COIL",
+        "name": "PRECHG_COIL"
+      }
+    ],
+    "source": {
+      "entry": "main.ato:App",
+      "kind": "atopile"
+    }
+  },
+  "ext": {},
+  "fabrication": {
+    "_meta": {
+      "lock": null,
+      "rev": 0
+    },
+    "pcb": {
+      "color": "green",
+      "finish": "ENIG",
+      "height_mm": 80.0,
+      "layers": 4,
+      "qty": 2,
+      "thickness_mm": 1.6,
+      "width_mm": 120.0
+    },
+    "quotes": []
+  },
+  "firmware": {
+    "_meta": {
+      "lock": null,
+      "rev": 0
+    },
+    "peripherals": [
+      {
+        "id": "periph:can",
+        "kind": "can",
+        "signals": [
+          {
+            "name": "TX",
+            "pin": "PB9"
+          },
+          {
+            "name": "RX",
+            "pin": "PB8"
+          }
+        ]
+      },
+      {
+        "id": "periph:pwm_timer",
+        "kind": "timer",
+        "signals": [
+          {
+            "name": "PWM",
+            "pin": "PA8"
+          }
+        ]
+      },
+      {
+        "id": "periph:resolver_adc",
+        "kind": "other",
+        "signals": [
+          {
+            "name": "SIN",
+            "net_ref": "net:RESOLVER_SIN",
+            "pin": "PA4"
+          },
+          {
+            "name": "COS",
+            "net_ref": "net:RESOLVER_COS",
+            "pin": "PA5"
+          }
+        ]
+      },
+      {
+        "id": "periph:isense_adc",
+        "kind": "other",
+        "signals": [
+          {
+            "name": "U",
+            "net_ref": "net:ISENSE_U",
+            "pin": "PA0"
+          },
+          {
+            "name": "V",
+            "net_ref": "net:ISENSE_V",
+            "pin": "PA1"
+          },
+          {
+            "name": "W",
+            "net_ref": "net:ISENSE_W",
+            "pin": "PA2"
+          }
+        ]
+      },
+      {
+        "id": "periph:ntc_adc",
+        "kind": "other",
+        "signals": [
+          {
+            "name": "NTC",
+            "net_ref": "net:NTC_PWR",
+            "pin": "PA7"
+          }
+        ]
+      }
+    ],
+    "suites": [],
+    "targets": [
+      {
+        "artifacts": [],
+        "build_cmd": null,
+        "core": "cortex-m4",
+        "framework": "baremetal",
+        "id": "fw:openinverter",
+        "mcu": "STM32F407VGT6",
+        "memory": [
+          {
+            "length": 786432,
+            "name": "flash",
+            "origin": 134217728
+          },
+          {
+            "length": 196608,
+            "name": "ram",
+            "origin": 536870912
+          }
+        ],
+        "source_dir": "firmware/"
+      }
+    ]
+  },
+  "layout": {
+    "_meta": {
+      "lock": null,
+      "rev": 0
+    },
+    "keepouts": [],
+    "layers": 4,
+    "mounting_holes": [
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H1",
+        "plated": true,
+        "x": 4.0,
+        "y": 4.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H2",
+        "plated": true,
+        "x": 116.0,
+        "y": 4.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H3",
+        "plated": true,
+        "x": 4.0,
+        "y": 76.0
+      },
+      {
+        "diameter_mm": 3.2,
+        "id": "hole:H4",
+        "plated": true,
+        "x": 116.0,
+        "y": 76.0
+      }
+    ],
+    "outline": {
+      "polygon": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          120.0,
+          0.0
+        ],
+        [
+          120.0,
+          80.0
+        ],
+        [
+          0.0,
+          80.0
+        ]
+      ],
+      "thickness_mm": 1.6
+    },
+    "placements": [
+      {
+        "component_ref": "comp:U1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 60.0,
+        "y": 40.0
+      },
+      {
+        "component_ref": "comp:U9",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 20.0,
+        "y": 20.0
+      },
+      {
+        "component_ref": "comp:J1",
+        "rotation_deg": 0.0,
+        "side": "top",
+        "x": 8.0,
+        "y": 40.0
+      }
+    ],
+    "source": null,
+    "test_pads": [
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_3V3",
+        "kind": "pogo",
+        "label": "3V3",
+        "net_ref": "net:3V3",
+        "side": "bottom",
+        "x": 10.0,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_GND",
+        "kind": "pogo",
+        "label": "GND",
+        "net_ref": "net:GND",
+        "side": "bottom",
+        "x": 12.54,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_CAN_H",
+        "kind": "pogo",
+        "label": "CAN_H",
+        "net_ref": "net:CAN_H",
+        "side": "bottom",
+        "x": 15.08,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_CAN_L",
+        "kind": "pogo",
+        "label": "CAN_L",
+        "net_ref": "net:CAN_L",
+        "side": "bottom",
+        "x": 17.62,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ISENSE_U",
+        "kind": "pogo",
+        "label": "ISENSE_U",
+        "net_ref": "net:ISENSE_U",
+        "side": "bottom",
+        "x": 20.16,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ISENSE_V",
+        "kind": "pogo",
+        "label": "ISENSE_V",
+        "net_ref": "net:ISENSE_V",
+        "side": "bottom",
+        "x": 22.7,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_ISENSE_W",
+        "kind": "pogo",
+        "label": "ISENSE_W",
+        "net_ref": "net:ISENSE_W",
+        "side": "bottom",
+        "x": 25.24,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_RESOLVER_SIN",
+        "kind": "pogo",
+        "label": "RESOLVER_SIN",
+        "net_ref": "net:RESOLVER_SIN",
+        "side": "bottom",
+        "x": 27.78,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_RESOLVER_COS",
+        "kind": "pogo",
+        "label": "RESOLVER_COS",
+        "net_ref": "net:RESOLVER_COS",
+        "side": "bottom",
+        "x": 30.32,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_HV_VSENSE",
+        "kind": "pogo",
+        "label": "HV_VSENSE",
+        "net_ref": "net:HV_VSENSE",
+        "side": "bottom",
+        "x": 32.86,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_NTC_PWR",
+        "kind": "pogo",
+        "label": "NTC_PWR",
+        "net_ref": "net:NTC_PWR",
+        "side": "bottom",
+        "x": 35.4,
+        "y": 5.0
+      },
+      {
+        "diameter_mm": 1.0,
+        "id": "pad:TP_LV_12V",
+        "kind": "pogo",
+        "label": "LV_12V",
+        "net_ref": "net:LV_12V",
+        "side": "bottom",
+        "x": 37.94,
+        "y": 5.0
+      }
+    ]
+  },
+  "mechanical": {
+    "_meta": {
+      "lock": null,
+      "rev": 0
+    },
+    "artifacts": [],
+    "checks": [],
+    "component_bboxes": [
+      {
+        "component_ref": "comp:U1",
+        "max": [
+          70.0,
+          50.0,
+          1.2
+        ],
+        "min": [
+          50.0,
+          30.0,
+          0.0
+        ]
+      },
+      {
+        "component_ref": "comp:J1",
+        "max": [
+          11.0,
+          42.0,
+          3.0
+        ],
+        "min": [
+          5.0,
+          38.0,
+          0.0
+        ]
+      }
+    ],
+    "enclosure": {
+      "clearance_mm": 1.5,
+      "kind": "tray",
+      "params": {},
+      "wall_mm": 2.0
+    },
+    "pcb_bbox": {
+      "max": [
+        120.0,
+        80.0,
+        1.6
+      ],
+      "min": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "meta": {
+    "atomc_version": "0.1.0",
+    "created_at": "2026-11-06T00:00:00Z",
+    "description": "Modeled openinverter-style control board for a reused Tesla-type drive-unit power stage",
+    "modified_at": "2026-11-06T00:00:00Z",
+    "name": "atomc-drivetrain",
+    "project_id": "proj:atomc-drivetrain",
+    "rev": 0
+  },
+  "schema_version": "0.1.0",
+  "sourcing": {
+    "_meta": {
+      "lock": null,
+      "rev": 0
+    },
+    "bom": [
+      {
+        "alternates": [
+          {
+            "lcsc": null,
+            "mpn": "STM32F407VET6",
+            "reason": "same family, smaller flash"
+          }
+        ],
+        "chosen_offer_ref": "offer:U1_example",
+        "component_refs": [
+          "comp:U1"
+        ],
+        "id": "bom:U1",
+        "lcsc": null,
+        "mpn": "STM32F407VGT6",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U1_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 1100
+              }
+            ],
+            "sku": "example-STM32F407VGT6",
+            "stock": 1000,
+            "url": "https://example.com/STM32F407VGT6",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U2_example",
+        "component_refs": [
+          "comp:U2"
+        ],
+        "id": "bom:U2",
+        "lcsc": null,
+        "mpn": "UCC21520",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U2_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 450
+              }
+            ],
+            "sku": "example-UCC21520",
+            "stock": 1000,
+            "url": "https://example.com/UCC21520",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U3_example",
+        "component_refs": [
+          "comp:U3"
+        ],
+        "id": "bom:U3",
+        "lcsc": null,
+        "mpn": "UCC21520",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U3_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 450
+              }
+            ],
+            "sku": "example-UCC21520",
+            "stock": 1000,
+            "url": "https://example.com/UCC21520",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U4_example",
+        "component_refs": [
+          "comp:U4"
+        ],
+        "id": "bom:U4",
+        "lcsc": null,
+        "mpn": "UCC21520",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U4_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 450
+              }
+            ],
+            "sku": "example-UCC21520",
+            "stock": 1000,
+            "url": "https://example.com/UCC21520",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U5_example",
+        "component_refs": [
+          "comp:U5"
+        ],
+        "id": "bom:U5",
+        "lcsc": null,
+        "mpn": "INA240A2",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U5_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 200
+              }
+            ],
+            "sku": "example-INA240A2",
+            "stock": 1000,
+            "url": "https://example.com/INA240A2",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U6_example",
+        "component_refs": [
+          "comp:U6"
+        ],
+        "id": "bom:U6",
+        "lcsc": null,
+        "mpn": "INA240A2",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U6_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 200
+              }
+            ],
+            "sku": "example-INA240A2",
+            "stock": 1000,
+            "url": "https://example.com/INA240A2",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U7_example",
+        "component_refs": [
+          "comp:U7"
+        ],
+        "id": "bom:U7",
+        "lcsc": null,
+        "mpn": "INA240A2",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U7_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 200
+              }
+            ],
+            "sku": "example-INA240A2",
+            "stock": 1000,
+            "url": "https://example.com/INA240A2",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U8_example",
+        "component_refs": [
+          "comp:U8"
+        ],
+        "id": "bom:U8",
+        "lcsc": null,
+        "mpn": "AMC1311",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U8_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 550
+              }
+            ],
+            "sku": "example-AMC1311",
+            "stock": 1000,
+            "url": "https://example.com/AMC1311",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U9_example",
+        "component_refs": [
+          "comp:U9"
+        ],
+        "id": "bom:U9",
+        "lcsc": null,
+        "mpn": "SN65HVD230",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U9_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 120
+              }
+            ],
+            "sku": "example-SN65HVD230",
+            "stock": 1000,
+            "url": "https://example.com/SN65HVD230",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U10_example",
+        "component_refs": [
+          "comp:U10"
+        ],
+        "id": "bom:U10",
+        "lcsc": null,
+        "mpn": "LM5164",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U10_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 380
+              }
+            ],
+            "sku": "example-LM5164",
+            "stock": 1000,
+            "url": "https://example.com/LM5164",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U11_example",
+        "component_refs": [
+          "comp:U11"
+        ],
+        "id": "bom:U11",
+        "lcsc": null,
+        "mpn": "AP2112K-3.3",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U11_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 50
+              }
+            ],
+            "sku": "example-AP2112K-3.3",
+            "stock": 1000,
+            "url": "https://example.com/AP2112K-3.3",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U12_example",
+        "component_refs": [
+          "comp:U12"
+        ],
+        "id": "bom:U12",
+        "lcsc": null,
+        "mpn": "MCP6002",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U12_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 60
+              }
+            ],
+            "sku": "example-MCP6002",
+            "stock": 1000,
+            "url": "https://example.com/MCP6002",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U13_example",
+        "component_refs": [
+          "comp:U13"
+        ],
+        "id": "bom:U13",
+        "lcsc": null,
+        "mpn": "VNLD5090",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U13_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 300
+              }
+            ],
+            "sku": "example-VNLD5090",
+            "stock": 1000,
+            "url": "https://example.com/VNLD5090",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:U14_example",
+        "component_refs": [
+          "comp:U14"
+        ],
+        "id": "bom:U14",
+        "lcsc": null,
+        "mpn": "VNLD5090",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:U14_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 300
+              }
+            ],
+            "sku": "example-VNLD5090",
+            "stock": 1000,
+            "url": "https://example.com/VNLD5090",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:J1_example",
+        "component_refs": [
+          "comp:J1"
+        ],
+        "id": "bom:J1",
+        "lcsc": null,
+        "mpn": "640456-3",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:J1_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 30
+              }
+            ],
+            "sku": "example-640456-3",
+            "stock": 1000,
+            "url": "https://example.com/640456-3",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:J2_example",
+        "component_refs": [
+          "comp:J2"
+        ],
+        "id": "bom:J2",
+        "lcsc": null,
+        "mpn": "2199230-3",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:J2_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 80
+              }
+            ],
+            "sku": "example-2199230-3",
+            "stock": 1000,
+            "url": "https://example.com/2199230-3",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      },
+      {
+        "alternates": [],
+        "chosen_offer_ref": "offer:J3_example",
+        "component_refs": [
+          "comp:J3"
+        ],
+        "id": "bom:J3",
+        "lcsc": null,
+        "mpn": "640456-6",
+        "offers": [
+          {
+            "currency": "USD",
+            "fetched_at": "2026-11-06T00:00:00Z",
+            "id": "offer:J3_example",
+            "lead_time_days": 7,
+            "moq": 1,
+            "price_breaks": [
+              {
+                "qty": 1,
+                "unit_price_minor": 50
+              }
+            ],
+            "sku": "example-640456-6",
+            "stock": 1000,
+            "url": "https://example.com/640456-6",
+            "vendor": "other"
+          }
+        ],
+        "qty_per_unit": 1
+      }
+    ],
+    "budget": {
+      "per_unit_minor": 12000,
+      "total_minor": 24000
+    },
+    "build_qty": 2,
+    "currency": "USD"
+  }
+}
