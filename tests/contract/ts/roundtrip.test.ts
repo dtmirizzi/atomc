@@ -13,12 +13,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Bridge, REPO_ROOT } from "./helpers/bridge.js";
 import { pythonCanonical } from "./helpers/python.js";
 
-const EXAMPLES = [
-  "atomc-pad",
-  "atomc-keeb",
-  "atomc-drivetrain",
-  "atomc-cannode",
-] as const;
+const EXAMPLES = ["atomc-pad", "atomc-keeb", "atomc-drivetrain", "atomc-cannode"] as const;
 
 function examplePath(name: string): string {
   return resolve(REPO_ROOT, "examples", name, "system_ir.json");
