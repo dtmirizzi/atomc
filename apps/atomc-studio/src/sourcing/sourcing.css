@@ -1,0 +1,107 @@
+.srctable {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.srctable .panel__heading h3 {
+  margin: 4px 0 0;
+  font-size: 1rem;
+}
+
+.srctable__note {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.srctable__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.srctable__table th,
+.srctable__table td {
+  padding: 11px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+
+.srctable__table thead th {
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+  color: var(--quiet);
+  border-bottom: 1px solid var(--line);
+}
+
+.srctable__part {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: 500;
+}
+
+.srctable__part code {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.srctable__muted {
+  color: var(--muted);
+}
+
+.srctable__cost {
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+
+.srctable__lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 8px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.srctable__stock {
+  font-weight: 500;
+}
+
+.srctable__stock--in-stock {
+  color: var(--green);
+}
+
+.srctable__stock--low-stock {
+  color: var(--amber);
+}
+
+.srctable__stock--out-of-stock {
+  color: var(--red);
+}
+
+.srctable__stock--unknown {
+  color: var(--muted);
+}
+
+.srctable__status {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  text-transform: capitalize;
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.srctable__notice {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface-raised);
+}

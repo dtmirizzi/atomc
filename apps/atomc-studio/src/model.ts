@@ -1,4 +1,10 @@
 import type { AgentName, GateResult } from "@atomc/daemon-client";
+import type {
+  ComponentSummary,
+  FabricationSubtree,
+  OrdersSubtree,
+  SourcingSubtree,
+} from "./sourcing/types.js";
 
 export type ConnectionState = "connecting" | "connected" | "offline";
 export type RunState = "idle" | "queued" | "running" | "passed" | "failed" | "stale";
@@ -55,6 +61,14 @@ export interface BoardSnapshot {
   dataMode: DataMode;
   /** What the agent panels actually know; never inferred from gate ownership. */
   telemetry: TelemetryNotice;
+  /** IR `/sourcing` subtree, when a project carries one. Absent in most projects today. */
+  sourcing?: SourcingSubtree | null;
+  /** IR `/fabrication` subtree, when present. */
+  fabrication?: FabricationSubtree | null;
+  /** IR `/orders` subtree, when present. */
+  orders?: OrdersSubtree | null;
+  /** Minimal `/electrical/components` projection used to join BOM lines to footprints. */
+  components?: ComponentSummary[];
 }
 
 export interface StudioApi {
@@ -112,9 +126,14 @@ const specialists: AgentCard[] = [
 const gate = (
   id: string,
   status: GateResult["status"],
-  owner_agent: AgentName,
+  owner_agent: AgentName | null,
   summary: string,
   severity: GateResult["severity"] = "blocking",
+  detail: Pick<GateResult, "evidence" | "suggestions" | "refs"> = {
+    evidence: [],
+    suggestions: [],
+    refs: [],
+  },
 ): GateResult => ({
   id,
   status,
@@ -125,9 +144,7 @@ const gate = (
   ir_rev: 128,
   duration_ms: 340,
   summary,
-  evidence: [],
-  suggestions: [],
-  refs: [],
+  ...detail,
 });
 
 export function createDemoSnapshot(): BoardSnapshot {
@@ -172,6 +189,22 @@ export function createDemoSnapshot(): BoardSnapshot {
         "fw-agent",
         "Column pin C13 is absent from the IR",
         "blocking",
+        {
+          evidence: [
+            { kind: "json", message: "keyboard.matrix.col_pins does not list C13" },
+            { kind: "artifact", ref: "art:renode-matrix-scan" },
+          ],
+          suggestions: [
+            {
+              message: "Add C13 to keyboard.matrix.col_pins and re-run the matrix scan.",
+              patch: {
+                path: "/keyboard/matrix/col_pins",
+                ops: [{ op: "add", path: "/12", value: "C13" }],
+              },
+            },
+          ],
+          refs: ["key:K0_12", "pad:TP_COL13"],
+        },
       ),
       gate(
         "layout.testpads.nets_covered",
@@ -195,6 +228,81 @@ export function createDemoSnapshot(): BoardSnapshot {
       ),
     ],
     agents: structuredClone(specialists),
+    sourcing: {
+      currency: "USD",
+      build_qty: 5,
+      budget: { per_unit_minor: 4500, total_minor: 22500 },
+      bom: [
+        {
+          id: "bom:U1",
+          component_refs: ["comp:U1"],
+          mpn: "STM32F411CEU6",
+          qty_per_unit: 1,
+          chosen_offer_ref: "offer:U1_lcsc",
+          offers: [
+            {
+              id: "offer:U1_lcsc",
+              vendor: "lcsc",
+              sku: "C60442",
+              stock: 320,
+              lead_time_days: 7,
+              moq: 1,
+              price_breaks: [
+                { qty: 1, unit_price_minor: 420 },
+                { qty: 5, unit_price_minor: 390 },
+              ],
+              currency: "USD",
+              fetched_at: "2026-11-04T00:00:00Z",
+              url: "https://example.com/C60442",
+            },
+          ],
+        },
+        {
+          id: "bom:U2",
+          component_refs: ["comp:U2"],
+          mpn: "AP2112K-3.3TRG1",
+          qty_per_unit: 1,
+          chosen_offer_ref: "offer:U2_lcsc",
+          offers: [
+            {
+              id: "offer:U2_lcsc",
+              vendor: "lcsc",
+              sku: "C51118",
+              stock: 1500,
+              lead_time_days: 7,
+              moq: 1,
+              price_breaks: [{ qty: 1, unit_price_minor: 8 }],
+              currency: "USD",
+              fetched_at: "2026-11-04T00:00:00Z",
+            },
+          ],
+        },
+        {
+          id: "bom:J1",
+          component_refs: ["comp:J1"],
+          mpn: "USB4085-GF-A",
+          qty_per_unit: 1,
+          offers: [
+            {
+              id: "offer:J1_lcsc",
+              vendor: "lcsc",
+              sku: "C165948",
+              stock: 40,
+              lead_time_days: 14,
+              moq: 1,
+              price_breaks: [{ qty: 1, unit_price_minor: 95 }],
+              currency: "USD",
+              fetched_at: "2026-11-04T00:00:00Z",
+            },
+          ],
+        },
+      ],
+    },
+    components: [
+      { id: "comp:U1", designator: "U1", mpn: "STM32F411CEU6", footprint: "QFN-48_7x7mm" },
+      { id: "comp:U2", designator: "U2", mpn: "AP2112K-3.3TRG1", footprint: "SOT-23-5" },
+      { id: "comp:J1", designator: "J1", mpn: "USB4085-GF-A", footprint: "USB-C-16P" },
+    ],
     dataMode: "demo",
     telemetry: {
       kind: "demo",
