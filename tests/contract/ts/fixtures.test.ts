@@ -13,6 +13,7 @@ const VALID_DIRS = [
   resolve(REPO_ROOT, "packages/core-ir/fixtures"),
   resolve(REPO_ROOT, "examples/atomc-pad"),
   resolve(REPO_ROOT, "examples/atomc-keeb"),
+  resolve(REPO_ROOT, "examples/atomc-drivetrain"),
 ];
 
 const INVALID_DIR = resolve(REPO_ROOT, "packages/core-ir/fixtures/invalid");
