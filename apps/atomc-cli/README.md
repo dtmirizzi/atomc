@@ -15,19 +15,19 @@ The binary name is `atomc` when invoked from the built package. Until publicatio
 
 ## Commands
 
-| Command                            | Status   | Description                                                                                                        |
-| ---------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| `atomc init <dir>`                 | working  | scaffold a project from `examples/atomc-pad` (or `--template <name>`); refuses a non-empty target unless `--force` |
-| `atomc doctor`                     | working  | check the CLI, running daemon/schema, plugin load, and local toolchains                                            |
-| `atomc daemon start\|status\|stop` | working  | manage the `atomcd` daemon via `@atomc/daemon-client`                                                              |
-| `atomc plugin list`                | working  | list plugins loaded by the daemon (`--json`)                                                                       |
-| `atomc plugin new <name>`          | working  | scaffold a manifest + entrypoint + test, validated by `@atomc/plugin-sdk`                                          |
+| Command                            | Status   | Description                                                                                                         |
+| ---------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `atomc init <dir>`                 | working  | scaffold a project from `examples/atomc-pad` (or `--template <name>`); refuses a non-empty target unless `--force`  |
+| `atomc doctor`                     | working  | check the CLI, running daemon/schema, plugin load, and local toolchains                                             |
+| `atomc daemon start\|status\|stop` | working  | manage the `atomcd` daemon via `@atomc/daemon-client`                                                               |
+| `atomc plugin list`                | working  | list plugins loaded by the daemon (`--json`)                                                                        |
+| `atomc plugin new <name>`          | working  | scaffold a manifest + entrypoint + test, validated by `@atomc/plugin-sdk`                                           |
 | `atomc build [target]`             | working  | start/attach to daemon, request DAG run, wait for status and report actual gates. Hardware outputs require plugins. |
-| `atomc sim`                        | stub     | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                            |
-| `atomc jig`                        | stub     | pogo jig / plate / case generation — reports status, never PASS                                                    |
-| `atomc quote`                      | stub     | BOM + fab quotes — reports status, never PASS                                                                      |
-| `atomc orders`                     | stub     | order placement — reports status, never PASS                                                                       |
-| `atomc converge`                   | working* | invokes a trusted convergence runtime; reports honest unavailable status when none is configured                   |
+| `atomc sim`                        | stub     | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                             |
+| `atomc jig`                        | stub     | pogo jig / plate / case generation — reports status, never PASS                                                     |
+| `atomc quote`                      | stub     | BOM + fab quotes — reports status, never PASS                                                                       |
+| `atomc orders`                     | stub     | order placement — reports status, never PASS                                                                        |
+| `atomc converge`                   | working* | invokes a trusted convergence runtime; reports honest unavailable status when none is configured                    |
 
 Implemented commands support `--json`. They emit one JSON object on stdout; diagnostics go to
 stderr. Stub commands return structured status and exit 3. *The CLI package does not configure a
