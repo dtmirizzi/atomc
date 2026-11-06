@@ -31,6 +31,24 @@ export {
   routeGateToAgents,
   SHARED_AGENT_RULES,
 } from "./agents/index.js";
+export {
+  type CheckpointContext,
+  type CheckpointDecision,
+  type CheckpointReason,
+  type ConvergeAuditEntry,
+  type ConvergeEvent,
+  type ConvergenceModelHost,
+  type ConvergenceRegistry,
+  type ConvergeOptions,
+  type ConvergeResult,
+  type ConvergeStatus,
+  converge,
+  defaultIsConverged,
+  type ProviderFactory,
+  type RollbackPolicy,
+  scopesOverlap,
+  splitBudget,
+} from "./converge.js";
 export { DaemonClientAdapter } from "./daemon-adapter.js";
 export {
   ALLOWED_IMAGE_MIME_TYPES,

@@ -83,6 +83,37 @@ export interface DaemonProbe {
   detail: string;
 }
 
+/** Minimal, secret-free summary accepted from an injected swarm runtime. */
+export interface ConvergenceRunReport {
+  status: "converged" | "accepted" | "escalated" | "budget_exhausted" | "aborted";
+  rounds: number;
+  costMinor: number;
+  tokens: number;
+  gateResults: GateResult[];
+  failures: GateResult[];
+  reasons: string[];
+  runs: Array<{
+    outcome: string;
+    session: { agentId: string };
+    turns: number;
+    costMinor: number;
+    reason?: string;
+  }>;
+  runId: string;
+}
+
+export interface ConvergenceRunRequest {
+  projectRoot: string;
+  maxRounds: number;
+  maxCostMinor: number;
+  signal: AbortSignal;
+}
+
+/** Runtime is injected by the host so CLI tests never instantiate live model providers. */
+export interface ConvergenceRuntime {
+  run(request: ConvergenceRunRequest): Promise<ConvergenceRunReport>;
+}
+
 /** Dependency bundle consumed by every command. */
 export interface CliDeps {
   io: CliIO;
@@ -101,6 +132,8 @@ export interface CliDeps {
   probeDaemon(): Promise<DaemonProbe>;
   /** Probe local toolchains (uv, ato, qmk, build123d, Renode). */
   probeTools(): Promise<ToolProbe[]>;
+  /** Optional convergence runtime. Absence is reported as unavailable, never a fake PASS. */
+  convergenceRuntime?: ConvergenceRuntime;
   /** CLI version; must match `scripts/release/VERSION`. */
   cliVersion: string;
 }

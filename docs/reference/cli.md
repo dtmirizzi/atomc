@@ -18,7 +18,7 @@ node apps/atomc-cli/dist/index.js <command> [options]
 | `plugin list`                   | List daemon-discovered plugins.                                                                                     |
 | `plugin new <name>`             | Scaffold a manifest and entrypoints validated by the SDK.                                                           |
 | `sim`, `jig`, `quote`, `orders` | Structured capability stubs; exit 3 and never report PASS.                                                          |
-| `converge`                      | Implemented on `wp/3.4-harness-converge` (under review): runs an injected convergence runtime; honest `unavailable` (exit 3) without one. |
+| `converge`                      | Implemented (WP-3.4): runs an injected convergence runtime; honest `unavailable` (exit 3) without one. |
 
 ## Options
 
