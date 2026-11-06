@@ -10,61 +10,46 @@
   "watches": [
     {
       "id": "cad:generate",
-      "ir": [
-        "/mechanical",
-        "/layout"
-      ],
+      "ir": ["/mechanical", "/layout"],
       "files": [],
       "debounce_ms": 250
     }
   ],
-  "produces": [
-    "/mechanical"
-  ],
+  "produces": ["/mechanical"],
   "gates": [
     {
       "id": "gate:mech.plate_switch_cutouts_14mm",
       "severity": "blocking",
       "owner_agent": "mech-agent",
-      "after": [
-        "cad:generate"
-      ],
+      "after": ["cad:generate"],
       "handler": "check_plate_switch_cutouts"
     },
     {
       "id": "gate:mech.case_usb_cutout_aligned",
       "severity": "blocking",
       "owner_agent": "mech-agent",
-      "after": [
-        "cad:generate"
-      ],
+      "after": ["cad:generate"],
       "handler": "check_case_usb_cutout_aligned"
     },
     {
       "id": "gate:mech.pogo_spacing_ge_2p54",
       "severity": "blocking",
       "owner_agent": "mech-agent",
-      "after": [
-        "cad:generate"
-      ],
+      "after": ["cad:generate"],
       "handler": "check_pogo_spacing"
     },
     {
       "id": "gate:mech.jig_no_collision",
       "severity": "blocking",
       "owner_agent": "mech-agent",
-      "after": [
-        "cad:generate"
-      ],
+      "after": ["cad:generate"],
       "handler": "check_jig_no_collision"
     },
     {
       "id": "gate:mech.enclosure_clearance",
       "severity": "blocking",
       "owner_agent": "mech-agent",
-      "after": [
-        "cad:generate"
-      ],
+      "after": ["cad:generate"],
       "handler": "check_enclosure_clearance"
     }
   ],
@@ -79,12 +64,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "plate",
-                "case",
-                "jig",
-                "pcb"
-              ]
+              "enum": ["plate", "case", "jig", "pcb"]
             },
             "minItems": 1
           },
@@ -92,10 +72,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "step",
-                "stl"
-              ]
+              "enum": ["step", "stl"]
             },
             "minItems": 1
           },
@@ -105,9 +82,7 @@
         },
         "additionalProperties": false
       },
-      "agents": [
-        "mech-agent"
-      ],
+      "agents": ["mech-agent"],
       "mutates": true,
       "handler": "generate"
     }

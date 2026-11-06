@@ -861,11 +861,7 @@
         "ir_rev": 3,
         "owner_agent": "ops-agent",
         "plugin": "plugin:sourcing@0.1.0",
-        "refs": [
-          "comp:U1",
-          "comp:U2",
-          "comp:J1"
-        ],
+        "refs": ["comp:U1", "comp:U2", "comp:J1"],
         "severity": "blocking",
         "status": "PASS",
         "suggestions": [],
@@ -1006,18 +1002,10 @@
       }
     ],
     "matrix": {
-      "col_pins": [
-        "A0",
-        "A1",
-        "A2"
-      ],
+      "col_pins": ["A0", "A1", "A2"],
       "cols": 3,
       "diode_direction": "COL2ROW",
-      "row_pins": [
-        "B12",
-        "B13",
-        "B14"
-      ],
+      "row_pins": ["B12", "B13", "B14"],
       "rows": 3
     },
     "qmk": {
@@ -1071,24 +1059,7 @@
       }
     ],
     "outline": {
-      "polygon": [
-        [
-          0.0,
-          0.0
-        ],
-        [
-          80.0,
-          0.0
-        ],
-        [
-          80.0,
-          80.0
-        ],
-        [
-          0.0,
-          80.0
-        ]
-      ],
+      "polygon": [[0.0, 0.0], [80.0, 0.0], [80.0, 80.0], [0.0, 80.0]],
       "thickness_mm": 1.6
     },
     "placements": [
@@ -1456,29 +1427,13 @@
     "component_bboxes": [
       {
         "component_ref": "comp:U1",
-        "max": [
-          45.0,
-          45.0,
-          1.2
-        ],
-        "min": [
-          35.0,
-          35.0,
-          0.0
-        ]
+        "max": [45.0, 45.0, 1.2],
+        "min": [35.0, 35.0, 0.0]
       },
       {
         "component_ref": "comp:J1",
-        "max": [
-          8.0,
-          42.0,
-          3.0
-        ],
-        "min": [
-          2.0,
-          38.0,
-          0.0
-        ]
+        "max": [8.0, 42.0, 3.0],
+        "min": [2.0, 38.0, 0.0]
       }
     ],
     "enclosure": {
@@ -1495,16 +1450,8 @@
       "spring_force_n": 0.5
     },
     "pcb_bbox": {
-      "max": [
-        80.0,
-        80.0,
-        1.6
-      ],
-      "min": [
-        0.0,
-        0.0,
-        0.0
-      ]
+      "max": [80.0, 80.0, 1.6],
+      "min": [0.0, 0.0, 0.0]
     },
     "plate": {
       "cutout_mm": 14.0,
@@ -1569,9 +1516,7 @@
       {
         "alternates": [],
         "chosen_offer_ref": "offer:U1_lcsc",
-        "component_refs": [
-          "comp:U1"
-        ],
+        "component_refs": ["comp:U1"],
         "id": "bom:U1",
         "lcsc": "C60442",
         "mpn": "STM32F411CEU6",
@@ -1603,9 +1548,7 @@
       {
         "alternates": [],
         "chosen_offer_ref": "offer:U2_lcsc",
-        "component_refs": [
-          "comp:U2"
-        ],
+        "component_refs": ["comp:U2"],
         "id": "bom:U2",
         "lcsc": "C51118",
         "mpn": "AP2112K-3.3TRG1",
@@ -1632,9 +1575,7 @@
       {
         "alternates": [],
         "chosen_offer_ref": "offer:J1_lcsc",
-        "component_refs": [
-          "comp:J1"
-        ],
+        "component_refs": ["comp:J1"],
         "id": "bom:J1",
         "lcsc": "C165948",
         "mpn": "USB4085-GF-A",

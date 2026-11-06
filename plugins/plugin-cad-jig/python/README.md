@@ -12,13 +12,13 @@ installed) exports STEP/STL artifacts through the `cad-jig:generate` tool.
   - pogo receptacle positions from `/layout` test pads and alignment pins from mounting holes.
 - **Gates** (`gates.py`, pure functions over the derived models — no CAD import needed):
 
-  | Gate id | Checks |
-  | --- | --- |
-  | `gate:mech.plate_switch_cutouts_14mm` | 14 mm cutouts on a 19.05 mm grid |
-  | `gate:mech.case_usb_cutout_aligned` | USB-C cutout on the connector's board edge, centred |
-  | `gate:mech.pogo_spacing_ge_2p54` | pogo receptacle pitch ≥ 2.54 mm |
-  | `gate:mech.jig_no_collision` | pogo drills and alignment pins clear the 2D footprint |
-  | `gate:mech.enclosure_clearance` | walls/clearance and components fit the cavity |
+  | Gate id                               | Checks                                                |
+  | ------------------------------------- | ----------------------------------------------------- |
+  | `gate:mech.plate_switch_cutouts_14mm` | 14 mm cutouts on a 19.05 mm grid                      |
+  | `gate:mech.case_usb_cutout_aligned`   | USB-C cutout on the connector's board edge, centred   |
+  | `gate:mech.pogo_spacing_ge_2p54`      | pogo receptacle pitch ≥ 2.54 mm                       |
+  | `gate:mech.jig_no_collision`          | pogo drills and alignment pins clear the 2D footprint |
+  | `gate:mech.enclosure_clearance`       | walls/clearance and components fit the cavity         |
 
 - **Tool** `generate`: builds solids with `build123d` **only when importable** and records the
   exported STEP/STL artifacts into `/mechanical`. Without `build123d` it returns an explicit
