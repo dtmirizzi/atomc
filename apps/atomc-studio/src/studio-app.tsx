@@ -5,6 +5,7 @@ import {
   ArrowDownToLine,
   ArrowRight,
   ArrowUpRight,
+  Box,
   Boxes,
   Check,
   CheckCircle2,
@@ -49,8 +50,9 @@ import type {
   TelemetryNotice,
 } from "./model.js";
 import { createDemoApi } from "./model.js";
+import { Viewer3DView } from "./viewer3d/Viewer3DView.js";
 
-type ViewId = "overview" | "pipeline" | "gates" | "agents" | "artifacts";
+type ViewId = "overview" | "pipeline" | "gates" | "agents" | "artifacts" | "viewer3d";
 type GateFilter = "all" | "failed" | "passed" | "skipped";
 
 const navItems: Array<{ id: ViewId; label: string; icon: LucideIcon; count?: string }> = [
@@ -59,6 +61,7 @@ const navItems: Array<{ id: ViewId; label: string; icon: LucideIcon; count?: str
   { id: "gates", label: "Gate results", icon: ShieldCheck, count: "1" },
   { id: "agents", label: "Agent team", icon: Sparkles },
   { id: "artifacts", label: "Artifacts", icon: Boxes },
+  { id: "viewer3d", label: "3D viewer", icon: Box },
 ];
 
 const stateLabels: Record<RunState, string> = {
@@ -1258,6 +1261,7 @@ export function StudioApp(props: StudioAppProps) {
             {activeView === "artifacts" && (
               <ArtifactView nodes={snapshot.nodes} isDemo={isDemo} revision={snapshot.revision} />
             )}
+            {activeView === "viewer3d" && <Viewer3DView snapshot={snapshot} />}
             <footer className="workspace-footer">
               <span>
                 <LockKeyhole size={12} />
