@@ -21,13 +21,16 @@ import type { DaemonClient, GateResult } from "@atomc/daemon-client";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DaemonHarness, dagNodeIds, EXPECTED_PLUGINS, gatesById, runFullDag } from "./harness.js";
 
-/** DAG nodes derived from the four plugins' manifests (5 watches + 13 gates). */
+/** DAG nodes derived from the six plugins' manifests (8 watches + 13 gates). */
 const WATCH_NODES = [
   "atopile:build",
   "cad:generate",
   "qmk:firmware",
   "qmk:keyboard",
   "renode:generate",
+  "sourcing:refresh",
+  "orders:sourcing",
+  "orders:ledger",
 ] as const;
 
 const GATE_NODES = [
@@ -112,7 +115,7 @@ describe("atomc build vertical slice over the real daemon", () => {
     await harness.assertProcessDead();
   });
 
-  it("discovers all four plugins with no load errors", async () => {
+  it("discovers all six plugins with no load errors", async () => {
     const plugins = await client.listPlugins();
     const byName = new Map(plugins.map((plugin) => [plugin.name, plugin]));
     for (const name of EXPECTED_PLUGINS) {
@@ -123,7 +126,7 @@ describe("atomc build vertical slice over the real daemon", () => {
     }
   });
 
-  it("derives the expected watch + gate DAG from the four plugin manifests", async () => {
+  it("derives the expected watch + gate DAG from the six plugin manifests", async () => {
     const status = await client.dagStatus();
     const ids = new Set(dagNodeIds(status));
     for (const id of [...WATCH_NODES, ...GATE_NODES]) {
