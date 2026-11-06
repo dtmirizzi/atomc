@@ -169,20 +169,88 @@ describe("Atomc Studio workspace", () => {
     expect(screen.getByRole("heading", { name: "Artifacts" })).toBeInTheDocument();
   });
 
+  it("labels demo telemetry on the agents view and never implies live agent sessions", async () => {
+    await openStudio();
+    fireEvent.click(screen.getAllByRole("button", { name: "Agent team" })[0] as HTMLElement);
+    expect(screen.getByText("Simulated specialist activity.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Sample agent states, tasks and spend are illustrative only; no agent runs or model spend occurred.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("renders pipeline nodes without connectors that imply dependency edges", async () => {
+    const { container } = await openStudio();
+    fireEvent.click(screen.getAllByRole("button", { name: "Build graph" })[0] as HTMLElement);
+    expect(container.querySelector(".pipeline-connector")).toBeNull();
+    expect(container.querySelector(".run-id")).toBeNull();
+    expect(screen.getByText(/Dependency edges are not included\./)).toBeInTheDocument();
+    expect(screen.getByText("6 nodes")).toBeInTheDocument();
+  });
+
+  it("derives the pipeline status badge from actual node states", async () => {
+    const snapshot = createDemoSnapshot();
+    for (const node of snapshot.nodes) {
+      node.state = "passed";
+    }
+    await openStudio(fixtureApi(snapshot));
+    fireEvent.click(screen.getAllByRole("button", { name: "Build graph" })[0] as HTMLElement);
+    expect(screen.getByText("Idle")).toBeInTheDocument();
+  });
+
+  it("shows the real snapshot revision and node-derived artifact rows", async () => {
+    await openStudio();
+    fireEvent.click(screen.getAllByRole("button", { name: "Artifacts" })[0] as HTMLElement);
+    expect(screen.getByText("IR r128")).toBeInTheDocument();
+    expect(screen.getByText("atopile.compile output")).toBeInTheDocument();
+    expect(screen.getByText("qmk.compile output")).toBeInTheDocument();
+    expect(screen.queryByText("atomc-keeb-firmware.zip")).not.toBeInTheDocument();
+    expect(screen.queryByText("atomc-keeb-electrical.zip")).not.toBeInTheDocument();
+  });
+
+  it("labels daemon-mode agent panels as unavailable telemetry", async () => {
+    const snapshot = createDemoSnapshot();
+    snapshot.dataMode = "daemon";
+    snapshot.telemetry = {
+      kind: "unavailable",
+      label: "Agent telemetry unavailable",
+      detail:
+        "The daemon RPC does not expose agent sessions or spend. These values are placeholders, not inferred from gate ownership.",
+    };
+    for (const agent of snapshot.agents) {
+      agent.state = "idle";
+      agent.spentCents = 0;
+      agent.task = "Agent runs are not connected yet";
+    }
+    await openStudio(fixtureApi(snapshot), false);
+    fireEvent.click(screen.getAllByRole("button", { name: "Agent team" })[0] as HTMLElement);
+    expect(screen.getByText("Agent telemetry unavailable.")).toBeInTheDocument();
+    expect(screen.getByText(/placeholders, not inferred from gate ownership/i)).toBeInTheDocument();
+  });
+
   it("uses cloned demo snapshots and records a local, clearly labeled demo build", async () => {
     const api = createDemoApi(() => new Date("2026-11-04T12:30:00Z"));
     const first = await api.load();
+    expect(first.dataMode).toBe("demo");
+    expect(first.telemetry).toMatchObject({
+      kind: "demo",
+      label: "Simulated specialist activity",
+    });
+    expect(first.telemetry.detail).toContain("no agent runs or model spend occurred");
+    expect(first.lastBuild).toBe("Simulated · nothing was built");
     const firstAgent = first.agents[0];
     if (!firstAgent) throw new Error("demo fixture must contain an electrical agent");
     firstAgent.label = "mutated by consumer";
     const second = await api.load();
     expect(second.agents[0]?.label).toBe("Electrical");
     const built = await api.runBuild();
-    expect(built.lastBuild).toBe("just now");
-    expect(built.activity[0]?.title).toBe("Build queued");
+    expect(built.lastBuild).toBe("Simulated · nothing was built");
+    expect(built.activity[0]?.title).toBe("Preview: build action selected");
+    expect(built.activity[0]?.detail).toBe("No daemon was called and no build was queued.");
     expect(built.activity[0]?.time).toBe("12:30:00 PM");
     expect(built.activity[0]?.id).toBe("build-1793795400000");
-    expect((await api.load()).activity[0]?.title).toBe("Build queued");
+    expect((await api.load()).activity[0]?.title).toBe("Preview: build action selected");
   });
 
   it("renders an unowned gate with the documented electrical-owner fallback", async () => {

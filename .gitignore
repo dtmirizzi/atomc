@@ -25,3 +25,4 @@ examples/**/build/
 # coverage
 .coverage
 htmlcov/
+apps/atomc-studio/test-results/
