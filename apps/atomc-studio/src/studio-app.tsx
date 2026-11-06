@@ -49,8 +49,9 @@ import type {
   TelemetryNotice,
 } from "./model.js";
 import { createDemoApi } from "./model.js";
+import { TelemetryView } from "./telemetry/TelemetryView.js";
 
-type ViewId = "overview" | "pipeline" | "gates" | "agents" | "artifacts";
+type ViewId = "overview" | "pipeline" | "gates" | "agents" | "artifacts" | "telemetry";
 type GateFilter = "all" | "failed" | "passed" | "skipped";
 
 const navItems: Array<{ id: ViewId; label: string; icon: LucideIcon; count?: string }> = [
@@ -59,6 +60,7 @@ const navItems: Array<{ id: ViewId; label: string; icon: LucideIcon; count?: str
   { id: "gates", label: "Gate results", icon: ShieldCheck, count: "1" },
   { id: "agents", label: "Agent team", icon: Sparkles },
   { id: "artifacts", label: "Artifacts", icon: Boxes },
+  { id: "telemetry", label: "Telemetry", icon: TerminalSquare },
 ];
 
 const stateLabels: Record<RunState, string> = {
@@ -1258,6 +1260,7 @@ export function StudioApp(props: StudioAppProps) {
             {activeView === "artifacts" && (
               <ArtifactView nodes={snapshot.nodes} isDemo={isDemo} revision={snapshot.revision} />
             )}
+            {activeView === "telemetry" && <TelemetryView mode={snapshot.dataMode} />}
             <footer className="workspace-footer">
               <span>
                 <LockKeyhole size={12} />
