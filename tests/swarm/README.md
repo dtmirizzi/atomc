@@ -9,12 +9,12 @@ test here spawns `atomcd serve` with `uv run`, connects the real
 
 ## Layout
 
-| Path | Responsibility |
-| --- | --- |
-| `ts/harness.ts` | Throwaway project + state dir, canonical IR fixture, fake plugin, real `atomcd serve` spawn, `/health` wait, token-redacted logs, `finally`-safe teardown. Copied from the WP-2.6 `tests/rpc` pattern, not imported across suites. |
-| `ts/fixtures/fake-plugin.ts` | Deterministic fake Python plugin (one watch, one blocking gate `gate:swarm-e2e.ready`, one read tool). The gate passes only when `/electrical/nets` is non-empty. |
-| `ts/fixtures/ir.ts` | Minimal `/electrical` node and the net the scripted provider appends. |
-| `ts/converge.e2e.test.ts` | Three `converge()` E2E paths over real RPC. |
+| Path                         | Responsibility                                                                                                                                                                                                                     |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ts/harness.ts`              | Throwaway project + state dir, canonical IR fixture, fake plugin, real `atomcd serve` spawn, `/health` wait, token-redacted logs, `finally`-safe teardown. Copied from the WP-2.6 `tests/rpc` pattern, not imported across suites. |
+| `ts/fixtures/fake-plugin.ts` | Deterministic fake Python plugin (one watch, one blocking gate `gate:swarm-e2e.ready`, one read tool). The gate passes only when `/electrical/nets` is non-empty.                                                                  |
+| `ts/fixtures/ir.ts`          | Minimal `/electrical` node and the net the scripted provider appends.                                                                                                                                                              |
+| `ts/converge.e2e.test.ts`    | Three `converge()` E2E paths over real RPC.                                                                                                                                                                                        |
 
 ## What the spec covers
 
