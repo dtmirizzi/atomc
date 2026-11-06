@@ -43,4 +43,4 @@ uv run mypy plugins/plugin-renode/python/src
 
 Tests need **no** Renode install: the subprocess runner is injected with a fake in tests.
 
-See [`docs/hil-checklist.md`](docs/hil-checklist.md) for what must be proven on real hardware.
+See `docs/hil-checklist.md` in this package for what must be proven on real hardware.
