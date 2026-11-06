@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phases 2–4 are complete (PRs #9–#16). Phase 5's plugin layer is merged (PRs #17/#18): vendor sourcing adapters with synthetic cassettes, the pure offer optimizer with bom.* gates, JLCPCB fab quotes with the fab gate, and the draft-only orders ledger with mock carrier tracking.** **Phase 5 is complete.** Live vendor calls require credentials that do not exist — adapters fail closed honestly; Phase 6 (physical prototyping, bring-up, 1.0) remains open.
+Status: **Phases 2–4 are complete (PRs #9–#16). Phase 5's plugin layer is merged (PRs #17/#18): vendor sourcing adapters with synthetic cassettes, the pure offer optimizer with bom.* gates, JLCPCB fab quotes with the fab gate, and the draft-only orders ledger with mock carrier tracking.** **Phase 5 is complete.** Non-keyboard examples landed in PR #21 (`atomc-drivetrain`, modeled on openinverter; `atomc-cannode`), together with the honesty repairs found by context-free onboarding agents (boot-banner path matching, ERC refs persistence, domain-SKIP semantics, daemon project binding, init bootstrap). Live vendor calls require credentials that do not exist — adapters fail closed honestly; Phase 6 (physical prototyping, bring-up, 1.0) remains open.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
