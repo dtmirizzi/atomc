@@ -5,7 +5,7 @@
 > live BOM / fab quotes → tracked orders. It is driven by a reactive hardware DAG and a transactional,
 > gate-driven multi-agent swarm harness.
 
-Status: **Phases 2 and 3 are complete (PRs #9–#14): CLI, harness core with specialist agents, replay + convergence, Studio with 3D/telemetry/gate-board views, real-daemon RPC E2E, and four hardware plugins (atopile, renode, qmk, cad-jig).** The Phase 4 vertical slice (WP-4.4/4.5) is in flight; Phase 5 sourcing and Phase 6 hardening require vendor and physical-world integration.
+Status: **Phases 2–4 are complete (PRs #9–#16): CLI, swarm harness (specialists, replay, convergence), Studio (3D/telemetry/gate-board, honest data labeling), real-daemon RPC E2E, four hardware plugins (atopile, renode, qmk, cad-jig), fixture firmware with real QMK compiles, and the atomc-pad vertical slice E2E.** Phase 5 (sourcing/fab/orders) requires vendor adapters and credentials; Phase 6 requires physical prototyping — both remain open.
 This document is the single source of truth for scope, decisions, work breakdown, and sub-agent
 orchestration. Update it when a decision changes; do not fork copies.
 
@@ -388,8 +388,8 @@ Phase 2 execution record: WP-2.1/2.2/2.3/2.5 were integrated together in PR #6 a
 **WP-4.2 `plugin-renode`** — **merged in PR #13:** IR → `.repl` (STM32F411 platform + supported GPIO/UART) + `.resc`; Byte-deterministic script derivation with goldens; boot gate checks banner/no-HardFault via headless Renode; matrix_scan declared SKIP pending HIL. 48 tests; real Renode 1.17 smoke recorded. Matrix-injection tests require a proven GPIO model and a QMK-emulation keymap; USB HID is **not** assumed emulated. Unsupported features produce an explicit `SKIP` with evidence, never a false `PASS`. Provide a recorded-HIL checklist and leave full matrix/USB assertions to a connected board + pogo fixture until proven simulatable.
 **WP-4.2b `plugin-qmk`** — **merged in PR #14:** IR → `keyboards/atomc/<name>/keyboard.json` (matrix pins, diode direction, layout geometry, USB ids) + default keymap with byte-for-byte goldens; `qmk compile` gate records artifact shas into `/firmware`, honest SKIP without a toolchain. 39 tests.
 **WP-4.3 `plugin-cad-jig`** — **merged in PR #14:** pure parametric derivation + five always-runnable mechanical gates; build123d solids only when importable: PCB solid from outline, component bboxes; pogo-pin bed-of-nails jig (P75 receptacles, alignment pins on mounting holes, clamshell lid); **switch plate** (14 mm cutouts at 19.05 mm pitch from IR switch placements), **case** (tray mount, USB-C cutout aligned to connector); collision + spacing gates; export `.step/.stl/.glb` + PNG renders (for multimodal agents).
-**WP-4.4 `example-firmware`** (briefed, in flight) — QMK keymaps for pad + keeb (layers, optional debug console on UART for emulation builds via `keymaps/renode`), QMK compile tests; HIL test script/checklist for every key position, USB HID and bootloader.
-**WP-4.5 `e2e-vertical-slice`** (briefed, in flight) — `atomc build` on `atomc-pad`, then `atomc-keeb`, yields IR + QMK firmware + `.repl` + plate/case/jig `.step`; goldens; docs walkthrough with embedded GLB.
+**WP-4.4 `example-firmware`** — **merged in PR #16:** QMK keymaps for pad + keeb (layers, optional debug console on UART for emulation builds via `keymaps/renode`), All five keymaps compile against a real QMK 1.2.0 tree (results in the handoff); HIL checklists for every key position, USB HID and bootloader explicitly require the physical board + jig.
+**WP-4.5 `e2e-vertical-slice`** — **merged in PR #15:** `atomc build` on `atomc-pad`, then `atomc-keeb`, Real-daemon E2E (7 tests): all four plugins discovered via entry points, 18-node DAG runs every watch and gate, outcomes asserted against real IR state, failure honesty proven by a transacted single-pin net.
 
 ### Phase 5 — Supply chain & logistics
 
