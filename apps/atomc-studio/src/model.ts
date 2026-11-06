@@ -31,6 +31,16 @@ export interface ActivityItem {
   tone: "success" | "info" | "warning" | "neutral";
 }
 
+/** Where a snapshot's data comes from, so the UI never implies more than it knows. */
+export type DataMode = "demo" | "daemon";
+
+/** Honest labeling for data Studio cannot currently source. */
+export interface TelemetryNotice {
+  kind: "demo" | "unavailable";
+  label: string;
+  detail: string;
+}
+
 export interface BoardSnapshot {
   projectName: string;
   projectPath: string;
@@ -41,6 +51,10 @@ export interface BoardSnapshot {
   gates: GateResult[];
   agents: AgentCard[];
   activity: ActivityItem[];
+  /** "demo" snapshots are illustrative; "daemon" snapshots come from RPC reads. */
+  dataMode: DataMode;
+  /** What the agent panels actually know; never inferred from gate ownership. */
+  telemetry: TelemetryNotice;
 }
 
 export interface StudioApi {
@@ -122,7 +136,7 @@ export function createDemoSnapshot(): BoardSnapshot {
     projectPath: "~/work/atomc/examples/atomc-keeb",
     connection: "offline",
     revision: 128,
-    lastBuild: "2m ago",
+    lastBuild: "Simulated · nothing was built",
     nodes: [
       {
         id: "atopile.compile",
@@ -181,6 +195,13 @@ export function createDemoSnapshot(): BoardSnapshot {
       ),
     ],
     agents: structuredClone(specialists),
+    dataMode: "demo",
+    telemetry: {
+      kind: "demo",
+      label: "Simulated specialist activity",
+      detail:
+        "Sample agent states, tasks and spend are illustrative only; no agent runs or model spend occurred.",
+    },
     activity: [
       {
         id: "a-1",
@@ -230,13 +251,12 @@ export function createDemoApi(now: () => Date = () => new Date()): StudioApi {
     async runBuild() {
       snapshot = {
         ...snapshot,
-        lastBuild: "just now",
         activity: [
           {
             id: `build-${now().getTime()}`,
             time: now().toLocaleTimeString("en-US", { timeZone: "UTC" }),
-            title: "Build queued",
-            detail: "DAG run requested from Studio",
+            title: "Preview: build action selected",
+            detail: "No daemon was called and no build was queued.",
             tone: "info",
           },
           ...snapshot.activity,

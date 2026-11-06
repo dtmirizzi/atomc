@@ -1,5 +1,11 @@
 import type { AgentName, GateResult } from "@atomc/daemon-client";
-import type { AgentCard, BoardSnapshot, DagNode, RunState, StudioApi } from "./model.js";
+import type {
+  AgentCard,
+  BoardSnapshot,
+  DagNode,
+  RunState,
+  StudioApi,
+} from "./model.js";
 
 /** Browser-safe subset of the daemon client methods used by Studio. */
 export interface StudioRpcClient {
@@ -35,7 +41,7 @@ const agents: AgentCard[] = [
     initials: "EE",
     specialty: "Circuit & PCB",
     state: "idle",
-    task: "Ready",
+    task: "Agent runs are not connected yet",
     spentCents: 0,
     capCents: 75,
     tint: "violet",
@@ -46,7 +52,7 @@ const agents: AgentCard[] = [
     initials: "FW",
     specialty: "QMK & simulation",
     state: "idle",
-    task: "Ready",
+    task: "Agent runs are not connected yet",
     spentCents: 0,
     capCents: 75,
     tint: "cyan",
@@ -57,7 +63,7 @@ const agents: AgentCard[] = [
     initials: "ME",
     specialty: "Case & test jig",
     state: "idle",
-    task: "Ready",
+    task: "Agent runs are not connected yet",
     spentCents: 0,
     capCents: 50,
     tint: "amber",
@@ -68,7 +74,7 @@ const agents: AgentCard[] = [
     initials: "SC",
     specialty: "BOM & fabrication",
     state: "idle",
-    task: "Ready",
+    task: "Agent runs are not connected yet",
     spentCents: 0,
     capCents: 50,
     tint: "green",
@@ -132,10 +138,17 @@ export function createDaemonStudioApi(options: StudioDaemonOptions): StudioApi {
       projectPath: options.projectPath,
       connection: "connected",
       revision: ir.rev,
-      lastBuild: "daemon connected",
+      lastBuild: "Unknown · daemon RPC has no build-history method",
       nodes,
       gates: mappedGates,
       agents: structuredClone(agents),
+      dataMode: "daemon",
+      telemetry: {
+        kind: "unavailable",
+        label: "Agent telemetry unavailable",
+        detail:
+          "The daemon RPC does not expose agent sessions or spend. These values are placeholders, not inferred from gate ownership.",
+      },
       activity: [
         {
           id: `daemon-rev-${ir.rev}`,

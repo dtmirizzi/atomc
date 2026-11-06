@@ -23,6 +23,19 @@ test.describe("Studio preview workspace", () => {
     expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
   });
 
+  test("labels simulated agent telemetry and shows no implied pipeline edges", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Agent team" }).first().click();
+    await expect(page.getByText("Simulated specialist activity.")).toBeVisible();
+    await expect(
+      page.getByText(/no agent runs or model spend occurred/i),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Build graph" }).first().click();
+    await expect(page.getByText(/Dependency edges are not included\./)).toBeVisible();
+    await expect(page.locator(".pipeline-connector")).toHaveCount(0);
+    await expect(page.locator(".run-id")).toHaveCount(0);
+  });
+
   test("gate filters and details are operable in browser", async ({ page }) => {
     await page.goto("/");
     const gates = page.getByRole("table", { name: "Verification gates" }).first();

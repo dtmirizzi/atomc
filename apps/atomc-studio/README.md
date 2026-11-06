@@ -23,11 +23,13 @@ Then open Studio with `?demo=false&project=atomc-keeb&path=/path/to/project`. Th
 
 ## Views
 
-- **Overview:** IR revision, gate health, build status, spend-limited agents and recent activity.
-- **Build graph:** ordered DAG nodes and live status.
+- **Overview:** IR revision, gate health, build status and recent activity. Agent panels carry a data-source notice; spend is never inferred from gate ownership.
+- **Build graph:** DAG node states from the snapshot. The daemon RPC returns no dependency edges, so nodes are rendered without connectors; the status badge derives from actual node states.
 - **Gate results:** filter PASS/FAIL/SKIP/ERROR and inspect owner/revision/details.
-- **Agent team:** specialist scope, current work, status and budget progress.
-- **Artifacts:** output groups from the selected build snapshot.
+- **Agent team:** specialist cards. In preview mode they are simulated (labeled); in daemon mode sessions and spend are reported as unavailable rather than invented.
+- **Artifacts:** output groups. Preview data is fixture-only; daemon-mode stays empty until the RPC reports per-node artifacts.
+
+Every snapshot carries a `dataMode` ("demo" | "daemon") and a telemetry notice so the UI cannot pass simulated or placeholder values off as live data. Last-build state is "Unknown" in daemon mode — the RPC has no build-history method — rather than a fabricated timestamp.
 
 Keyboard users can operate every control, dismiss dialogs with Escape, and use the responsive navigation on narrow screens. The demo snapshot makes no claims of real hardware execution; Renode is not represented as USB-HID proof.
 

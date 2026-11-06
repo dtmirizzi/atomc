@@ -82,7 +82,30 @@ describe("createDaemonStudioApi", () => {
     expect(snapshot.agents).toHaveLength(4);
     expect(snapshot.activity[0]?.detail).toContain("1 passing gates");
     expect(snapshot.activity[0]?.tone).toBe("success");
-    expect(snapshot.lastBuild).toBe("daemon connected");
+    expect(snapshot.lastBuild).toBe("Unknown · daemon RPC has no build-history method");
+  });
+
+  it("labels daemon snapshots honestly: data mode, telemetry and idle agents", async () => {
+    const client = fakeClient();
+    const api = createDaemonStudioApi({
+      projectName: "fixture-board",
+      projectPath: ".",
+      clientFactory: async () => client,
+    });
+    const snapshot = await api.load();
+    expect(snapshot.dataMode).toBe("daemon");
+    expect(snapshot.telemetry).toMatchObject({
+      kind: "unavailable",
+      label: "Agent telemetry unavailable",
+    });
+    expect(
+      snapshot.telemetry.detail.includes("not inferred from gate ownership"),
+    ).toBe(true);
+    for (const agent of snapshot.agents) {
+      expect(agent.state).toBe("idle");
+      expect(agent.spentCents).toBe(0);
+      expect(agent.task).toContain("not connected");
+    }
   });
 
   it("reuses one client and returns independent snapshots", async () => {
