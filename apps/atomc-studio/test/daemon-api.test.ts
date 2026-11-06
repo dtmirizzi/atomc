@@ -98,9 +98,7 @@ describe("createDaemonStudioApi", () => {
       kind: "unavailable",
       label: "Agent telemetry unavailable",
     });
-    expect(
-      snapshot.telemetry.detail.includes("not inferred from gate ownership"),
-    ).toBe(true);
+    expect(snapshot.telemetry.detail.includes("not inferred from gate ownership")).toBe(true);
     for (const agent of snapshot.agents) {
       expect(agent.state).toBe("idle");
       expect(agent.spentCents).toBe(0);

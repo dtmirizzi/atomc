@@ -1,11 +1,5 @@
 import type { AgentName, GateResult } from "@atomc/daemon-client";
-import type {
-  AgentCard,
-  BoardSnapshot,
-  DagNode,
-  RunState,
-  StudioApi,
-} from "./model.js";
+import type { AgentCard, BoardSnapshot, DagNode, RunState, StudioApi } from "./model.js";
 
 /** Browser-safe subset of the daemon client methods used by Studio. */
 export interface StudioRpcClient {

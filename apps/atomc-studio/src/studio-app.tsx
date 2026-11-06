@@ -1253,18 +1253,10 @@ export function StudioApp(props: StudioAppProps) {
               </div>
             )}
             {activeView === "agents" && (
-              <AgentsView
-                agents={snapshot.agents}
-                isDemo={isDemo}
-                telemetry={snapshot.telemetry}
-              />
+              <AgentsView agents={snapshot.agents} isDemo={isDemo} telemetry={snapshot.telemetry} />
             )}
             {activeView === "artifacts" && (
-              <ArtifactView
-                nodes={snapshot.nodes}
-                isDemo={isDemo}
-                revision={snapshot.revision}
-              />
+              <ArtifactView nodes={snapshot.nodes} isDemo={isDemo} revision={snapshot.revision} />
             )}
             <footer className="workspace-footer">
               <span>
