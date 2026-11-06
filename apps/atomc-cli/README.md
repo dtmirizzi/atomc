@@ -19,22 +19,22 @@ The binary name is `atomc`.
 
 ## Commands
 
-| Command                            | Status  | Description                                                                                                        |
-| ---------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| `atomc init <dir>`                 | working | scaffold a project from `examples/atomc-pad` (or `--template <name>`); refuses a non-empty target unless `--force` |
-| `atomc doctor`                     | working | check the CLI, running daemon/schema, plugin load, and local toolchains                                            |
-| `atomc daemon start\|status\|stop` | working | manage the `atomcd` daemon via `@atomc/daemon-client`                                                              |
-| `atomc plugin list`                | working | list plugins loaded by the daemon (`--json`)                                                                       |
-| `atomc plugin new <name>`          | working | scaffold a manifest + entrypoint + test, validated by `@atomc/plugin-sdk`                                          |
-| `atomc build [target]`             | working | run the daemon DAG, poll to completion, print node + gate summary                                                  |
-| `atomc sim`                        | planned | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                            |
-| `atomc jig`                        | planned | pogo jig / plate / case generation — reports status, never PASS                                                    |
-| `atomc quote`                      | planned | BOM + fab quotes — reports status, never PASS                                                                      |
-| `atomc orders`                     | planned | order placement — reports status, never PASS                                                                       |
-| `atomc converge`                   | planned | multi-agent swarm until gates pass — reports status, never PASS                                                    |
+| Command                            | Status   | Description                                                                                                        |
+| ---------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `atomc init <dir>`                 | working  | scaffold a project from `examples/atomc-pad` (or `--template <name>`); refuses a non-empty target unless `--force` |
+| `atomc doctor`                     | working  | check the CLI, running daemon/schema, plugin load, and local toolchains                                            |
+| `atomc daemon start\|status\|stop` | working  | manage the `atomcd` daemon via `@atomc/daemon-client`                                                              |
+| `atomc plugin list`                | working  | list plugins loaded by the daemon (`--json`)                                                                       |
+| `atomc plugin new <name>`          | working  | scaffold a manifest + entrypoint + test, validated by `@atomc/plugin-sdk`                                          |
+| `atomc build [target]`             | working  | run the daemon DAG, poll to completion, print node + gate summary                                                  |
+| `atomc sim`                        | planned  | Renode simulation — reports `unavailable`/`not_implemented`, never PASS                                            |
+| `atomc jig`                        | planned  | pogo jig / plate / case generation — reports status, never PASS                                                    |
+| `atomc quote`                      | planned  | BOM + fab quotes — reports status, never PASS                                                                      |
+| `atomc orders`                     | planned  | order placement — reports status, never PASS                                                                       |
+| `atomc converge`                   | working* | invokes a trusted convergence runtime; reports honest unavailable status when none is configured                   |
 
 Every command supports `--json`. With `--json`, stdout contains exactly one JSON object and
-all diagnostics go to stderr.
+all diagnostics go to stderr. *The CLI package does not configure a model runtime by default, so `converge` returns `unavailable` until a trusted host injects one.
 
 ### Exit codes
 
@@ -66,9 +66,7 @@ whole command tree with an in-memory filesystem and a scripted `DaemonApi` fake.
 
 ## Current scope limitations
 
-- `sim`, `jig`, `quote`, `orders`, and `converge` are intentionally stubs. They report a
-  structured `unavailable`/`not_implemented` result and exit `3`; they never report a fake
-  `PASS`. They will be wired to plugins in Phases 4–5 and to `@atomc/swarm-harness` in WP-3.4.
+- `sim`, `jig`, `quote`, and `orders` remain capability stubs. `converge` uses an injected `ConvergenceRuntime`; without one, it reports structured `unavailable` and exits `3`. Incomplete convergence exits `1`; only final daemon gate state with no blocking FAIL/ERROR exits `0`.
 - `atomc.config.ts` is an established project convention; command-specific config loading is
   minimal in this version (project root resolution only).
 - The package version must stay lock-step with `scripts/release/VERSION`.

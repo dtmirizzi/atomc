@@ -21,7 +21,8 @@ pnpm add @atomc/swarm-harness
 ```
 
 Runtime dependencies: `@atomc/core-ir` (patch op types), `@atomc/daemon-client` (typed RPC + error
-classes), `zod`. ESM and CJS builds ship with `.d.ts` types.
+classes), `zod`. ESM and CJS builds ship with `.d.ts` types. The WP-3.3 agent registry and pi-ai
+provider land on their own branch and integrate after review.
 
 ## Registering an agent
 
@@ -46,9 +47,9 @@ const result = await runAgent({
     model: { provider: "openrouter", model: "deepseek/deepseek-v4.1-flash", thinking: "medium" },
     budget: { maxTurns: 12, maxCostMinor: 250, maxTokens: 200_000 },
   },
-  failure,                 // a GateResult FAIL routed to this agent
+  failure, // a GateResult FAIL routed to this agent
   daemon,
-  provider,                // injected ModelProvider (see below)
+  provider, // injected ModelProvider (see below)
   projectRoot: process.cwd(),
   runId: "converge-42",
   onEvent: (event) => console.log(event.kind), // stream to CLI/Studio
@@ -99,10 +100,27 @@ const transcript = new TranscriptWriter({
 });
 ```
 
-## Replay and convergence
+## Bounded convergence
 
-`runAgent` is deterministic given `(IR rev, gate results, provider decisions)`. The scripted
-`FakeProvider` replays recorded sessions in CI; `onEvent` frames (`state`, `lock.*`, `patch.*`,
-`tool.*`, `gate.result`) can be asserted directly. WP-3.4's converger calls `runAgent` per routed
-gate failure and uses the `RETRY`/`ESCALATE` outcomes to decide whether to re-wake an agent or raise
-a human checkpoint.
+`converge()` coordinates `runAgent()` sessions. It reads daemon gate results, routes blocking failures through a registry, runs specialists with disjoint lock scopes in parallel, serializes overlapping scopes, then fetches fresh gate results. A run is converged only when no blocking `FAIL` or `ERROR` remains. Advisory failures and `SKIP` do not block.
+
+```ts
+import { converge } from "@atomc/swarm-harness";
+
+const result = await converge({
+  daemon, // HarnessDaemon adapter
+  registry, // ConvergenceRegistry: get(id) + optional agentsForGate
+  providerFor: (agent) => provider, // required: injected; secrets stay outside definitions
+  projectRoot: process.cwd(),
+  maxRounds: 4,
+  maxCostMinor: 250, // integer cents across the whole run
+  maxTokens: 200_000, // aggregate token ceiling
+  maxTurns: 32, // aggregate provider-turn ceiling (default 32)
+  signal: abortController.signal,
+  checkpoint: async (context) => "abort", // explicit human review; default blocks
+});
+```
+
+Each parallel batch receives a divided share of the remaining aggregate cost/token/turn budgets (a provider that overruns its share in one call can still overspend; the aggregate caps stop further scheduling and surface the overrun honestly). A fixed gate-failure signature triggers a no-progress checkpoint; round extensions require an explicit callback and are capped. `ERROR`, unknown owners, exhausted budgets, aborts, provider errors and round limits cannot silently become `PASS`; an empty gate snapshot is treated as unverifiable and checkpoints rather than reporting converged. The returned result includes final daemon gates, remaining blockers, sessions, spend and a bounded low-detail audit with no prompts or tool payloads. The CLI only runs convergence when its host injects a trusted runtime/provider factory; otherwise it reports unavailable with exit 3.
+
+For deterministic tests, use a scripted `FakeProvider` and `HarnessDaemon` fake. `onEvent` frames (`state`, `lock.*`, `patch.*`, `tool.*`, `gate.result`) can be asserted directly. `runAgent` is unit-sized work; `converge` owns scheduling, fresh gate reads, and bounded retry/escalation.
