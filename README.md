@@ -30,11 +30,12 @@ Build an example project end to end — the daemon starts automatically, discove
 ```bash
 node apps/atomc-cli/dist/index.js build --project examples/atomc-pad
 # run run-1: 26 node(s), all settled
-# gates: 13 pass, 0 fail, 3 skip, 0 error
+# gates: 14 pass, 0 fail, 3 skip, 0 error
 ```
 
-The three SKIPs are honest: `fw.qmk_compile` sibling gates and `fw.renode_boot` (the fixture's declared
-ELF is a placeholder that does not exist on disk — the gate says exactly that). With **no optional
+The three SKIPs are honest: `fw.matrix_scan` (HIL-only by design) and `fw.renode_boot` (the
+fixture's declared ELF is a placeholder that does not exist on disk — the gate says exactly that).
+Debug nets (SWD/UART/BOOT0) pass ERC because their test pads count as connections. With **no optional
 toolchains** installed, the toolchain gates SKIP instead; a **present-but-broken** toolchain FAILs
 with the real compiler error — atomc never converts a broken tool into a quiet SKIP.
 

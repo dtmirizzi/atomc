@@ -7,14 +7,14 @@ over the frozen JSON-RPC/WebSocket contract.
 ```bash
 node apps/atomc-cli/dist/index.js build --project examples/atomc-pad
 # run run-1: 26 node(s), all settled
-# gates: 13 pass, 0 fail, 3 skip, 0 error
+# gates: 14 pass, 0 fail, 3 skip, 0 error
 ```
 
 The exact pass/skip mix depends on which toolchains you have installed and sourced:
 
 | Environment | Typical result |
 | --- | --- |
-| Toolchains installed and `~/.atomc/env.sh` sourced | 13 pass, 0 fail, 3 skip — includes a real `qmk compile` |
+| Toolchains installed and `~/.atomc/env.sh` sourced | 14 pass, 0 fail, 3 skip — includes a real `qmk compile` |
 | No optional toolchains | the toolchain gates SKIP honestly (`qmk`/`renode` unavailable) |
 | Toolchain present but broken | the gate **FAILs** with the real compiler error — atomc never converts a broken toolchain into a quiet SKIP |
 
