@@ -1,0 +1,16 @@
+// atomc generated Renode platform description -- do not edit by hand.
+// firmware target: fw:main
+// mcu: STM32F411CEU6 (cortex-m4f), framework: qmk
+// base platform: platforms/cpus/stm32f4.repl (generic STM32F4 model)
+//
+// Keyboard GPIO expected by QMK/ChibiOS (matrix pin map from IR):
+//   rows: B12 (gpioPortB#12), B13 (gpioPortB#13), B14 (gpioPortB#14)
+//   cols: A0 (gpioPortA#0), A1 (gpioPortA#1), A2 (gpioPortA#2)
+//   diode direction: COL2ROW
+//
+// Peripheral map from IR (addresses are informational; the base platform wires them):
+//   periph:usart1: uart @ 0x40010000 (TX=A9 RX=A10)
+//   periph:gpioa: gpio @ 0x40020000 (LED=C13)
+// memory (IR): flash origin=0x08000000 length=0x00080000, ram origin=0x20000000 length=0x00020000
+
+using "platforms/cpus/stm32f4.repl"

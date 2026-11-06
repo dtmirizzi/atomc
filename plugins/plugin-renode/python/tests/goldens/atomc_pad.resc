@@ -1,0 +1,11 @@
+:name: main boot
+:description: generated from system_ir.json for STM32F411CEU6; bounded to 5s
+
+using sysbus
+$name?="main"
+mach create $name
+machine LoadPlatformDescription @build/atomc-pad.repl
+$bin?=@build/atomc-pad.elf
+sysbus LoadELF $bin
+
+start
