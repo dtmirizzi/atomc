@@ -1,0 +1,35 @@
+{
+  "_provenance": {
+    "synthetic": true,
+    "fab": "jlcpcb",
+    "note": "Synthetic fixture modelling the documented JLCPCB PCBA (assembly) price-calculator response shape; no live call was made."
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/overseas/openapi/pcb/calculate",
+    "body_contains": "\"assemblyParam\":{\"side\":3,\"partsCount\":3}"
+  },
+  "response": {
+    "status_code": 200,
+    "json": {
+      "code": 200,
+      "data": {
+        "price": 2.16,
+        "currency": "USD",
+        "unitPrice": 0.432,
+        "assemblyPrice": 15.0,
+        "leadTime": "5-7 days",
+        "shippingOptions": [
+          {
+            "shippingMethod": "DHL Express",
+            "cost": 12.5,
+            "deliveryTime": "5-7 days"
+          }
+        ],
+        "totalPrice": 29.66,
+        "url": "https://jlcpcb.com/quote?layers=2&length=80.0&width=80.0&qty=5"
+      },
+      "message": "success"
+    }
+  }
+}

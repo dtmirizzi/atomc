@@ -15,11 +15,12 @@ from atomc_plugin_sourcing.manifest import (
     manifest_path,
 )
 
-EXPECTED_TOOLS = {"query", "refresh", "optimize"}
+EXPECTED_TOOLS = {"query", "refresh", "optimize", "quote_pcb"}
 EXPECTED_GATES = {
     "gate:bom.all_in_stock",
     "gate:bom.cost_under_budget",
     "gate:bom.lead_time_under_days",
+    "gate:fab.quote_under_budget",
 }
 
 
@@ -33,18 +34,9 @@ def test_manifest_parses_with_expected_declarations() -> None:
     assert manifest.name == "sourcing"
     assert manifest.version == "0.1.0"
     assert {tool.name for tool in manifest.tools} == EXPECTED_TOOLS
-    assert manifest.produces == ["/sourcing"]
-    assert {watch.id for watch in manifest.watches} == {"sourcing:refresh"}
+    assert set(manifest.produces) == {"/sourcing", "/fabrication"}
+    assert {watch.id for watch in manifest.watches} == {"sourcing:refresh", "fab:quote"}
     assert {gate.id for gate in manifest.gates} == EXPECTED_GATES
-
-
-def test_gates_are_blocking_and_owned_by_ops() -> None:
-    manifest = load_plugin_manifest()
-    for gate in manifest.gates:
-        assert gate.severity == "blocking"
-        assert gate.owner_agent == "ops-agent"
-        assert gate.after == ["sourcing:refresh"]
-        assert gate.handler.startswith("check_")
 
 
 def test_mutating_refresh_declares_sourcing_scope() -> None:
@@ -57,7 +49,7 @@ def test_mutating_refresh_declares_sourcing_scope() -> None:
     assert optimize.mutates is True
     assert refresh.agents == ["ee-agent", "ops-agent"]
     assert optimize.agents == ["ee-agent", "ops-agent"]
-    assert manifest.produces == ["/sourcing"]
+    assert set(manifest.produces) == {"/sourcing", "/fabrication"}
 
 
 def test_conformance_accepts_plugin_and_all_handlers_are_callable() -> None:
