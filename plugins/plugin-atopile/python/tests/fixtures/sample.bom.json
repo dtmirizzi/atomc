@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "build_id": "testbuild",
+  "components": [
+    {
+      "id": "c990001",
+      "lcsc": "C990001",
+      "manufacturer": "atomc",
+      "mpn": "TESTPAD",
+      "type": "testpoint",
+      "value": "",
+      "package": "TestPoint:PACKAGE",
+      "description": null,
+      "quantity": 2,
+      "usages": [
+        { "address": "main.ato::App.tp1", "designator": "TP1" },
+        { "address": "main.ato::App.tp2", "designator": "TP2" }
+      ]
+    },
+    {
+      "id": "c2803137",
+      "lcsc": "C2803137",
+      "manufacturer": "atomc",
+      "mpn": "SW_Hotswap_Kailh_MX",
+      "type": "switch",
+      "value": "",
+      "package": "Switch_Kailh_MX:PACKAGE",
+      "description": null,
+      "quantity": 1,
+      "usages": [{ "address": "main.ato::App.sw1", "designator": "SW1" }]
+    },
+    {
+      "id": "c1000",
+      "lcsc": "C1000",
+      "manufacturer": "Diodes Inc",
+      "mpn": "1N4148W",
+      "type": "diode",
+      "value": "",
+      "package": "Diode:SOD-123",
+      "description": null,
+      "quantity": 1,
+      "usages": [{ "address": "main.ato::App.d1", "designator": "D1" }]
+    }
+  ]
+}
